@@ -147,3 +147,99 @@ def sentiment_pairs(split="train"):
 def sample_pairs(pairs, n, seed=0):
     """A fixed random subset of n pairs (for the 'how many pairs are needed' experiment)."""
     return random.Random(seed).sample(pairs, min(n, len(pairs)))
+
+
+# ---------------------------------------------------------------- TinyGPT (TinyStories English)
+
+TINY_WORDS = [  # (positive, negative), words a TinyStories model knows
+    ("happy", "sad"), ("glad", "upset"), ("excited", "scared"),
+    ("proud", "angry"), ("cheerful", "grumpy"), ("joyful", "lonely"),
+]
+
+TINY_TEMPLATES = [
+    "Lily went to the park. She felt very {}.",
+    "Tom looked at his toy. He was {}.",
+    "The little dog saw the ball and was {}.",
+    "Mom came home. She was {}.",
+    "Ben played with his friend. He felt {}.",
+    "The bird sat in the tree. It was {}.",
+    "Sue got a new dress. She was very {}.",
+    "The boy saw the big cake. He was so {}.",
+    "After school, Amy was {}.",
+    "The cat looked out of the window. It felt {}.",
+    "Max and Lily went to the beach. They were {}.",
+    "Grandpa read a book. He was {}.",
+]
+
+TINY_PROMPTS = [
+    "Once upon a time, there was a little girl named Lily. One day, she",
+    "Tom had a red ball. He",
+    "One day, a big dog went to the park. The dog",
+    "Sam and his mom went to the store. They",
+    "There was a small cat who lived in a house. Every day, the cat",
+    "Ben woke up early in the morning. He",
+    "Once upon a time, there was a boy named Max. Max",
+    "Sue found a box in the garden. She",
+    "The sun was high in the sky. Lily and Tom",
+    "Grandma made soup for lunch. Then",
+    "A little bird sat on a branch. The bird",
+    "Amy went to school with her bag. At school,",
+    "Once upon a time, a frog lived near a pond. One day,",
+    "Dad took Ben to the beach. They",
+    "There was a big tree in the yard. Under the tree,",
+    "Lucy had a teddy bear. She",
+    "One day, Tim saw a truck on the road. The truck",
+    "Mia and her brother played in the snow. They",
+    "Once upon a time, there was a little boat. The boat",
+    "The kids went to the farm. At the farm,",
+    "Jack wanted to build a tower. He",
+    "Once upon a time, a mouse found a piece of cheese. The mouse",
+    "Anna opened the door and saw",
+    "The rabbit hopped into the forest. There,",
+    "Ella's dad gave her a book. She",
+    "One night, Tom looked at the stars. He",
+    "The puppy ran to the gate. Then",
+    "Once upon a time, there was a king. The king",
+    "Lily drew a picture of her house. Then she",
+    "It was raining outside. Sam",
+]
+
+# natural TinyStories-style sentences for the probe; none use a word from TINY_WORDS
+TINY_PROBE_POSITIVE = [
+    "Lily got a new puppy for her birthday.",
+    "Tom won the race and everyone clapped.",
+    "Mom gave Ben a big hug and a cookie.",
+    "The sun came out and the children played all day.",
+    "Sam found his lost teddy bear.",
+    "They had a fun picnic with cake and juice.",
+    "Grandma came to visit with many presents.",
+    "The bird learned to fly high in the sky.",
+    "Amy and her friend laughed and played together.",
+    "Dad took them to the zoo to see the lions.",
+    "The little boat sailed home safe.",
+    "Everyone sang songs at the party.",
+    "Ben made a new friend at the park.",
+    "The flowers in the garden grew big and pretty.",
+    "Lucy got a gold star from her teacher.",
+]
+TINY_PROBE_NEGATIVE = [
+    "Lily lost her favorite doll.",
+    "Tom fell down and hurt his knee.",
+    "The rain ruined the picnic.",
+    "Ben's balloon flew away and he could not get it.",
+    "The puppy was lost in the dark forest.",
+    "Mom yelled at Sam for breaking the vase.",
+    "The toy car broke into many pieces.",
+    "Nobody wanted to play with Amy.",
+    "The bird hurt its wing and could not fly.",
+    "A big storm knocked down their house.",
+    "Max dropped his ice cream on the ground.",
+    "The old dog was sick and would not eat.",
+    "Sue was alone in the cold room.",
+    "The children fought over the ball.",
+    "Grandpa went away and did not come back.",
+]
+
+
+def tiny_sentiment_pairs():
+    return [(t.format(p), t.format(n)) for t in TINY_TEMPLATES for p, n in TINY_WORDS]

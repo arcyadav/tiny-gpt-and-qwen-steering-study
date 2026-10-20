@@ -57,14 +57,16 @@ def main():
     from datasets import load_dataset
 
     os.makedirs(args.out, exist_ok=True)
-    ds = load_dataset("roneneldan/TinyStories")
-    train = ds["train"]["text"]
-    val = ds["validation"]["text"]
     if args.limit:
-        train = train[: args.limit]
-        val = val[: max(1000, args.limit // 20)]
-    train = [t.strip() for t in train]
-    val = [t.strip() for t in val]
+        # stream only what is needed instead of downloading the whole dataset
+        stream = lambda split, n: [r["text"] for r in load_dataset(
+            "roneneldan/TinyStories", split=split, streaming=True).take(n)]
+        train, val = stream("train", args.limit), stream("validation", max(1000, args.limit // 20))
+    else:
+        ds = load_dataset("roneneldan/TinyStories")
+        train, val = ds["train"]["text"], ds["validation"]["text"]
+    train = [t.strip() for t in train if t.strip()]
+    val = [t.strip() for t in val if t.strip()]
 
     print(f"training BPE (vocab {args.vocab}) on {min(len(train), args.tokenizer_stories):,} stories")
     tok = train_tokenizer(train[: args.tokenizer_stories], args.vocab)

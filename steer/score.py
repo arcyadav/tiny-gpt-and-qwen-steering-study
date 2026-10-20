@@ -11,7 +11,6 @@ import math
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 
 SENTIMENT_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 
@@ -38,35 +37,6 @@ class SentimentScorer:
         return probs
 
 
-@torch.no_grad()
-def continuation_nll(steerer, prompts, continuations, batch_size=16):
-    """Mean negative log-likelihood per token of each continuation given its prompt,
-    under the unsteered model."""
-    tok, model = steerer.tok, steerer.model
-    nlls = []
-    for i in range(0, len(prompts), batch_size):
-        rows = []
-        for p, c in zip(prompts[i : i + batch_size], continuations[i : i + batch_size]):
-            p_ids = tok(p).input_ids
-            c_ids = tok(" " + c).input_ids if c else []
-            rows.append((p_ids + c_ids, len(p_ids)))
-        width = max(len(ids) for ids, _ in rows)
-        input_ids = torch.full((len(rows), width), tok.pad_token_id)
-        attn = torch.zeros((len(rows), width), dtype=torch.long)
-        targets = torch.full((len(rows), width), -100)  # -100 = ignored by cross_entropy
-        for r, (ids, n_prompt) in enumerate(rows):
-            input_ids[r, : len(ids)] = torch.tensor(ids)
-            attn[r, : len(ids)] = 1
-            targets[r, n_prompt : len(ids)] = torch.tensor(ids[n_prompt:])
-        logits = model(input_ids=input_ids.to(steerer.device), attention_mask=attn.to(steerer.device)).logits.float()
-        # position t predicts token t+1
-        loss = F.cross_entropy(logits[:, :-1].transpose(1, 2), targets[:, 1:].to(steerer.device),
-                               reduction="none", ignore_index=-100)
-        n_tokens = (targets[:, 1:] != -100).sum(1).clamp(min=1).to(steerer.device)
-        nlls += (loss.sum(1) / n_tokens).tolist()
-    return nlls
-
-
 def distinct_2(text):
     words = text.split()
     bigrams = list(zip(words, words[1:]))
@@ -76,7 +46,7 @@ def distinct_2(text):
 def score(steerer, sentiment, prompts, continuations):
     """Per-text scores plus a summary for one experimental setting."""
     sent = sentiment(continuations)
-    nll = continuation_nll(steerer, prompts, continuations)
+    nll = steerer.continuation_nll(prompts, continuations)
     d2 = [distinct_2(c) for c in continuations]
     summary = {
         "sentiment": float(np.mean(sent)),

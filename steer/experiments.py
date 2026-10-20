@@ -1,7 +1,10 @@
-"""Experiments E1-E4 on Qwen2.5-0.5B (see spec.md section 5).
+"""Steering experiments (see spec.md section 5).
 
+Qwen2.5-0.5B, E1-E4:
     python -m steer.experiments --exp e1 e2 e3 e4 --out results/qwen      # Kaggle T4
     python -m steer.experiments --exp e1 --out results/quick --quick      # CPU check
+TinyGPT, E5 (= layer + strength sweep, i.e. e1 + e2 on TinyGPT) and E6 (over training checkpoints):
+    python -m steer.experiments --model tinygpt --run-dir results/tinygpt --tokenizer data/tokenizer.json         --exp e1 e2 e6 --out results/tinygpt_steer
 
 Every steered setting is paired with a random vector of the same norm (the control).
 Each experiment writes <out>/<exp>.json (summaries) and <out>/<exp>_texts.jsonl (every generation).
@@ -13,8 +16,8 @@ import time
 
 import torch
 
-from steer.core import QwenSteerer, random_like
-from steer.pairs import NEUTRAL_PROMPTS, PROBE_NEGATIVE, PROBE_POSITIVE, sample_pairs, sentiment_pairs
+from steer.core import QwenSteerer, TinyGPTSteerer, random_like
+from steer import pairs as P
 from steer.score import SentimentScorer, score
 
 # prompt prefixes for E3 (Qwen2.5-0.5B is a base model, so "asking" = setting up the context)
@@ -27,16 +30,32 @@ PROMPT_PREFIX = {
 class Runner:
     def __init__(self, args):
         self.args = args
-        self.steerer = QwenSteerer()
         self.sentiment = SentimentScorer()
-        self.prompts = NEUTRAL_PROMPTS[: args.n_prompts]
-        self.pairs = sentiment_pairs("train")
+        if args.model == "qwen":
+            steerer = QwenSteerer()
+            self.prompts, self.pairs = P.NEUTRAL_PROMPTS, P.sentiment_pairs("train")
+            self.probe_pos, self.probe_neg = P.PROBE_POSITIVE, P.PROBE_NEGATIVE
+        else:
+            steerer = TinyGPTSteerer(os.path.join(args.run_dir, "ckpt.pt"), args.tokenizer)
+            self.prompts, self.pairs = P.TINY_PROMPTS, P.tiny_sentiment_pairs()
+            self.probe_pos, self.probe_neg = P.TINY_PROBE_POSITIVE, P.TINY_PROBE_NEGATIVE
+        self.prompts = self.prompts[: args.n_prompts]
+        n = steerer.n_layers
+        if args.layers is None:
+            args.layers = list(range(n))
+        elif args.layers == "first_last":
+            args.layers = [0, n - 1]
         os.makedirs(args.out, exist_ok=True)
-        t = time.time()
-        self.vectors = self.steerer.concept_vectors(self.pairs)
+        self.use(steerer)
         torch.save(self.vectors, os.path.join(args.out, "sentiment_vectors.pt"))
-        print(f"vectors from {len(self.pairs)} pairs in {time.time() - t:.0f}s")
+
+    def use(self, steerer):
+        """Switch to a (new) model: recompute its steering vectors and forget the old baseline."""
+        t = time.time()
+        self.steerer = steerer
+        self.vectors = steerer.concept_vectors(self.pairs)
         self.baseline = None
+        print(f"vectors from {len(self.pairs)} pairs in {time.time() - t:.0f}s")
 
     def run(self, layer=None, vector=None, alpha=0.0, prefix="", **info):
         """Generate `samples` continuations per prompt for one setting and score them.
@@ -80,8 +99,8 @@ class Runner:
         negative sentences (none of the pair words). AUC = chance that a random positive sentence
         projects higher than a random negative one; 0.5 = chance, 1.0 = perfect."""
         direction = self.vectors / self.vectors.norm(dim=-1, keepdim=True)
-        pos = (self.steerer.text_means(PROBE_POSITIVE) * direction).sum(-1)  # (n, n_layers)
-        neg = (self.steerer.text_means(PROBE_NEGATIVE) * direction).sum(-1)
+        pos = (self.steerer.text_means(self.probe_pos) * direction).sum(-1)  # (n, n_layers)
+        neg = (self.steerer.text_means(self.probe_neg) * direction).sum(-1)
         wins = (pos.unsqueeze(1) > neg.unsqueeze(0)).float().mean(dim=(0, 1))
         return wins.tolist()
 
@@ -95,9 +114,10 @@ class Runner:
                 texts += t
         result = {"baseline": base_row, "rows": rows, "probe_auc": self.probe_auc(),
                   "vector_norms": self.vectors.norm(dim=-1).tolist(),
-                  "best_layer": best_layer(rows, base_row)}
+                  }
+        result["best_layer"], result["best_alpha"] = best_setting(rows, base_row)
         self.save("e1", result, texts)
-        print(f"E1 best layer: {result['best_layer']}")
+        print(f"E1 best: layer {result['best_layer']}, strength {result['best_alpha']}")
         return result
 
     # ------------------------------------------------------------ E2: strength sweep
@@ -137,7 +157,7 @@ class Runner:
         full = self.vectors[layer]
         for n in self.args.e4_sizes:
             for subset in range(1 if n >= len(self.pairs) else 3):
-                v = self.steerer.concept_vectors(sample_pairs(self.pairs, n, seed=subset))[layer]
+                v = self.steerer.concept_vectors(P.sample_pairs(self.pairs, n, seed=subset))[layer]
                 cos = torch.nn.functional.cosine_similarity(v, full, dim=0).item()
                 for alpha in (self.args.e3_alpha, -self.args.e3_alpha):
                     r, t = self.run(layer, v, alpha, kind="concept", n_pairs=n, subset=subset)
@@ -146,52 +166,90 @@ class Runner:
                     texts += t
         self.save("e4", {"baseline": base_row, "layer": layer, "rows": rows}, texts)
 
+    # ------------------------------------------------------------ E6: during training (TinyGPT)
 
-def best_layer(rows, base_row, max_ppl_ratio=3.0):
-    """Layer where concept steering moves sentiment furthest in both directions (largest
-    sent(+a) - sent(-a) at the largest |a|) while perplexity stays below 3x the unsteered one."""
-    a = max(r["alpha"] for r in rows)
-    scores = {}
-    for layer in {r["layer"] for r in rows}:
-        get = {r["alpha"]: r for r in rows if r["layer"] == layer and r["kind"] == "concept"}
-        if a not in get or -a not in get:
+    def e6(self, layer):
+        """For every saved training checkpoint: rebuild the vectors from that checkpoint, measure
+        probe AUC per layer and the steering effect at `layer` (vs that checkpoint's own baseline)."""
+        ckpt_dir = os.path.join(self.args.run_dir, "checkpoints")
+        rows, texts = [], []
+        alpha = self.args.e3_alpha
+        for name in sorted(os.listdir(ckpt_dir)):
+            steerer = TinyGPTSteerer(os.path.join(ckpt_dir, name), self.args.tokenizer)
+            self.use(steerer)
+            print(f"  checkpoint {name} (step {steerer.step})")
+            base_row, t = self.get_baseline()
+            texts += t
+            row = {"step": steerer.step, "probe_auc": self.probe_auc(), "baseline": base_row}
+            for a in (alpha, -alpha):
+                r, t = self.steer_and_control(layer, a, self.vectors[layer], step=steerer.step)
+                row[f"alpha{a:+g}"] = r
+                texts += t
+            rows.append(row)
+        self.save("e6", {"layer": layer, "alpha": alpha, "rows": rows}, texts)
+
+
+def best_setting(rows, base_row, max_ppl_ratio=3.0):
+    """The (layer, strength) where concept steering moves sentiment furthest in both directions,
+    i.e. the largest sent(+a) - sent(-a), among settings whose perplexity stays below
+    3x the unsteered one. Returns (None, None) if no setting qualifies."""
+    concept = {(r["layer"], r["alpha"]): r for r in rows if r["kind"] == "concept"}
+    limit = max_ppl_ratio * base_row["perplexity"]
+    best, best_score = (None, None), float("-inf")
+    for (layer, a), up in concept.items():
+        down = concept.get((layer, -a))
+        if a <= 0 or down is None or max(up["perplexity"], down["perplexity"]) > limit:
             continue
-        if max(get[a]["perplexity"], get[-a]["perplexity"]) > max_ppl_ratio * base_row["perplexity"]:
-            continue
-        scores[layer] = get[a]["sentiment"] - get[-a]["sentiment"]
-    return max(scores, key=scores.get) if scores else None
+        if up["sentiment"] - down["sentiment"] > best_score:
+            best, best_score = (layer, a), up["sentiment"] - down["sentiment"]
+    return best
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exp", nargs="+", default=["e1", "e2", "e3", "e4"])
     ap.add_argument("--out", default="results/qwen")
-    ap.add_argument("--layer", type=int, default=None, help="layer for E2-E4 (default: best from E1)")
+    ap.add_argument("--layer", type=int, default=None, help="layer for E2-E6 (default: best from E1)")
+    ap.add_argument("--alpha", type=float, default=None, help="strength for E2-E6 (default: best from E1)")
     ap.add_argument("--quick", action="store_true", help="tiny version for a CPU check")
+    ap.add_argument("--model", choices=["qwen", "tinygpt"], default="qwen")
+    ap.add_argument("--run-dir", default="results/tinygpt", help="TinyGPT: folder with ckpt.pt + checkpoints/")
+    ap.add_argument("--tokenizer", default="data/tokenizer.json", help="TinyGPT tokenizer")
     args = ap.parse_args()
 
     args.n_prompts, args.samples, args.max_new_tokens = 50, 2, 40
-    args.layers = list(range(0, 24, 2))
-    args.e1_alphas = [-8, -4, 4, 8]
-    args.e2_alphas = [-16, -12, -8, -4, 4, 8, 12, 16]
-    args.e3_alpha = 8
     args.e4_sizes = [5, 10, 25, 50, 150]
+    if args.model == "qwen":
+        args.layers, strengths = list(range(0, 24, 2)), [4, 8]
+    else:  # TinyGPT's scale is unknown in advance, so E1 tries a wide range
+        args.layers, strengths = None, [2, 4, 8, 16, 32]  # None = all of its layers
     if args.quick:
         args.n_prompts, args.samples, args.max_new_tokens = 6, 1, 20
-        args.layers, args.e1_alphas, args.e2_alphas, args.e4_sizes = [6, 14], [-8, 8], [-8, 8], [5, 150]
+        args.layers = [6, 14] if args.model == "qwen" else "first_last"
+        strengths, args.e4_sizes = [8], [5, 150]
+    args.e1_alphas = sorted([-a for a in strengths] + strengths)
 
     runner = Runner(args)
     t0 = time.time()
-    layer = args.layer
+    layer, alpha = args.layer, args.alpha
     if "e1" in args.exp:
         print("== E1 layer sweep")
-        layer = layer if layer is not None else runner.e1()["best_layer"]
-    if layer is None:
-        path = os.path.join(args.out, "e1.json")
-        layer = json.load(open(path))["best_layer"] if os.path.exists(path) else 14
-    for name in ("e2", "e3", "e4"):
+        result = runner.e1()
+        layer = layer if layer is not None else result["best_layer"]
+        alpha = alpha if alpha is not None else result["best_alpha"]
+    path = os.path.join(args.out, "e1.json")
+    if (layer is None or alpha is None) and os.path.exists(path):
+        saved = json.load(open(path))
+        layer = layer if layer is not None else saved["best_layer"]
+        alpha = alpha if alpha is not None else saved["best_alpha"]
+    if layer is None or alpha is None:
+        raise SystemExit("no layer/strength: run e1 first, or pass --layer and --alpha")
+    # E2 sweeps around the chosen strength; E3, E4 and E6 use it directly
+    args.e2_alphas = [sign * alpha * f for sign in (-1, 1) for f in (0.5, 1, 1.5, 2)]
+    args.e3_alpha = alpha
+    for name in ("e2", "e3", "e4", "e6"):
         if name in args.exp:
-            print(f"== {name.upper()} at layer {layer}")
+            print(f"== {name.upper()} at layer {layer}, strength {alpha:g}")
             getattr(runner, name)(layer)
     print(f"all done in {(time.time() - t0) / 60:.1f} min")
 
