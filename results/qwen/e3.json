@@ -1,0 +1,89 @@
+{
+  "layer": 4,
+  "alpha": 8,
+  "rows": [
+    {
+      "kind": "none",
+      "layer": null,
+      "alpha": 0.0,
+      "sentiment": 0.05116171283647418,
+      "frac_positive": 0.19,
+      "frac_negative": 0.16,
+      "perplexity": 3.5540535125172834,
+      "distinct_2": 0.929547623571256,
+      "n": 100
+    },
+    {
+      "kind": "prompt",
+      "mood": "happy",
+      "layer": null,
+      "alpha": 0.0,
+      "sentiment": 0.49629709761589763,
+      "frac_positive": 0.62,
+      "frac_negative": 0.12,
+      "perplexity": 5.365629675515007,
+      "distinct_2": 0.925339664309312,
+      "n": 100
+    },
+    {
+      "kind": "steer",
+      "mood": "happy",
+      "layer": 4,
+      "alpha": 8,
+      "sentiment": 0.8526182891428471,
+      "frac_positive": 0.88,
+      "frac_negative": 0.0,
+      "perplexity": 10.266559106528195,
+      "distinct_2": 0.9453257580325429,
+      "n": 100
+    },
+    {
+      "kind": "prompt+steer",
+      "mood": "happy",
+      "layer": 4,
+      "alpha": 8,
+      "sentiment": 0.9591350154578686,
+      "frac_positive": 0.97,
+      "frac_negative": 0.0,
+      "perplexity": 13.517683820831735,
+      "distinct_2": 0.9366289885150181,
+      "n": 100
+    },
+    {
+      "kind": "prompt",
+      "mood": "sad",
+      "layer": null,
+      "alpha": 0.0,
+      "sentiment": -0.14178184568881988,
+      "frac_positive": 0.18,
+      "frac_negative": 0.38,
+      "perplexity": 5.625424715051023,
+      "distinct_2": 0.9255528183761557,
+      "n": 100
+    },
+    {
+      "kind": "steer",
+      "mood": "sad",
+      "layer": 4,
+      "alpha": -8,
+      "sentiment": -0.4640512374788523,
+      "frac_positive": 0.02,
+      "frac_negative": 0.56,
+      "perplexity": 7.772852593111496,
+      "distinct_2": 0.8501789020097037,
+      "n": 100
+    },
+    {
+      "kind": "prompt+steer",
+      "mood": "sad",
+      "layer": 4,
+      "alpha": -8,
+      "sentiment": -0.6407498084381222,
+      "frac_positive": 0.0,
+      "frac_negative": 0.74,
+      "perplexity": 9.601827735962617,
+      "distinct_2": 0.7936727624638539,
+      "n": 100
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "seed": 0,
+  "status": "ok",
+  "config": {
+    "vocab_size": 4096,
+    "block_size": 256,
+    "n_layer": 6,
+    "n_head": 6,
+    "n_embd": 384,
+    "n_kv_head": 6,
+    "pos": "rope",
+    "norm": "rmsnorm",
+    "norm_place": "pre",
+    "ffn": "swiglu",
+    "dropout": 0.0,
+    "rope_base": 10000.0
+  },
+  "params": 12194688,
+  "kv_cache_bytes_per_token": 9216,
+  "steps": 4882,
+  "tokens": 79986688,
+  "final_val_loss": 1.6713820397853851,
+  "final_val_ppl": 5.319514499971916,
+  "train_time_s": 1104.694172859192,
+  "device": "Tesla T4",
+  "args": {
+    "data": "data",
+    "out": "results/tinygpt",
+    "tokens": 80000000.0,
+    "batch": 64,
+    "block": 256,
+    "lr": 0.001,
+    "warmup": 200,
+    "wd": 0.1,
+    "clip": 1.0,
+    "eval_every": 250,
+    "eval_batches": 40,
+    "ckpt_every": 500,
+    "seed": 0,
+    "tiny": false,
+    "compile": false
+  }
+}

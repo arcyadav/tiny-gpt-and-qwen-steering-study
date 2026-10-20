@@ -1,0 +1,820 @@
+{
+  "layer": 4,
+  "alpha": 8,
+  "rows": [
+    {
+      "step": 0,
+      "probe_auc": [
+        0.40444445610046387,
+        0.3733333349227905,
+        0.5777778029441833,
+        0.48444443941116333,
+        0.5244444608688354,
+        0.5199999809265137
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": -0.0042425366739432015,
+        "frac_positive": 0.05,
+        "frac_negative": 0.05,
+        "perplexity": 3398.500230327031,
+        "distinct_2": 1.0,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 0,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": -0.021568826337655386,
+          "frac_positive": 0.08333333333333333,
+          "frac_negative": 0.08333333333333333,
+          "perplexity": 3440.9220390812093,
+          "distinct_2": 1.0,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 0,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.07492921035736799,
+          "frac_positive": 0.06666666666666667,
+          "frac_negative": 0.05,
+          "perplexity": 3440.676754280877,
+          "distinct_2": 1.0,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 0,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.06953332753231128,
+          "frac_positive": 0.03333333333333333,
+          "frac_negative": 0.11666666666666667,
+          "perplexity": 3425.0446743249972,
+          "distinct_2": 1.0,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 0,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.03379464379201333,
+          "frac_positive": 0.08333333333333333,
+          "frac_negative": 0.13333333333333333,
+          "perplexity": 3431.267979119021,
+          "distinct_2": 1.0,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 500,
+      "probe_auc": [
+        0.9511111378669739,
+        0.9644444584846497,
+        0.9511111378669739,
+        0.9555555582046509,
+        0.9377777576446533,
+        0.902222216129303
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.4445315387099981,
+        "frac_positive": 0.6,
+        "frac_negative": 0.11666666666666667,
+        "perplexity": 3.3749617959879785,
+        "distinct_2": 0.9279879730893111,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.8857593450074395,
+          "frac_positive": 0.95,
+          "frac_negative": 0.016666666666666666,
+          "perplexity": 6.2862302096647,
+          "distinct_2": 0.9515583575794676,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.5460069728394349,
+          "frac_positive": 0.6,
+          "frac_negative": 0.03333333333333333,
+          "perplexity": 3.916821379812559,
+          "distinct_2": 0.9461468351555459,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.2797556775932511,
+          "frac_positive": 0.11666666666666667,
+          "frac_negative": 0.45,
+          "perplexity": 4.3443493826867225,
+          "distinct_2": 0.9363939753594228,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.3622949177399278,
+          "frac_positive": 0.5333333333333333,
+          "frac_negative": 0.15,
+          "perplexity": 4.952990010766323,
+          "distinct_2": 0.9370393548733275,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 1000,
+      "probe_auc": [
+        0.8711110949516296,
+        0.902222216129303,
+        0.8755555748939514,
+        0.9599999785423279,
+        0.9288889169692993,
+        0.897777795791626
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.38690710018078484,
+        "frac_positive": 0.5,
+        "frac_negative": 0.06666666666666667,
+        "perplexity": 3.015738897960547,
+        "distinct_2": 0.941271805479719,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 1000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.9153074845671654,
+          "frac_positive": 0.9666666666666667,
+          "frac_negative": 0.0,
+          "perplexity": 5.244637088590906,
+          "distinct_2": 0.958095757559676,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 1000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.3637660795201858,
+          "frac_positive": 0.5166666666666667,
+          "frac_negative": 0.08333333333333333,
+          "perplexity": 3.5275631688420126,
+          "distinct_2": 0.9348989130931648,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 1000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.4310803065697352,
+          "frac_positive": 0.05,
+          "frac_negative": 0.5166666666666667,
+          "perplexity": 4.40720700551722,
+          "distinct_2": 0.9440156549757904,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 1000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.5184925779700279,
+          "frac_positive": 0.5833333333333334,
+          "frac_negative": 0.05,
+          "perplexity": 4.218978314890316,
+          "distinct_2": 0.9208308950680253,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 1500,
+      "probe_auc": [
+        0.9066666960716248,
+        0.902222216129303,
+        0.9244444370269775,
+        0.9511111378669739,
+        0.9111111164093018,
+        0.8888888955116272
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.5647469138105711,
+        "frac_positive": 0.7333333333333333,
+        "frac_negative": 0.08333333333333333,
+        "perplexity": 2.7440852121267354,
+        "distinct_2": 0.9276708535334336,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 1500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.8681553867956002,
+          "frac_positive": 0.9166666666666666,
+          "frac_negative": 0.0,
+          "perplexity": 4.789202557116952,
+          "distinct_2": 0.930629293473519,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 1500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.3682845006386439,
+          "frac_positive": 0.5166666666666667,
+          "frac_negative": 0.08333333333333333,
+          "perplexity": 3.7458554567843185,
+          "distinct_2": 0.922418733435611,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 1500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.2939222486379246,
+          "frac_positive": 0.11666666666666667,
+          "frac_negative": 0.4,
+          "perplexity": 4.107523583079756,
+          "distinct_2": 0.9329017954132883,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 1500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.6085874022295078,
+          "frac_positive": 0.7166666666666667,
+          "frac_negative": 0.05,
+          "perplexity": 3.9560159909898513,
+          "distinct_2": 0.9243370623683717,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 2000,
+      "probe_auc": [
+        0.8933333158493042,
+        0.9244444370269775,
+        0.9244444370269775,
+        0.9733333587646484,
+        0.9422222375869751,
+        0.9111111164093018
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.4236547922094663,
+        "frac_positive": 0.5166666666666667,
+        "frac_negative": 0.03333333333333333,
+        "perplexity": 2.6257799898616945,
+        "distinct_2": 0.8879032554067738,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 2000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.9313890921572844,
+          "frac_positive": 0.95,
+          "frac_negative": 0.0,
+          "perplexity": 5.157706911011227,
+          "distinct_2": 0.9386434119210073,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 2000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.22188839195296167,
+          "frac_positive": 0.38333333333333336,
+          "frac_negative": 0.15,
+          "perplexity": 3.5579729334736325,
+          "distinct_2": 0.9211572726514422,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 2000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.5413071436186632,
+          "frac_positive": 0.03333333333333333,
+          "frac_negative": 0.6666666666666666,
+          "perplexity": 3.728816669211421,
+          "distinct_2": 0.8970239463544122,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 2000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.6300920653467377,
+          "frac_positive": 0.7333333333333333,
+          "frac_negative": 0.03333333333333333,
+          "perplexity": 4.040938492620899,
+          "distinct_2": 0.9219380305447423,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 2500,
+      "probe_auc": [
+        0.9333333373069763,
+        0.9066666960716248,
+        0.9111111164093018,
+        0.9777777791023254,
+        0.9644444584846497,
+        0.9911110997200012
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.5337877389043569,
+        "frac_positive": 0.6666666666666666,
+        "frac_negative": 0.08333333333333333,
+        "perplexity": 2.659125197866932,
+        "distinct_2": 0.9423525546685991,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 2500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.9043207469085852,
+          "frac_positive": 0.95,
+          "frac_negative": 0.0,
+          "perplexity": 5.219565049331881,
+          "distinct_2": 0.9198532432180279,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 2500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.24925503134727478,
+          "frac_positive": 0.45,
+          "frac_negative": 0.16666666666666666,
+          "perplexity": 3.9041301837097437,
+          "distinct_2": 0.9439586276990949,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 2500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.55582989739875,
+          "frac_positive": 0.0,
+          "frac_negative": 0.65,
+          "perplexity": 4.794836779768695,
+          "distinct_2": 0.9393253325655831,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 2500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.7198150850832462,
+          "frac_positive": 0.8,
+          "frac_negative": 0.016666666666666666,
+          "perplexity": 4.30166849128982,
+          "distinct_2": 0.9469457338580874,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 3000,
+      "probe_auc": [
+        0.8933333158493042,
+        0.8888888955116272,
+        0.9066666960716248,
+        0.9733333587646484,
+        0.9244444370269775,
+        0.8799999952316284
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.5319958161562681,
+        "frac_positive": 0.5833333333333334,
+        "frac_negative": 0.03333333333333333,
+        "perplexity": 2.415728212968139,
+        "distinct_2": 0.947342803457867,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 3000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.9283098677794138,
+          "frac_positive": 0.9666666666666667,
+          "frac_negative": 0.0,
+          "perplexity": 4.7150479280317175,
+          "distinct_2": 0.9321831123876084,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 3000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.4351443133627375,
+          "frac_positive": 0.6,
+          "frac_negative": 0.1,
+          "perplexity": 3.497396283192316,
+          "distinct_2": 0.9517897993156273,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 3000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.42628170996904374,
+          "frac_positive": 0.03333333333333333,
+          "frac_negative": 0.55,
+          "perplexity": 3.9598611833829196,
+          "distinct_2": 0.9322937951606448,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 3000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.5549362111836672,
+          "frac_positive": 0.65,
+          "frac_negative": 0.05,
+          "perplexity": 3.7843536519968852,
+          "distinct_2": 0.9300617600474299,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 3500,
+      "probe_auc": [
+        0.9155555367469788,
+        0.9111111164093018,
+        0.897777795791626,
+        0.9777777791023254,
+        0.9466666579246521,
+        0.9288889169692993
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.4198793852701783,
+        "frac_positive": 0.5166666666666667,
+        "frac_negative": 0.06666666666666667,
+        "perplexity": 2.4070354407956835,
+        "distinct_2": 0.9277104579401789,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 3500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.9388936263819535,
+          "frac_positive": 0.9666666666666667,
+          "frac_negative": 0.0,
+          "perplexity": 4.872199472615575,
+          "distinct_2": 0.9460688368794393,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 3500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.42632198172310987,
+          "frac_positive": 0.5333333333333333,
+          "frac_negative": 0.11666666666666667,
+          "perplexity": 3.597519423927056,
+          "distinct_2": 0.9411213640306083,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 3500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.48404224701225756,
+          "frac_positive": 0.03333333333333333,
+          "frac_negative": 0.6166666666666667,
+          "perplexity": 4.334955338168043,
+          "distinct_2": 0.9149371610501775,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 3500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.6649908235917489,
+          "frac_positive": 0.7166666666666667,
+          "frac_negative": 0.016666666666666666,
+          "perplexity": 4.032825562551344,
+          "distinct_2": 0.9141325160489769,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 4000,
+      "probe_auc": [
+        0.8933333158493042,
+        0.9066666960716248,
+        0.9244444370269775,
+        0.9777777791023254,
+        0.9599999785423279,
+        0.9377777576446533
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.448772873232762,
+        "frac_positive": 0.5166666666666667,
+        "frac_negative": 0.11666666666666667,
+        "perplexity": 2.4889033819939135,
+        "distinct_2": 0.9377685990847248,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 4000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.9126471469799677,
+          "frac_positive": 0.9666666666666667,
+          "frac_negative": 0.0,
+          "perplexity": 5.036475601780072,
+          "distinct_2": 0.9525403552569903,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 4000,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.35541617472966514,
+          "frac_positive": 0.55,
+          "frac_negative": 0.16666666666666666,
+          "perplexity": 3.8272089577667963,
+          "distinct_2": 0.9291019110432157,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 4000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.553946474691232,
+          "frac_positive": 0.016666666666666666,
+          "frac_negative": 0.6666666666666666,
+          "perplexity": 4.332981406395463,
+          "distinct_2": 0.9093341572747844,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 4000,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.6773825710639357,
+          "frac_positive": 0.7333333333333333,
+          "frac_negative": 0.016666666666666666,
+          "perplexity": 4.244217389850017,
+          "distinct_2": 0.9144528815937231,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 4500,
+      "probe_auc": [
+        0.897777795791626,
+        0.9155555367469788,
+        0.9288889169692993,
+        0.9777777791023254,
+        0.9688888788223267,
+        0.9333333373069763
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.4914527483284473,
+        "frac_positive": 0.6166666666666667,
+        "frac_negative": 0.06666666666666667,
+        "perplexity": 2.382361623938586,
+        "distinct_2": 0.9355425218637543,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 4500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.962563348809878,
+          "frac_positive": 1.0,
+          "frac_negative": 0.0,
+          "perplexity": 6.020375437208197,
+          "distinct_2": 0.9490364617777393,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 4500,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.34963046237826345,
+          "frac_positive": 0.48333333333333334,
+          "frac_negative": 0.13333333333333333,
+          "perplexity": 3.6048609975241837,
+          "distinct_2": 0.9069565227566041,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 4500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.5404378635808825,
+          "frac_positive": 0.0,
+          "frac_negative": 0.6666666666666666,
+          "perplexity": 4.613343681147901,
+          "distinct_2": 0.9210309740125833,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 4500,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.6362498643497626,
+          "frac_positive": 0.7166666666666667,
+          "frac_negative": 0.03333333333333333,
+          "perplexity": 4.450858660990204,
+          "distinct_2": 0.9170662558800182,
+          "n": 60
+        }
+      ]
+    },
+    {
+      "step": 4881,
+      "probe_auc": [
+        0.897777795791626,
+        0.9288889169692993,
+        0.9511111378669739,
+        0.9733333587646484,
+        0.9555555582046509,
+        0.9288889169692993
+      ],
+      "baseline": {
+        "kind": "none",
+        "layer": null,
+        "alpha": 0.0,
+        "sentiment": 0.4764226437856754,
+        "frac_positive": 0.6,
+        "frac_negative": 0.1,
+        "perplexity": 2.4651493722038342,
+        "distinct_2": 0.9454163320330777,
+        "n": 60
+      },
+      "alpha+8": [
+        {
+          "kind": "concept",
+          "step": 4881,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.9320823503037293,
+          "frac_positive": 0.9666666666666667,
+          "frac_negative": 0.0,
+          "perplexity": 5.846527826924653,
+          "distinct_2": 0.9565594415157329,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 4881,
+          "layer": 4,
+          "alpha": 8,
+          "sentiment": 0.32631100664536156,
+          "frac_positive": 0.48333333333333334,
+          "frac_negative": 0.16666666666666666,
+          "perplexity": 3.8875691518493465,
+          "distinct_2": 0.9368581024623993,
+          "n": 60
+        }
+      ],
+      "alpha-8": [
+        {
+          "kind": "concept",
+          "step": 4881,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": -0.5643490818018715,
+          "frac_positive": 0.016666666666666666,
+          "frac_negative": 0.7333333333333333,
+          "perplexity": 4.944113169574835,
+          "distinct_2": 0.929478148615751,
+          "n": 60
+        },
+        {
+          "kind": "random",
+          "step": 4881,
+          "layer": 4,
+          "alpha": -8,
+          "sentiment": 0.6699744001030922,
+          "frac_positive": 0.7,
+          "frac_negative": 0.016666666666666666,
+          "perplexity": 4.4062657082497525,
+          "distinct_2": 0.9092168096720336,
+          "n": 60
+        }
+      ]
+    }
+  ]
+}
