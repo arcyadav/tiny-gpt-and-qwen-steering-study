@@ -137,14 +137,15 @@ class QwenSteerer(Steerer):
 
     @torch.no_grad()
     def generate(self, prompts, layer=None, vector=None, alpha=0.0, max_new_tokens=40,
-                 temperature=0.7, top_p=0.9, seed=0):
-        """Continue each prompt, optionally steered. Returns only the new text for each prompt."""
+                 temperature=0.7, top_p=0.9, seed=0, **generate_kwargs):
+        """Continue each prompt, optionally steered. Returns only the new text for each prompt.
+        Extra keyword arguments go to HF generate (the demo uses suppress_tokens)."""
         batch = self.encode(prompts)
         torch.manual_seed(seed)
         with self.steering(layer, vector, alpha):
             out = self.model.generate(
                 **batch, max_new_tokens=max_new_tokens, do_sample=True, temperature=temperature,
-                top_p=top_p, pad_token_id=self.tok.pad_token_id,
+                top_p=top_p, pad_token_id=self.tok.pad_token_id, **generate_kwargs,
             )
         new = out[:, batch["input_ids"].shape[1]:]
         return [t.strip() for t in self.tok.batch_decode(new, skip_special_tokens=True)]
@@ -194,7 +195,7 @@ class TinyGPTSteerer(Steerer):
 
     @torch.no_grad()
     def generate(self, prompts, layer=None, vector=None, alpha=0.0, max_new_tokens=40,
-                 temperature=0.7, top_p=0.9, seed=0):
+                 temperature=0.7, top_p=0.9, seed=0, **generate_kwargs):
         """Same interface as QwenSteerer.generate (sampling with temperature + top-p)."""
         torch.manual_seed(seed)
         encoded = [self._ids(p) for p in prompts]
