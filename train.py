@@ -2,6 +2,8 @@
 
     python train.py --data data --out results/tinygpt                      # Kaggle T4
     python train.py --data data_small --out results/smoke --tokens 2e6 --tiny   # CPU smoke test
+    python train.py --data data --out results/tinygpt_early --stop-step 600 --ckpt-every 50 --eval-every 50
+        # first 600 steps of the same run (same seed and LR schedule), with dense checkpoints
 
 Intermediate checkpoints (every --ckpt-every steps) are used to study when the
 happy/sad direction appears during training (spec E6).
@@ -66,6 +68,8 @@ def main():
     ap.add_argument("--eval-batches", type=int, default=40)
     ap.add_argument("--ckpt-every", type=int, default=500)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--stop-step", type=int, default=None,
+                    help="stop after this step; the LR schedule still follows the full --tokens budget")
     ap.add_argument("--tiny", action="store_true", help="2-layer model for CPU smoke tests")
     ap.add_argument("--compile", action="store_true")
     args = ap.parse_args()
@@ -97,6 +101,7 @@ def main():
 
     tokens_per_step = args.batch * args.block
     total_steps = int(args.tokens // tokens_per_step)
+    last_step = total_steps - 1 if args.stop_step is None else min(args.stop_step, total_steps - 1)
     run_dir = args.out
     os.makedirs(os.path.join(run_dir, "checkpoints"), exist_ok=True)
 
@@ -109,7 +114,7 @@ def main():
     status = "ok"
     t0 = time.time()
     t_last, tokens_since = t0, 0
-    for step in range(total_steps):
+    for step in range(last_step + 1):
         lr = lr_at(step, total_steps, args.lr, args.warmup)
         for g in opt.param_groups:
             g["lr"] = lr
@@ -139,12 +144,12 @@ def main():
                                  "tokens_per_s": tok_s})
             print(f"step {step:5d} | loss {loss.item():.4f} | lr {lr:.2e} | gnorm {grad_norm:.2f} | {tok_s:,.0f} tok/s")
 
-        if step % args.eval_every == 0 or step == total_steps - 1:
+        if step % args.eval_every == 0 or step == last_step:
             val = evaluate(model, val_data, args.batch, args.block, args.eval_batches, device, amp_ctx)
             log["val"].append({"step": step, "tokens": (step + 1) * tokens_per_step, "loss": val})
             print(f"step {step:5d} | val loss {val:.4f}")
 
-        if step % args.ckpt_every == 0 or step == total_steps - 1:
+        if step % args.ckpt_every == 0 or step == last_step:
             save(os.path.join(run_dir, "checkpoints", f"step{step:05d}.pt"), {"step": step})
 
     train_time = time.time() - t0
@@ -155,8 +160,8 @@ def main():
         "config": cfg.to_dict(),
         "params": n_params,
         "kv_cache_bytes_per_token": model.kv_cache_bytes_per_token(),
-        "steps": total_steps,
-        "tokens": total_steps * tokens_per_step,
+        "steps": last_step + 1,
+        "tokens": (last_step + 1) * tokens_per_step,
         "final_val_loss": final_val,
         "final_val_ppl": math.exp(final_val) if math.isfinite(final_val) else None,
         "train_time_s": train_time,

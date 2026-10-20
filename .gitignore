@@ -5,3 +5,7 @@ data*/
 results/**/*.pt
 .pytest_cache/
 results/quick/
+*.zip
+results/smoke*/
+results/quick*/
+results/quick_refactor.log
