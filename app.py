@@ -121,14 +121,19 @@ def get_concept(name, choice, pos_text, neg_text):
 
 # ------------------------------------------------------------------------------------ Steer tab
 
+def steering_vector(name, choice, pos_text, neg_text, layer):
+    v = get_concept(name, choice, pos_text, neg_text).vector[layer]
+    if choice != BUILTIN:  # same length as the happy/sad vector, so α means the same for any concept
+        v = v * (get_concept(name, BUILTIN, "", "").vector[layer].norm() / v.norm())
+    return v
+
+
 def steer(name, prompt, choice, pos_text, neg_text, layer, alpha, n_tokens, seed, show_random):
     if not prompt.strip():
         raise gr.Error("Type a prompt first.")
     model = get_model(name)
     layer = min(int(layer), model.n_layers - 1)
-    v = get_concept(name, choice, pos_text, neg_text).vector[layer]
-    if choice != BUILTIN:  # same length as the happy/sad vector, so α means the same for any concept
-        v = v * (get_concept(name, BUILTIN, "", "").vector[layer].norm() / v.norm())
+    v = steering_vector(name, choice, pos_text, neg_text, layer)
     # one batch: row 0 unsteered, row 1 steered, row 2 a random vector of the same norm (control).
     # The hook adds alpha * vectors[row] to each row, so the rows differ only in what is added.
     rows = [torch.zeros_like(v), v] + ([random_like(v, seed=layer)] if show_random else [])
@@ -145,6 +150,99 @@ def steer(name, prompt, choice, pos_text, neg_text, layer, alpha, n_tokens, seed
     else:
         out = [f"{t}\n\n— {a} ↔ {b} score {c:+.2f}  (+ = {a}, − = {b})" for t, c in zip(texts, scores)]
     return out[0], out[1], out[2] if show_random else ""
+
+
+# ------------------------------------------------------------------------------- Transition tab
+
+class SharedNoise:
+    """Sampling with temperature + top-p through the Gumbel-max trick, with the SAME noise for
+    every row of the batch: argmax(logits / T + Gumbel noise) is a sample from softmax(logits / T),
+    and sharing the noise means rows with similar distributions pick the same token. Lets Qwen
+    generate all strengths in one batch while keeping 'rows differ only by the steering'."""
+
+    def __init__(self, temperature, top_p, seed):
+        self.t, self.top_p = temperature, top_p
+        self.gen = torch.Generator().manual_seed(seed)
+
+    def __call__(self, input_ids, scores):
+        scores = scores.float() / self.t
+        ordered, order = scores.sort(dim=-1, descending=True)
+        probs = ordered.softmax(-1)
+        ordered[probs.cumsum(-1) - probs > self.top_p] = float("-inf")  # top-p
+        scores = torch.full_like(scores, float("-inf")).scatter(-1, order, ordered)
+        u = torch.rand(scores.shape[-1], generator=self.gen).clamp(1e-10, 1 - 1e-10)
+        return scores - torch.log(-torch.log(u)).to(scores.device)  # one noise row, broadcast
+
+
+@torch.no_grad()
+def generate_coupled(name, prompt, layer, v, alphas, n_tokens, seed):
+    """One continuation per strength, all sharing their random draws."""
+    model = get_model(name)
+    if name != QWEN:  # TinyGPT is fast: separate runs with the same seed share the draws too
+        return [model.generate([prompt], layer, v, a, max_new_tokens=n_tokens, seed=seed,
+                               **gen_kwargs(name))[0] for a in alphas]
+    from transformers import LogitsProcessorList
+
+    vectors = torch.stack([v * a for a in alphas]).unsqueeze(1)
+    batch = model.encode([prompt] * len(alphas))
+    with model.steering(layer, vectors, 1.0):
+        out = model.model.generate(**batch, max_new_tokens=n_tokens, do_sample=False,
+                                   logits_processor=LogitsProcessorList([SharedNoise(0.7, 0.9, seed)]),
+                                   pad_token_id=model.tok.pad_token_id, **gen_kwargs(name))
+    new = out[:, batch["input_ids"].shape[1]:]
+    return [t.strip() for t in model.tok.batch_decode(new, skip_special_tokens=True)]
+
+
+def transition(name, prompt, choice, pos_text, neg_text, layer, max_alpha, n_tokens, seed):
+    """The same prompt at five strengths from -max to +max. The rows share their random draws, so
+    they differ only by the steering: they often agree for a few words and then branch where the
+    push changes a word choice."""
+    if not prompt.strip():
+        raise gr.Error("Type a prompt first.")
+    model = get_model(name)
+    layer = min(int(layer), model.n_layers - 1)
+    v = steering_vector(name, choice, pos_text, neg_text, layer)
+    m = float(max_alpha)
+    alphas = [-m, -m / 2, 0.0, m / 2, m]
+    texts = generate_coupled(name, prompt, layer, v, alphas, int(n_tokens), int(seed))
+    concept, (a, b) = get_concept(name, choice, pos_text, neg_text), sides(name, choice)
+    scores = [concept_score(name, concept, t.replace(END_MARKER, "\n")) for t in texts]
+    rows = "".join(transition_row(al, sc, t, texts[2], prompt) for al, sc, t in zip(alphas, scores, texts))
+    head = (f'<div style="font-size: 0.9em; opacity: 0.75; margin-bottom: 6px;">{html.escape(b)} ← → '
+            f'{html.escape(a)} · layer {layer} · seed {int(seed)} · bar = {html.escape(a)} ↔ {html.escape(b)} '
+            "score · <b>coloured text</b> = where the row branches off from the unsteered one</div>")
+    return head + f'<table style="width: 100%; border-collapse: collapse;">{rows}</table>'
+
+
+def transition_row(alpha, score, text, base, prompt):
+    """One row: strength, score bar, and the text with the part that differs from α = 0 coloured."""
+    r, g, b = HAPPY if alpha > 0 else SAD
+    words, base_words = re.split(r"(\s+)", text), re.split(r"(\s+)", base)
+    same = 0
+    while same < min(len(words), len(base_words)) and words[same] == base_words[same]:
+        same += 1
+    kept, changed = "".join(words[:same]), "".join(words[same:])
+    body = html.escape(kept)
+    if changed and alpha != 0:
+        body += f'<span style="background: rgba({r},{g},{b},0.28); border-radius: 3px;">{html.escape(changed)}</span>'
+    elif changed:
+        body += html.escape(changed)
+    body = body.replace("\n", "<br>")
+    fill = max(-1.0, min(1.0, score / 1.5))  # bar: ±1.5 fills one half
+    br, bg, bb = HAPPY if fill > 0 else SAD
+    left = 50 if fill > 0 else 50 + fill * 50
+    bar = (f'<div style="position: relative; width: 120px; height: 10px; border-radius: 5px; '
+           f'background: rgba(128,128,128,0.18);"><div style="position: absolute; left: {left:.1f}%; '
+           f'width: {abs(fill) * 50:.1f}%; height: 100%; border-radius: 5px; background: rgb({br},{bg},{bb});">'
+           '</div><div style="position: absolute; left: 50%; top: -2px; width: 1px; height: 14px; '
+           'background: rgba(128,128,128,0.7);"></div></div>')
+    label = "α 0 (none)" if alpha == 0 else f"α {alpha:+g}"
+    return ('<tr style="border-top: 1px solid rgba(128,128,128,0.25); vertical-align: top;">'
+            f'<td style="padding: 10px 8px; white-space: nowrap; font-weight: 600;">{label}</td>'
+            f'<td style="padding: 12px 8px; white-space: nowrap;">{bar}<div style="font-size: 0.85em; '
+            f'margin-top: 4px; font-family: monospace;">{score:+.2f}</div></td>'
+            f'<td style="padding: 10px 8px; line-height: 1.6;"><span style="opacity: 0.6;">{html.escape(prompt)} '
+            f'</span>{body}</td></tr>')
 
 
 def on_model_change(name):
@@ -312,6 +410,26 @@ def build():
             go.click(steer, [model, prompt, concept, pos_text, neg_text, layer, alpha, n_tokens, seed, show_random],
                      [out_none, out_steer, out_rand])
 
+        with gr.Tab("Transition"):
+            gr.Markdown("The same prompt at five strengths, from one side of the concept to the other: the text "
+                        "version of morphing between faces in a GAN's latent space. Every row uses the same random "
+                        "seed, so rows differ only by the steering; the coloured part of each row is where it "
+                        "branches off from the unsteered text.")
+            t_prompt = gr.Textbox("When I opened the door,", label="prompt")
+            with gr.Row():
+                t_max = gr.Slider(2, 16, value=8, step=1, label="max strength (rows: −max, −max/2, 0, +max/2, +max)")
+                t_layer = gr.Slider(0, 23, value=layer0, step=1, label=f"layer to steer (best = {layer0})")
+            with gr.Row():
+                t_tokens = gr.Slider(10, 80, value=40, step=5, label="new tokens")
+                t_seed = gr.Number(0, precision=0, label="seed")
+            t_go = gr.Button("Show transition", variant="primary")
+            t_out = gr.HTML()
+            gr.Examples([[QWEN, "When I opened the door,"], [QWEN, "The weather this morning was"],
+                         [TINY, "Tom had a red ball. He"], [TINY, "One day, a big dog went to the park. The dog"]],
+                        [model, t_prompt], label="example prompts")
+            t_go.click(transition, [model, t_prompt, concept, pos_text, neg_text, t_layer, t_max, t_tokens, t_seed],
+                       t_out)
+
         with gr.Tab("Concept meter"):
             gr.Markdown("How happy or sad does the model *think* each word is? Every token is coloured by the "
                         "projection of its hidden state on the concept direction at the chosen layer.")
@@ -335,6 +453,8 @@ def build():
 
         model.change(on_model_change, model, [layer, alpha, concept])
         concept.change(on_concept_change, [model, concept], [custom_box, pos_text, neg_text, tip])
+        model.change(lambda name: gr.update(maximum=23 if name == QWEN else 5, value=best_layer(name)[0],
+                                            label=f"layer to steer (best = {best_layer(name)[0]})"), model, t_layer)
         model.change(lambda name: gr.update(maximum=23 if name == QWEN else 5,
                                             value=12 if name == QWEN else 3), model, meter_layer)
     return demo
