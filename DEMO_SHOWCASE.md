@@ -99,3 +99,29 @@ text, so there is less to steer towards (the same asymmetry as brave ↔ scared 
 rows show the base model's habit of turning text into quiz questions. Earlier attempts with narrative
 prompts ("i had a game today", "my brother is learning to play flute") mostly gave loops ("i thank
 you ×4", "it's my fault ×6"): the concept needs a prompt where someone is about to speak to someone.
+
+## 5. kind (sharing) ↔ greedy (own concept, TinyGPT) — "Lily found a shiny red ball…"
+
+| Setting | Value |
+|---|---|
+| Tab | Transition |
+| Model | TinyGPT 12M |
+| Concept | my own concept: 6 matched TinyStories-style pairs (sharing left, greedy right), e.g. "Tom had a big cookie. He gave half to his friend." ↔ "Tom had a big cookie. He ate it all and gave none." |
+| Prompt | `Lily found a shiny red ball in the park. Her friend asked to play. Lily` |
+| Max strength / layer / seed / tokens | 8 / 4 / 0 / 40 (defaults) |
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | −0.45 | *didn't want to because it was not safe. But then she remembered what her mommy said…* |
+| −4 | −0.19 | *didn't want to share, but she didn't want to share. So, she decided to throw the ball away.* |
+| 0 | −0.01 | *was happy to play with the ball. She threw it up and caught it… Lily was so happy to have her ball back.* |
+| +4 | +0.13 | *was so happy and said, "Yes, let's play!" They played together and had a lot of fun.* |
+| +8 | +0.48 | *said, "Yes, I have a toy car." Her friend said, "Sure, let's play together."* |
+
+**Why it's good:** the same moment of the story (a friend asks to play) resolved four ways: refuses,
+won't share, plays alone, plays together. The prompt matters: it sets up an object and a second
+child, so the concept has somewhere to act. The first try, "there was a young girl", gave nothing to
+share, and the vector only added sadness on one side and "the two were both two" on the other (the
+pairs' "one to Sue and one to Max" / "half" taught it counting words too). Another prompt that works:
+`There was one cake left and two children. The boy`, seed 0, where α −4 gives "couldn't wait to eat
+it… He was very stubborn and wouldn't let go… determined to keep".
