@@ -186,7 +186,7 @@ Each concept is built from six matched pairs that differ only in the concept ("W
 | huge ↔ tiny | TinyGPT | both ways | "Lily went to the zoo and saw a" → "little bird" (−8) … "a big lion… It was enormous!" (+8) |
 | sharing ↔ greedy | TinyGPT | both ways, needs the right prompt | "Her friend asked to play. Lily" → "didn't want to share" (−4) … "Yes, let's play! They played together" (+4) |
 | magic ↔ everyday | TinyGPT | both ways up to ±6 | "he saw a" → "juicy apple on a bench" (−8) … "something magical happened! A giant dragonfly" (+8), then loops on "wand" |
-| sunny park ↔ rainy day | TinyGPT | both ways | parks and blue skies vs ceilings and floors |
+| sunny park ↔ rainy day | TinyGPT | weak | the setting changes (parks and blue skies vs ceilings and floors) but the stories stay much the same; dropped from the demo |
 | brave ↔ scared | TinyGPT | scared side only | the brave side barely changes the story |
 | dogs ↔ cats | TinyGPT | dog side only | the cat side drifts to tea parties |
 | old ↔ young | TinyGPT | fails | almost every story stays "a little girl named Lily" |
@@ -248,7 +248,7 @@ The project is deployed in two parts, at no cost:
 | Part | Where | What it offers |
 | --- | --- | --- |
 | Project page (always online) | [arcyadav-steering-transformers.static.hf.space](https://arcyadav-steering-transformers.static.hf.space) | headline findings, method, all figures, and an interactive replay of real generations from E1–E3 and E6 (choose model, prompt, layer, strength or training step) |
-| Live demo (Gradio) | runs with `python app.py --share`; reachable on the local network and through a public gradio.live link that the project page picks up automatically | steer Qwen or TinyGPT with sliders; 13 tested preset concepts or your own from example sentences; a Transition tab (one prompt at five strengths); a Mix tab (two concepts at once, 3×3 grid); and a concept meter that colours each token by its projection on the direction |
+| Live demo (Gradio) | runs with `python app.py --share`; reachable on the local network and through a public gradio.live link that the project page picks up automatically | steer Qwen or TinyGPT with sliders; 12 tested preset concepts or your own from example sentences; a Transition tab (one prompt at five strengths); a Mix tab (two concepts at once, 3×3 grid); and a concept meter that colours each token by its projection on the direction |
 | Code and results | [github.com/arcyadav/tiny-gpt-and-qwen-steering-study](https://github.com/arcyadav/tiny-gpt-and-qwen-steering-study) | all code, Kaggle notebooks, result JSON files, every generated text, figures |
 
 Hugging Face no longer hosts Gradio apps on free hardware, so the live demo runs on the author's laptop (Qwen about 6 s per generation on CPU) while the static page stays online permanently.

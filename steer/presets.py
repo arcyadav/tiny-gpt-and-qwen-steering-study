@@ -83,14 +83,6 @@ TINY_PRESETS = {
         ("Tim walked his dog every day.", "Tim fed his cat every day."),
         ("The dog dug a hole in the yard.", "The cat slept in the sunny window."),
     ]),
-    "sunny park ↔ rainy day at home": ("sunny park", "rainy day at home", "Works both ways: parks and blue skies vs ceilings and floors.", [
-        ("The sun was shining. They played in the park.", "It was raining. They stayed inside the house."),
-        ("It was a warm sunny day at the beach.", "It was a cold rainy day, so they played at home."),
-        ("The kids ran on the green grass under the blue sky.", "The kids sat by the window and watched the rain."),
-        ("They had a picnic outside in the sun.", "They built a fort with pillows in the living room."),
-        ("Birds sang in the trees in the park.", "Thunder boomed, and they hid under the blanket."),
-        ("It was hot, so they went to swim in the lake.", "It was wet outside, so they read books in bed."),
-    ]),
     "huge ↔ tiny": ("huge", "tiny", "Works both ways at α = ±8. In the Transition tab try 'Lily went to the zoo and saw a' (seed 1): a little bird → an enormous lion.", [
         ("The dog was huge. It was as big as a house.", "The dog was tiny. It was as small as a shoe."),
         ("Tom saw a giant tree. It was so tall it touched the sky.", "Tom saw a little tree. It was so short it touched his knee."),
