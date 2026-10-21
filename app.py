@@ -575,8 +575,12 @@ def build():
                 m_seed = gr.Number(0, precision=0, label="seed")
             m_go = gr.Button("Mix", variant="primary")
             m_out = gr.HTML()
-            gr.Examples([[QWEN, "My neighbour"], [QWEN, "The man who lives next door"],
-                         [TINY, "Tom went for a walk in the woods. Suddenly, he saw a"]],
+            # prompts that introduce a person, place or thing without describing it, so the two
+            # concepts decide the description
+            gr.Examples([[QWEN, "My neighbour"], [QWEN, "The house at the end of our street"],
+                         [QWEN, "Last weekend, my uncle"],
+                         [TINY, "Tom went for a walk in the woods. Suddenly, he saw a"],
+                         [TINY, "At the bottom of the garden lived a"], [TINY, "Lily opened the box. Inside there was a"]],
                         [model, m_prompt], label="example prompts")
             m_go.click(mix, [model, m_prompt, m_a, m_b, m_strength, m_tokens, m_seed], m_out)
 

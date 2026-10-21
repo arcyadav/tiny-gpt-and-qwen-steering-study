@@ -325,3 +325,21 @@ Mix tab · Qwen · rich ↔ poor / old ↔ young (the defaults) · strength 6 ·
 and poor + old gives one character who is both ("so poor… I give him a piece of bread"). Rich + old
 is weaker: it reads mostly as old. Rich and old are almost independent directions (cosine −0.06).
 Above strength 6 the combined push (√2 × larger) starts to break the text.
+
+## 13. Mix: rich/poor × old/young (Qwen) — "The house at the end of our street"
+
+Mix tab · Qwen · rich ↔ poor / old ↔ young (the defaults) · strength 6 · tokens 40 · seed 0
+
+| | young | (B = 0) | old |
+|---|---|---|---|
+| **rich** | *is owned by a family of 13… constantly having parties* | *is owned by a wealthy couple… a beautiful, landscaped garden that includes a swimming…* | *is home to many treasures… heirlooms… rare* |
+| **(A = 0)** | *costs $1200 a month* | *is owned by a relative who lives in the town* (unsteered) | *is in need of repair. We must do what we can to restore it* |
+| **poor** | *has 20 windows…* (quiz) | *is owned by 4 people… 3 women and a child shared a bed* | *is very dilapidated, and I live there. I am lonely… I am hungry… I am cold* |
+
+**Why it's good:** the prompt describes a *place*, so wealth and age show up through the house
+(landscaping and heirlooms ↔ shared beds and a dilapidated, cold home). Poor + old is the clearest
+combination. Seed 1 also works ("property taxes alone are $60,000" / "so old" / "so dirty… cannot
+afford"). Another prompt that works: `Last weekend, my uncle` (seed 0: rich + old → "a very old man,
+surrounded by the most elaborate furnishings, for his 100th birthday"; poor + old → "suffering from a
+serious illness"). On TinyGPT, `At the bottom of the garden lived a` (seed 0) gives huge + magic →
+"huge giant dragon monster!" and tiny + magic → "small fairy… flutter and twinkle".
