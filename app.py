@@ -1,13 +1,17 @@
 """Gradio demo: steer Qwen2.5-0.5B or our TinyGPT with a slider, see the concept inside the model,
 and browse the experiment results.
 
-    python app.py            # http://127.0.0.1:7860
+    python app.py            # this computer + other devices on the same network (intranet)
+    python app.py --share    # also a public gradio.live link, announced on the project's static page
 """
+import argparse
+import datetime
 import html
 import json
 import math
 import os
 import re
+import socket
 import threading
 
 import gradio as gr
@@ -299,6 +303,47 @@ def warm_up():
     scorer()
 
 
+SPACE = "Arcyadav/steering-transformers"  # the static project page that links to the live demo
+
+
+def announce(url):
+    """Write live.json to the static project page, so its 'Live demo' button points at this run."""
+    from huggingface_hub import HfApi
+
+    info = {"url": url, "since": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
+    try:
+        HfApi().upload_file(path_or_fileobj=json.dumps(info).encode(), path_in_repo="live.json", repo_id=SPACE,
+                            repo_type="space", commit_message="live demo online" if url else "live demo offline")
+        print(f"project page now links to: {url}")
+    except Exception as e:  # no login / no network: the demo itself still works
+        print(f"could not update {SPACE}/live.json: {e}")
+
+
+def lan_ip():
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        try:
+            s.connect(("8.8.8.8", 80))  # no packet is sent; this just picks the outgoing interface
+            return s.getsockname()[0]
+        except OSError:
+            return "127.0.0.1"
+
+
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--share", action="store_true", help="public gradio.live link, announced on the project page")
+    ap.add_argument("--port", type=int, default=7860)
+    args = ap.parse_args()
     warm_up()
-    build().queue(default_concurrency_limit=1).launch()
+    demo = build().queue(default_concurrency_limit=1)
+    _, _, share_url = demo.launch(server_name="0.0.0.0", server_port=args.port, share=args.share,
+                                  prevent_thread_lock=True)
+    print(f"\nthis computer:      http://127.0.0.1:{args.port}")
+    print(f"same network:       http://{lan_ip()}:{args.port}")
+    if share_url:
+        print(f"public link:        {share_url}")
+        announce(share_url)
+    try:
+        demo.block_thread()
+    finally:
+        if share_url:
+            announce(None)

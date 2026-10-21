@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Steering Transformers</title>
+<meta name="description" content="Activation steering on Qwen2.5-0.5B and on a 12M-parameter GPT built from scratch. UMC301 Project 4.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #fbfaf7; --surface: #ffffff; --surface-2: #f3f1ec; --text: #1d1d1f; --muted: #66625b;
+  --border: #e4e0d8; --accent: #c2410c; --happy: #d98a1c; --happy-bg: #fdf0db; --sad: #2f64b0;
+  --sad-bg: #e3ecf9; --grey: #8a8780; --ok: #2f855a; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141413; --surface: #1d1d1b; --surface-2: #262623; --text: #ecebe6; --muted: #a29f97;
+    --border: #34332f; --accent: #f08a4b; --happy: #f0a73a; --happy-bg: #3a2c14; --sad: #6b9be6;
+    --sad-bg: #1a2a44; --grey: #8f8c85; --ok: #5fbf8a; --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141413; --surface: #1d1d1b; --surface-2: #262623; --text: #ecebe6; --muted: #a29f97;
+  --border: #34332f; --accent: #f08a4b; --happy: #f0a73a; --happy-bg: #3a2c14; --sad: #6b9be6;
+  --sad-bg: #1a2a44; --grey: #8f8c85; --ok: #5fbf8a; --shadow: none;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, sans-serif; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+a { color: var(--accent); }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 14px; }
+h2 { font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 6px; }
+h3 { font-size: 1.05rem; margin: 0 0 4px; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 720px; margin: 0; }
+.sub { color: var(--muted); margin: 0 0 22px; max-width: 760px; }
+section { padding: 56px 0 8px; }
+header { padding: 56px 0 24px; border-bottom: 1px solid var(--border); }
+.eyebrow { font: 500 .8rem JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 14px; }
+.buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px; font-weight: 600;
+  text-decoration: none; border: 1px solid var(--border); color: var(--text); background: var(--surface); }
+.btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn.disabled { opacity: .55; pointer-events: none; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--grey); }
+.dot.on { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.25); }
+.live-note { color: var(--muted); font-size: .9rem; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); }
+.stat .num { font: 600 1.9rem/1.1 Inter, sans-serif; letter-spacing: -0.02em; }
+.stat .lbl { color: var(--muted); font-size: .92rem; margin-top: 6px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 14px 18px; margin-bottom: 18px; }
+label.ctl { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+select { width: 100%; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: .95rem; }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; flex-wrap: wrap; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 12px; border-radius: 7px; font: 500 .9rem Inter, sans-serif; cursor: pointer; }
+.seg button.on { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.seg button.happy.on { color: var(--happy); }
+.seg button.sad.on { color: var(--sad); }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px; }
+.card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface-2); display: flex; flex-direction: column; min-width: 0; }
+.card .title { font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; }
+.card .txt { flex: 1; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .96rem; }
+.card .txt .pr { color: var(--muted); }
+.card.steer { border-color: var(--accent); }
+.meter { margin-top: 12px; display: flex; align-items: center; gap: 10px; font: 500 .85rem JetBrains Mono, monospace; }
+.bar { position: relative; flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--sad-bg), var(--surface), var(--happy-bg)); border: 1px solid var(--border); }
+.bar i { position: absolute; top: -4px; width: 4px; height: 14px; border-radius: 2px; margin-left: -2px; }
+.hint { color: var(--muted); font-size: .88rem; margin-top: 12px; }
+.mono { font-family: JetBrains Mono, monospace; font-size: .9em; }
+.metrics { display: flex; gap: 22px; flex-wrap: wrap; margin: 4px 0 16px; }
+.metrics div { font-size: .9rem; color: var(--muted); }
+.metrics b { display: block; font-size: 1.35rem; color: var(--text); }
+figure { margin: 0 0 30px; }
+figure img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--border); background: #fff; }
+figcaption { color: var(--text); margin-bottom: 10px; }
+figcaption b { color: var(--text); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px; counter-reset: s; }
+.steps div { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; }
+table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.table-wrap { overflow-x: auto; }
+svg text { font-family: Inter, sans-serif; }
+footer { padding: 40px 0 60px; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--border); margin-top: 48px; }
+.loading { color: var(--muted); }
+.nt { text-transform: none; }
+body { overflow-x: hidden; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">UMC301 Project 4 · Archana Yadav</div>
+    <h1>Steering transformers<br>from the inside</h1>
+    <p class="lead">Change what a language model "feels" by adding one vector to its hidden states while it writes.
+      No prompt change, no fine-tuning. Tested on <b>Qwen2.5-0.5B</b> and on <b>TinyGPT</b>, a 12M-parameter GPT
+      built from scratch for this project.</p>
+    <div class="buttons">
+      <a class="btn primary disabled" id="live-btn" href="#" target="_blank" rel="noopener"><span class="dot" id="live-dot"></span><span id="live-label">Checking live demo…</span></a>
+      <a class="btn" href="#replay">Try the replay ↓</a>
+      <a class="btn" href="https://github.com/arcyadav/tiny-gpt-and-qwen-steering-study" target="_blank" rel="noopener">Code on GitHub</a>
+    </div>
+    <p class="live-note" id="live-note"></p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>What we found</h2>
+    <p class="sub">Sentiment is scored from −1 (sad) to +1 (happy) by a separate classifier. Every steering result is
+      compared with a random vector of the same size.</p>
+    <div class="stats" id="stats"><div class="loading">Loading results…</div></div>
+  </section>
+
+  <section id="replay">
+    <h2>Replay the experiments</h2>
+    <p class="sub">Every text below was really generated during the experiments. Pick a prompt, a layer and a strength:
+      the steered text is shown next to the same prompt without steering and with a random vector of equal size.</p>
+    <div class="panel">
+      <div class="controls">
+        <div><label class="ctl">Model</label><div class="seg" id="r-model"></div></div>
+        <div><label class="ctl">Prompt</label><select id="r-prompt"></select></div>
+        <div><label class="ctl">Layer steered</label><select id="r-layer"></select></div>
+        <div><label class="ctl">Strength <span class="nt">α</span> <span class="mono" id="r-alpha-val"></span></label><div class="seg" id="r-alpha"></div></div>
+      </div>
+      <div class="cards" id="r-cards"></div>
+      <p class="hint" id="r-hint"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Steering vs simply asking</h2>
+    <p class="sub">Qwen is a base model, so "asking" means starting with <span class="mono">"The following is a happy,
+      cheerful story…"</span>. Which moves the text more: the prompt, the vector, or both?</p>
+    <div class="panel">
+      <div class="controls">
+        <div><label class="ctl">Direction</label><div class="seg" id="p-mood"></div></div>
+        <div><label class="ctl">Prompt</label><select id="p-prompt"></select></div>
+      </div>
+      <div class="cards" id="p-cards"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Watch the direction appear during training</h2>
+    <p class="sub">TinyGPT was trained from scratch, and we saved checkpoints along the way. At each checkpoint the
+      happy/sad vector is rebuilt and used for steering. When does the model start to "have" the concept?</p>
+    <div class="panel">
+      <div class="controls">
+        <div style="grid-column: 1 / -1"><label class="ctl">Training step: <span class="mono" id="t-step-val"></span></label>
+          <input type="range" id="t-step" min="0" value="0" step="1"></div>
+        <div><label class="ctl">Prompt</label><select id="t-prompt"></select></div>
+      </div>
+      <div class="metrics" id="t-metrics"></div>
+      <div class="cards" id="t-cards"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <p class="sub">A transformer keeps one running vector per token, the <b>residual stream</b>. Every block reads it
+      and adds its output back. Concepts like "happy" seem to be directions in this space.</p>
+    <div class="panel" style="margin-bottom: 18px">
+      <svg viewBox="0 0 860 210" width="100%" role="img" aria-label="Residual stream diagram: blocks add to the stream; at layer l a forward hook adds alpha times v">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+        <g style="color: var(--muted)" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="30" y1="120" x2="830" y2="120" marker-end="url(#arr)"/>
+        </g>
+        <text x="30" y="150" fill="var(--muted)" font-size="13">tokens in</text>
+        <text x="830" y="150" fill="var(--muted)" font-size="13" text-anchor="end">next-token prediction</text>
+        <text x="430" y="200" fill="var(--muted)" font-size="13" text-anchor="middle">residual stream (one vector per token, 896 numbers in Qwen, 384 in TinyGPT)</text>
+        <g font-size="13" text-anchor="middle">
+          <rect x="110" y="40" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border)"/><text x="165" y="67" fill="var(--text)">block 0</text>
+          <rect x="260" y="40" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border)"/><text x="315" y="67" fill="var(--text)">block 1 … ℓ</text>
+          <rect x="560" y="40" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--border)"/><text x="615" y="67" fill="var(--text)">… last block</text>
+        </g>
+        <g stroke="var(--grey)" stroke-width="1.5" fill="none">
+          <path d="M140 120 V84"/><path d="M190 84 V116" marker-end="url(#arr)" style="color: var(--grey)"/>
+          <path d="M290 120 V84"/><path d="M340 84 V116" marker-end="url(#arr)" style="color: var(--grey)"/>
+          <path d="M590 120 V84"/><path d="M640 84 V116" marker-end="url(#arr)" style="color: var(--grey)"/>
+        </g>
+        <g style="color: var(--accent)">
+          <circle cx="440" cy="120" r="13" fill="var(--surface)" stroke="currentColor" stroke-width="2.5"/>
+          <text x="440" y="125" fill="currentColor" font-size="17" font-weight="700" text-anchor="middle">+</text>
+          <line x1="440" y1="40" x2="440" y2="104" stroke="currentColor" stroke-width="2.5" marker-end="url(#arr)"/>
+          <text x="440" y="28" fill="currentColor" font-size="15" font-weight="700" text-anchor="middle">α · v  (forward hook)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="steps">
+      <div><h3>1 · Contrastive examples</h3>Sentences that differ only in the concept: "I loved the trip, it was
+        wonderful" vs "I hated the trip, it was awful".</div>
+      <div><h3>2 · Steering vector</h3>Run both sets through the model; <b>v</b> = mean hidden state of the happy ones −
+        mean of the sad ones, after block ℓ.</div>
+      <div><h3>3 · Steer</h3>While generating, a PyTorch forward hook adds <b>α·v</b> to the residual stream at every
+        token. Weights and prompt stay unchanged.</div>
+      <div><h3>4 · Control and measure</h3>A random vector of the same length is added the same way. Text is scored for
+        sentiment, perplexity (fluency) and repetition.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <p class="sub">Qwen: 50 neutral prompts × 2 samples per setting. TinyGPT: 30 story prompts × 2 samples.
+      40 new tokens, temperature 0.7.</p>
+    <div id="results"></div>
+  </section>
+
+  <section>
+    <h2>The two models</h2>
+    <div class="table-wrap panel" style="padding: 6px 10px">
+      <table>
+        <tr><th></th><th>Qwen2.5-0.5B</th><th>TinyGPT (ours)</th></tr>
+        <tr><td>Parameters</td><td>494M</td><td>12.2M</td></tr>
+        <tr><td>Layers / width</td><td>24 / 896</td><td>6 / 384, 6 heads, context 256</td></tr>
+        <tr><td>Training</td><td>pretrained (Alibaba)</td><td>written and trained from scratch: 80M tokens of TinyStories, 18 min on a T4, val loss 1.67</td></tr>
+        <tr><td>Design</td><td>RoPE, RMSNorm, SwiGLU, GQA</td><td>RoPE, RMSNorm, pre-norm, SwiGLU (hidden 1024), tied embeddings, own BPE tokenizer (vocab 4,096)</td></tr>
+        <tr><td>Best steering layer</td><td>4 (α = ±8)</td><td>4 (α = ±8)</td></tr>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    UMC301 Project 4 · Archana Yadav ·
+    <a href="https://github.com/arcyadav/tiny-gpt-and-qwen-steering-study" target="_blank" rel="noopener">code, data and experiment logs on GitHub</a><br>
+    Related work: Turner et al. 2023 (Activation Addition) · Rimsky et al. 2024 (Contrastive Activation Addition) ·
+    Zou et al. 2023 (Representation Engineering) · Elhage et al. 2021 (residual stream) · Eldan &amp; Li 2023 (TinyStories).
+  </div>
+</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (x) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(2);
+const trim = (s, n = 60) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
+
+function meter(s) {
+  const col = s > 0.15 ? "var(--happy)" : s < -0.15 ? "var(--sad)" : "var(--grey)";
+  return `<div class="meter"><span style="color:${col}">${fmt(s)}</span><div class="bar"><i style="left:${(s + 1) * 50}%;background:${col}"></i></div></div>`;
+}
+function card(title, prompt, entry, cls = "") {
+  if (!entry) return `<div class="card ${cls}"><div class="title">${title}</div><div class="txt">—</div></div>`;
+  return `<div class="card ${cls}"><div class="title">${title}</div>
+    <div class="txt"><span class="pr">${esc(prompt)} </span>${esc(entry[0])}</div>${meter(entry[1])}</div>`;
+}
+function seg(el, items, current, onPick) {
+  el.innerHTML = items.map((it) => `<button class="${it.cls || ""} ${it.value === current ? "on" : ""}" data-v="${it.value}">${it.label}</button>`).join("");
+  el.querySelectorAll("button").forEach((b, i) => b.onclick = () => onPick(items[i].value));
+}
+function fillSelect(el, options, value) {
+  el.innerHTML = options.map((o, i) => `<option value="${i}">${esc(trim(o))}</option>`).join("");
+  el.value = String(value);
+}
+
+// ---------------------------------------------------------------- live demo status
+async function checkLive() {
+  const btn = $("live-btn"), label = $("live-label"), dot = $("live-dot"), note = $("live-note");
+  let info = null;
+  try { info = await (await fetch("live.json?t=" + Date.now(), { cache: "no-store" })).json(); } catch (e) {}
+  let online = false;
+  if (info && info.url) {
+    try {
+      const ctl = new AbortController(); setTimeout(() => ctl.abort(), 6000);
+      await fetch(info.url + "/config", { mode: "no-cors", signal: ctl.signal, cache: "no-store" });
+      online = true;
+    } catch (e) {}
+  }
+  if (online) {
+    btn.href = info.url; btn.classList.remove("disabled"); dot.classList.add("on");
+    label.textContent = "Open the live demo";
+    note.textContent = "Live: steer with sliders, type your own concept, and see the concept meter. Runs on the author's computer.";
+  } else {
+    label.textContent = "Live demo offline";
+    note.textContent = "The interactive demo runs on the author's computer and is online during the viva. The replay below always works.";
+  }
+}
+
+// ---------------------------------------------------------------- data views
+let D;
+const R = { model: "qwen", prompt: 0, layer: 4, alpha: 8 };
+const P = { mood: "happy", prompt: 0 };
+const T = { i: 0, prompt: 0 };
+
+function renderReplay() {
+  const m = D[R.model];
+  seg($("r-model"), [{ value: "qwen", label: "Qwen2.5-0.5B" }, { value: "tiny", label: "TinyGPT 12M" }], R.model, (v) => {
+    R.model = v; R.prompt = 0; R.layer = D[v].best[0]; R.alpha = D[v].best[1]; renderReplay();
+  });
+  fillSelect($("r-prompt"), m.prompts, R.prompt);
+  $("r-layer").innerHTML = m.layers.map((l) => `<option value="${l}">layer ${l}${l === m.best[0] ? " (best)" : ""} · probe AUC ${m.probe_auc[l].toFixed(2)}</option>`).join("");
+  $("r-layer").value = String(R.layer);
+  const alphas = m.alphas[String(R.layer)];
+  if (!alphas.includes(R.alpha)) R.alpha = alphas.reduce((a, b) => (Math.abs(b - R.alpha) < Math.abs(a - R.alpha) ? b : a));
+  seg($("r-alpha"), alphas.map((a) => ({ value: a, label: (a > 0 ? "+" : "−") + Math.abs(a), cls: a > 0 ? "happy" : "sad" })), R.alpha, (v) => { R.alpha = v; renderReplay(); });
+  $("r-alpha-val").textContent = R.alpha > 0 ? "(towards happy)" : "(towards sad)";
+  const p = m.prompts[R.prompt], k = `${R.layer}|${R.alpha}`;
+  $("r-cards").innerHTML =
+    card("No steering", p, m.texts.none[R.prompt]) +
+    card(`Steered · layer ${R.layer}, <span class="nt">α</span> ${R.alpha > 0 ? "+" : "−"}${Math.abs(R.alpha)}`, p, m.texts["concept|" + k][R.prompt], "steer") +
+    card("Random vector, same size", p, (m.texts["random|" + k] || [])[R.prompt]);
+  const big = Math.abs(R.alpha) > 8;
+  $("r-hint").textContent = big ? "Strong pushes break fluency: watch for loops and odd words." :
+    R.model === "tiny" ? "TinyGPT writes children's stories, so its unsteered text is already mostly happy." :
+    "Try the same prompt at different layers, or flip the sign of α.";
+}
+
+function renderPrompting() {
+  const d = D.prompting;
+  seg($("p-mood"), [{ value: "happy", label: "towards happy", cls: "happy" }, { value: "sad", label: "towards sad", cls: "sad" }], P.mood, (v) => { P.mood = v; renderPrompting(); });
+  fillSelect($("p-prompt"), d.prompts, P.prompt);
+  const p = d.prompts[P.prompt], a = P.mood === "happy" ? d.alpha : -d.alpha;
+  $("p-cards").innerHTML =
+    card("Nothing", p, d.texts.none[P.prompt]) +
+    card(`Asking ("a ${P.mood} story")`, p, d.texts[`prompt|${P.mood}`][P.prompt]) +
+    card(`Steering (layer ${d.layer}, <span class="nt">α</span> ${a > 0 ? "+" : "−"}${Math.abs(a)})`, p, d.texts[`steer|${P.mood}`][P.prompt], "steer") +
+    card("Asking + steering", p, d.texts[`prompt+steer|${P.mood}`][P.prompt], "steer");
+}
+
+function renderTraining() {
+  const d = D.training, s = d.steps[T.i], m = d.metrics[String(s)];
+  $("t-step").max = d.steps.length - 1; $("t-step").value = T.i;
+  $("t-step-val").textContent = `${s.toLocaleString()} of ${d.steps[d.steps.length - 1].toLocaleString()}` + (s === 0 ? " (random weights)" : "");
+  fillSelect($("t-prompt"), d.prompts, T.prompt);
+  $("t-metrics").innerHTML =
+    `<div><b>${m.loss != null ? m.loss.toFixed(2) : "—"}</b>validation loss</div>` +
+    `<div><b>${m.auc.toFixed(2)}</b>probe AUC, layer 4 (0.5 = chance)</div>` +
+    `<div><b style="color:var(--happy)">${fmt(m["+8"] - m.base)}</b>sentiment change, α +8</div>` +
+    `<div><b style="color:var(--sad)">${fmt(m["-8"] - m.base)}</b>sentiment change, α −8</div>`;
+  const p = d.prompts[T.prompt], t = (k) => (d.texts[`${s}|${k}`] || [])[T.prompt];
+  $("t-cards").innerHTML = card("No steering", p, t("none")) + card(`Steered towards happy (<span class="nt">α</span> +8)`, p, t("concept|8"), "steer") +
+    card(`Steered towards sad (<span class="nt">α</span> −8)`, p, t("concept|-8"), "steer");
+}
+
+function renderStats() {
+  const q = D.qwen, tr = D.training;
+  const avg = (arr) => arr.reduce((a, e) => a + e[1], 0) / arr.length;
+  const k = `${q.best[0]}|${q.best[1]}`, kn = `${q.best[0]}|${-q.best[1]}`;
+  const up = avg(q.texts["concept|" + k]), down = avg(q.texts["concept|" + kn]), none = avg(q.texts.none);
+  const rnd = (avg(q.texts["random|" + k]) + avg(q.texts["random|" + kn])) / 2;
+  const peak = q.probe_auc.indexOf(Math.max(...q.probe_auc));
+  const first = tr.steps.find((s) => s > 0 && tr.metrics[String(s)].auc > 0.8 && tr.metrics[String(s)]["+8"] - tr.metrics[String(s)].base > 0.2);
+  const last = tr.steps[tr.steps.length - 1];
+  $("stats").innerHTML = [
+    [`${fmt(none)} → ${fmt(up)}`, `Qwen sentiment, no steering vs happy steering (layer ${q.best[0]}, first sample of each prompt)`],
+    [`${fmt(down)}`, "Qwen pushed towards sad: harder than happy, but clear"],
+    [`${fmt(rnd)}`, "Random vector of the same size: no consistent effect"],
+    [`layer ${peak} vs ${q.best[0]}`, "Concept is easiest to read in the middle, but steers best early"],
+    ["5 pairs", "are enough to build a working steering vector (Qwen)"],
+    [first != null ? `step ${first.toLocaleString()}` : "—", `TinyGPT already has a steerable happy/sad direction (${Math.round(100 * first / last)}% of training)`],
+  ].map(([n, l]) => `<div class="stat"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join("");
+}
+
+const RESULTS = [
+  ["e1_qwen_layers.png", "<b>Which layer? (Qwen)</b> Steering works at every layer and random vectors of the same size do nothing. The concept is most readable in the middle layers (probe AUC 0.99 at layers 9–14), but steering in both directions works best early, at layer 4: reading a concept and pushing it are not the same."],
+  ["e1_tinygpt_layers.png", "<b>TinyGPT has the direction too.</b> Probe AUC 0.90–0.97 at all layers. Unsteered it is already positive (+0.48, TinyStories mostly end happily). Layer 4 steers best: +0.93 towards happy, −0.56 towards sad."],
+  ["e2_strength.png", "<b>How hard to push?</b> Sentiment follows an S-curve with strength; fluency drops quickly beyond |α| ≈ 8 (perplexity over 3× the unsteered text). Pushed too hard, the text falls into loops."],
+  ["e3_prompting.png", "<b>Steering vs prompting (Qwen).</b> Steering moves sentiment more than asking for a happy or sad story (+0.85 vs +0.50, −0.46 vs −0.14); both together are strongest. The price is fluency."],
+  ["e4_pairs.png", "<b>How many examples?</b> Five contrastive pairs already give almost the full effect; the vector itself stabilises by about 25 pairs (cosine 0.97 to the 150-pair vector)."],
+  ["e6_training.png", "<b>When does the direction appear?</b> In TinyGPT the happy/sad direction is readable and steerable early in training, long before the loss has converged; steering towards sad keeps getting stronger until about step 2,000."],
+];
+
+$("results").innerHTML = RESULTS.map(([f, c]) => `<figure><figcaption>${c}</figcaption><img src="plots/${f}" alt="${esc(c.replace(/<[^>]+>/g, ""))}" loading="lazy"></figure>`).join("");
+$("r-prompt").onchange = (e) => { R.prompt = +e.target.value; renderReplay(); };
+$("r-layer").onchange = (e) => { R.layer = +e.target.value; renderReplay(); };
+$("p-prompt").onchange = (e) => { P.prompt = +e.target.value; renderPrompting(); };
+$("t-prompt").onchange = (e) => { T.prompt = +e.target.value; renderTraining(); };
+$("t-step").oninput = (e) => { T.i = +e.target.value; renderTraining(); };
+
+checkLive();
+fetch("replay.json").then((r) => r.json()).then((data) => {
+  D = data;
+  R.layer = D.qwen.best[0]; R.alpha = D.qwen.best[1];
+  T.i = Math.min(1, D.training.steps.length - 1);
+  renderStats(); renderReplay(); renderPrompting(); renderTraining();
+});
+</script>
+</body>
+</html>
