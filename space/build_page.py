@@ -122,6 +122,7 @@ def main():
     for name in os.listdir("results/plots"):
         shutil.copy(f"results/plots/{name}", f"{SITE}/plots/{name}")
     shutil.copy("space/index.html", f"{SITE}/index.html")
+    shutil.copy("space/concepts.json", f"{SITE}/concepts.json")  # from space/concept_gallery.py
     shutil.copy("space/README.md", f"{SITE}/README.md")
     size = os.path.getsize(f"{SITE}/replay.json") / 1e6
     print(f"wrote {SITE}: replay.json {size:.1f} MB, steps {data['training']['steps']}")

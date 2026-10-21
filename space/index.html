@@ -88,6 +88,35 @@ svg text { font-family: Inter, sans-serif; }
 footer { padding: 40px 0 60px; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--border); margin-top: 48px; }
 .loading { color: var(--muted); }
 .nt { text-transform: none; }
+.strip { display: grid; grid-template-columns: auto minmax(90px, 140px) 1fr; gap: 0 14px; }
+.strip > div { padding: 11px 0; border-top: 1px solid var(--border); min-width: 0; }
+.strip .a { font: 600 .9rem JetBrains Mono, monospace; white-space: nowrap; }
+.strip .t { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .95rem; }
+.strip .t .pr { color: var(--muted); }
+.hl-pos { background: var(--happy-bg); border-radius: 3px; }
+.hl-neg { background: var(--sad-bg); border-radius: 3px; }
+.cbar { position: relative; height: 8px; border-radius: 4px; margin-top: 7px; background: var(--surface-2); border: 1px solid var(--border); }
+.cbar i { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+.cbar b { position: absolute; left: 50%; top: -4px; width: 1px; height: 14px; background: var(--grey); }
+.cscore { font: 500 .8rem JetBrains Mono, monospace; color: var(--muted); }
+.note { margin: 0 0 6px; }
+.legend { color: var(--muted); font-size: .85rem; margin: 0 0 4px; }
+.grid3 { min-width: 660px; table-layout: fixed; }
+.grid3 td, .grid3 th { border: 1px solid var(--border); padding: 10px; font-size: .9rem; }
+.grid3 th { text-transform: none; letter-spacing: 0; font-size: .85rem; color: var(--text); text-align: center; }
+.grid3 th.rh { text-align: right; width: 90px; }
+.grid3 td.both { background: var(--happy-bg); }
+.grid3 td.base { background: var(--surface-2); }
+.grid3 .lab { font-size: .75rem; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+.grid3 td .tx { white-space: pre-wrap; overflow-wrap: anywhere; }
+.fails { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px; }
+.fails > div { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface); font-size: .93rem; }
+.fails b { display: block; margin-bottom: 4px; }
+@media (max-width: 600px) {
+  .strip { grid-template-columns: auto 1fr; }
+  .strip .t { grid-column: 1 / -1; border-top: 0; padding-top: 0; }
+}
+.fails .lesson { color: var(--accent); font-weight: 600; margin-top: 8px; font-size: .88rem; }
 body { overflow-x: hidden; }
 </style>
 </head>
@@ -96,9 +125,9 @@ body { overflow-x: hidden; }
   <div class="wrap">
     <div class="eyebrow">UMC301 Project 4 · Archana Yadav</div>
     <h1>Steering transformers<br>from the inside</h1>
-    <p class="lead">Change what a language model "feels" by adding one vector to its hidden states while it writes.
-      No prompt change, no fine-tuning. Tested on <b>Qwen2.5-0.5B</b> and on <b>TinyGPT</b>, a 12M-parameter GPT
-      built from scratch for this project.</p>
+    <p class="lead">Change what a language model "feels" (or how rich, old or magical its story is) by adding one
+      vector to its hidden states while it writes. No prompt change, no fine-tuning. Tested on <b>Qwen2.5-0.5B</b>
+      and on <b>TinyGPT</b>, a 12M-parameter GPT built from scratch for this project.</p>
     <div class="buttons">
       <a class="btn primary disabled" id="live-btn" href="#" target="_blank" rel="noopener"><span class="dot" id="live-dot"></span><span id="live-label">Checking live demo…</span></a>
       <a class="btn" href="#replay">Try the replay ↓</a>
@@ -157,6 +186,51 @@ body { overflow-x: hidden; }
       </div>
       <div class="metrics" id="t-metrics"></div>
       <div class="cards" id="t-cards"></div>
+    </div>
+  </section>
+
+  <section id="concepts">
+    <h2>Beyond happy and sad</h2>
+    <p class="sub">The same method steers many other concepts, each built from six matched example pairs
+      ("We flew to Paris on our private jet" / "We could not afford the bus fare"). Each strip is one prompt at five
+      strengths. The rows share their random draws, so they differ only by the steering; the highlighted part is
+      where a row branches off from the unsteered text.</p>
+    <div class="panel">
+      <div class="controls">
+        <div style="grid-column: 1 / -1"><label class="ctl">Model</label><div class="seg" id="c-model"></div></div>
+        <div style="grid-column: 1 / -1"><label class="ctl">Concept</label><div class="seg" id="c-concept"></div></div>
+      </div>
+      <p class="note" id="c-note"></p>
+      <p class="legend" id="c-legend"></p>
+      <div class="strip" id="c-rows"></div>
+      <p class="hint" id="c-meta"></p>
+    </div>
+    <h3 style="margin: 28px 0 10px">What didn't work, and why</h3>
+    <div class="fails">
+      <div><b>Confident ↔ uncertain</b>The uncertain examples were also longer and ended in "?", so the direction
+        became "hedging ↔ flat statements". Pushed towards confident, Qwen wrote textbook exercises.
+        <div class="lesson">The vector learns every difference between the examples.</div></div>
+      <div><b>Dogs ↔ cats, first try</b>The cat examples purred, drank milk and climbed trees. Steering gave
+        "per per per", owls perching and "tea tea tea", but never a cat. Pairs that differ only in the animal fixed it.
+        <div class="lesson">Change only the concept within a pair.</div></div>
+      <div><b>Old ↔ young on TinyGPT</b>Almost every TinyStories story is about "a little girl named Lily", so there
+        are no old characters to steer towards. The same concept works on Qwen.
+        <div class="lesson">A model can only be steered towards what it has seen.</div></div>
+      <div><b>Past ↔ future tense</b>"Will" appears, but the grammar breaks: "I will have to tell you that you will
+        eat with a little". Tense lives in a few small words that must sit in exactly the right place.
+        <div class="lesson">Content steers well; grammar does not.</div></div>
+    </div>
+  </section>
+
+  <section id="mix">
+    <h2>Mixing two concepts</h2>
+    <p class="sub">Two concept vectors can be added at once. Rows go from one side of concept A to the other, columns
+      across concept B; the centre is the unsteered text and the shaded corners combine both concepts.</p>
+    <div class="panel">
+      <div class="controls"><div style="grid-column: 1 / -1"><label class="ctl">Example</label><div class="seg" id="m-pick"></div></div></div>
+      <p class="note" id="m-note"></p>
+      <div class="table-wrap" id="m-grid"></div>
+      <p class="hint" id="m-meta"></p>
     </div>
   </section>
 
@@ -274,7 +348,7 @@ async function checkLive() {
   if (online) {
     btn.href = info.url; btn.classList.remove("disabled"); dot.classList.add("on");
     label.textContent = "Open the live demo";
-    note.textContent = "Live: steer with sliders, type your own concept, and see the concept meter. Runs on the author's computer.";
+    note.textContent = "Live: steer with sliders, pick one of 12 tested concepts or type your own, watch a transition, mix two concepts, and see the concept meter. Runs on the author's computer.";
   } else {
     label.textContent = "Live demo offline";
     note.textContent = "The interactive demo runs on the author's computer and is online during the viva. The replay below always works.";
@@ -353,6 +427,8 @@ function renderStats() {
     [`layer ${peak} vs ${q.best[0]}`, "Concept is easiest to read in the middle, but steers best early"],
     ["5 pairs", "are enough to build a working steering vector (Qwen)"],
     [first != null ? `step ${first.toLocaleString()}` : "—", `TinyGPT already has a steerable happy/sad direction (${Math.round(100 * first / last)}% of training)`],
+    ["16 concepts", "tried beyond sentiment: wealth, age, size, language, culture… Content steers; grammar does not"],
+    ["huge + magic → dragon", "Concept vectors add up: TinyGPT combines two directions into something neither example set mentions"],
   ].map(([n, l]) => `<div class="stat"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join("");
 }
 
@@ -371,6 +447,54 @@ $("r-layer").onchange = (e) => { R.layer = +e.target.value; renderReplay(); };
 $("p-prompt").onchange = (e) => { P.prompt = +e.target.value; renderPrompting(); };
 $("t-prompt").onchange = (e) => { T.prompt = +e.target.value; renderTraining(); };
 $("t-step").oninput = (e) => { T.i = +e.target.value; renderTraining(); };
+
+// ---------------------------------------------------------------- other concepts and mixing
+let C;
+const CS = { model: "qwen", i: 0 }, MS = { i: 0 };
+const words = (t) => t.split(/(\s+)/);
+function branch(text, base, cls) {
+  const a = words(text), b = words(base);
+  let n = 0;
+  while (n < Math.min(a.length, b.length) && a[n] === b[n]) n++;
+  const kept = esc(a.slice(0, n).join("")), rest = esc(a.slice(n).join(""));
+  return cls && rest ? `${kept}<span class="${cls}">${rest}</span>` : kept + rest;
+}
+function cmeter(s) {
+  const f = Math.max(-1, Math.min(1, s / 1.5)), col = f > 0 ? "var(--happy)" : "var(--sad)";
+  const left = f > 0 ? 50 : 50 + f * 50;
+  return `<div class="cscore">${fmt(s)}</div><div class="cbar"><i style="left:${left}%;width:${Math.abs(f) * 50}%;background:${col}"></i><b></b></div>`;
+}
+function renderConcepts() {
+  const list = C.strips.filter((s) => s.model === CS.model);
+  seg($("c-model"), [{ value: "qwen", label: "Qwen2.5-0.5B" }, { value: "tiny", label: "TinyGPT 12M" }], CS.model, (v) => { CS.model = v; CS.i = 0; renderConcepts(); });
+  seg($("c-concept"), list.map((s, i) => ({ value: i, label: esc(s.concept) })), CS.i, (v) => { CS.i = v; renderConcepts(); });
+  const s = list[CS.i], base = s.rows[2][2];
+  $("c-note").textContent = s.note;
+  $("c-legend").innerHTML = `<span class="hl-neg">&nbsp;− ${esc(s.neg)}&nbsp;</span> &nbsp;←&nbsp; strength &nbsp;→&nbsp; <span class="hl-pos">&nbsp;+ ${esc(s.pos)}&nbsp;</span>`;
+  $("c-rows").innerHTML = s.rows.map(([a, sc, t]) =>
+    `<div class="a">${a === 0 ? "α 0" : (a > 0 ? "+" : "−") + Math.abs(a)}</div><div>${cmeter(sc)}</div>` +
+    `<div class="t"><span class="pr">${esc(s.prompt)} </span>${branch(t, base, a > 0 ? "hl-pos" : a < 0 ? "hl-neg" : "")}</div>`).join("");
+  $("c-meta").textContent = `Layer ${s.layer} · seed ${s.seed} · 40 new tokens · score = where the unsteered model reads the text on the concept direction (+ = ${s.pos}, − = ${s.neg}). The same settings in the live demo's Transition tab give the same text.`;
+}
+function renderMix() {
+  seg($("m-pick"), C.mixes.map((m, i) => ({ value: i, label: esc(`${m.model === "tiny" ? "TinyGPT" : "Qwen"}: ${m.a[0]}/${m.a[1]} × ${m.b[0]}/${m.b[1]} · "${trim(m.prompt, 28)}"`) })), MS.i, (v) => { MS.i = v; renderMix(); });
+  const m = C.mixes[MS.i], [a1, a2] = m.a, [b1, b2] = m.b;
+  const rowsA = [[a1, 1], ["—", 0], [a2, -1]], colsB = [[b2, -1], ["—", 0], [b1, 1]];
+  let h = `<table class="grid3"><tr><th class="rh"></th>${colsB.map(([n]) => `<th>${esc(n)}</th>`).join("")}</tr>`;
+  rowsA.forEach(([rn, sa], i) => {
+    h += `<tr><th class="rh">${esc(rn)}</th>`;
+    colsB.forEach(([cn, sb], j) => {
+      const lab = sa === 0 && sb === 0 ? "unsteered" : [sa ? (sa > 0 ? a1 : a2) : "", sb ? (sb > 0 ? b1 : b2) : ""].filter(Boolean).join(" + ");
+      const cls = sa === 0 && sb === 0 ? "base" : sa && sb ? "both" : "";
+      h += `<td class="${cls}"><div class="lab">${esc(lab)}</div><div class="tx">${esc(m.cells[3 * i + j])}</div></td>`;
+    });
+    h += "</tr>";
+  });
+  $("m-grid").innerHTML = h + "</table>";
+  $("m-note").innerHTML = `<b>Prompt:</b> ${esc(m.prompt)} … &nbsp; ${esc(m.note)}`;
+  $("m-meta").textContent = `Layer ${m.layer} · strength ${m.strength} per concept · seed ${m.seed} · cosine between the two directions ${fmt(m.cos)} (0 = independent). Same as the live demo's Mix tab.`;
+}
+fetch("concepts.json").then((r) => r.json()).then((data) => { C = data; renderConcepts(); renderMix(); });
 
 checkLive();
 fetch("replay.json").then((r) => r.json()).then((data) => {

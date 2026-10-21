@@ -1,0 +1,460 @@
+{
+ "strips": [
+  {
+   "model": "qwen",
+   "concept": "rich ↔ poor",
+   "pos": "rich",
+   "neg": "poor",
+   "prompt": "For dinner tonight, my mother",
+   "seed": 1,
+   "layer": 4,
+   "note": "The same dinner, from not enough rice to a five-star hotel.",
+   "rows": [
+    [
+     -8,
+     -1.05,
+     "had to have rice for at least 3 days, but she could not have enough to eat. So she went to the market, and found a place to get some more rice.  This was"
+    ],
+    [
+     -4.0,
+     -0.56,
+     "is cooking rice and vegetables.  With one of the other dishes, she is going to make soup.  She wants to make enough soup for three people.  She is going to make one bowl"
+    ],
+    [
+     0.0,
+     -0.08,
+     "is making a special dish using fresh mushrooms. She has 12 mushrooms that are all the same size. She wants to make 4 servings of the dish and needs to cut each mushroom into"
+    ],
+    [
+     4.0,
+     -0.03,
+     "is inviting me to a dinner party. I want to make a great impression, so I want to make sure that my outfit looks great. How can I create a beautiful outfit that will impress my mother"
+    ],
+    [
+     8,
+     0.99,
+     "invited me to a luxurious dinner at a five-star hotel. We began our evening with a lavish dinner party. During this event, I received an exclusive, personalized dinner with a chef and chef’s team"
+    ]
+   ]
+  },
+  {
+   "model": "qwen",
+   "concept": "old ↔ young",
+   "pos": "old",
+   "neg": "young",
+   "prompt": "The person sitting next to me on the bus was",
+   "seed": 0,
+   "layer": 4,
+   "note": "The stranger ages from a bullied schoolkid to an 86-year-old with a weak leg.",
+   "rows": [
+    [
+     -8,
+     -0.47,
+     "bullied by some of the other kids. I was really mad about it. I didn't like her, but she was so mean. I felt like she was a bully, but I was also a"
+    ],
+    [
+     -4.0,
+     -0.52,
+     "standing outside of the classroom when the teacher gave the bell. She was very shy and she didn't want to be called. She wanted to know if she was in the right place. So, she"
+    ],
+    [
+     0.0,
+     0.23,
+     "a very nice young man who had never been to the United States before. He had a lot of money, but he was very modest, as if he were afraid of being ridiculed. One day"
+    ],
+    [
+     4.0,
+     0.42,
+     "his son, and he was standing. He was 86 years old and had a long history of health problems. He had his seat in the back and was seated in the front. He was"
+    ],
+    [
+     8,
+     0.19,
+     "a person of 85 years. He said, “My right leg is getting weak, my body is beginning to bend, my mind is beginning to decay, my body is becoming weak, my"
+    ]
+   ]
+  },
+  {
+   "model": "qwen",
+   "concept": "formal ↔ casual",
+   "pos": "formal",
+   "neg": "casual",
+   "prompt": "i asked the retailer",
+   "seed": 0,
+   "layer": 4,
+   "note": "Tone shifts step by step: rambling speech, a plain request, contract language. At −8 the text breaks into a run of zeros.",
+   "rows": [
+    [
+     -8,
+     -0.76,
+     "but i know they do that's like i get 20000000000000000000000000000"
+    ],
+    [
+     -4.0,
+     -0.46,
+     "but i got a discount coupon on it and i wanted to go see the movie but i didn't have my ticket so i took the rental and i went to the mall and i looked at the movies"
+    ],
+    [
+     0.0,
+     0.2,
+     "to return the goods. The retailer said that they did not want to return the goods. Which one is right? The retailer said that they did not want to return the goods.\nThe retailer said that"
+    ],
+    [
+     4.0,
+     0.48,
+     "to return the goods for a refund. The retailer did not respond to the request within the specified period. What is the correct course of action for the company?\nA. No need to handle it;"
+    ],
+    [
+     8,
+     0.72,
+     "to amend the terms of the terms of Trade Agreement. If the amendment is received within 30 days, the buyer will be provided with a copy of the amended terms of Trade Agreement. If the"
+    ]
+   ]
+  },
+  {
+   "model": "qwen",
+   "concept": "English ↔ French",
+   "pos": "English",
+   "neg": "French",
+   "prompt": "When I looked from my window i",
+   "seed": 0,
+   "layer": 4,
+   "note": "Most French at −4. At −8 the push is too strong: only French function words survive (\"indique\", \"et\") and the text loops.",
+   "rows": [
+    [
+     -8,
+     -0.36,
+     "entendais la lune\nindique the sunlight\net the sole star\nindique the light\net l'iron\nindique the flame\net the sombre\nindique the darkness"
+    ],
+    [
+     -4.0,
+     -1.21,
+     "entendais que le prince de tirol était inquiet de mon presence et I n'en doute. Toutefois, de même que le prince de tirol ne manquait d'amb"
+    ],
+    [
+     0.0,
+     0.54,
+     "see this:\n\n![enter image description here](https://i.stack.imgur.com/q8M9c.png)\n\nNow I want to use this as a border, but it's not working. I don"
+    ],
+    [
+     4.0,
+     0.49,
+     "see a lake and it has a water temperature of 26 degrees. I know that if I had a thermometer inside that lake, I would be able to measure the temperature of the water in the"
+    ],
+    [
+     8,
+     0.51,
+     "can see a 15.13% that is wrong. Can you help me solve it.  Please write a program to find the smallest positive integer greater than 200 and"
+    ]
+   ]
+  },
+  {
+   "model": "qwen",
+   "concept": "Indian ↔ American",
+   "pos": "Indian",
+   "neg": "American",
+   "prompt": "On Sunday morning, my family",
+   "seed": 1,
+   "layer": 4,
+   "note": "A backyard picnic becomes a temple visit. The American side hardly moves: the unsteered text is already American.",
+   "rows": [
+    [
+     -8,
+     -0.66,
+     "decided to have a picnic in our backyard. Our picnic basket has a capacity to hold 240 pounds of meat. My 8 year old wants to eat 1/2 a pig,"
+    ],
+    [
+     -4.0,
+     -0.59,
+     "decided to have a picnic in our backyard. Our picnic basket was big enough for everyone to sit around. There was a big table with chairs in it. There were also a lot of plates on it"
+    ],
+    [
+     0.0,
+     -0.72,
+     "decided to have a picnic at the park. Our picnic basket was full of sandwiches, fruit, and drinks. We had a delicious breakfast and lunch. At noon, we decided to go to the park"
+    ],
+    [
+     4.0,
+     1.27,
+     "visited the Khajuraho temple. The temple was built between 1043 and 1050 by the great Raja of the Mithila region, Raja Dron"
+    ],
+    [
+     8,
+     1.45,
+     "invited my guru to the Darshan Shashti party, the most important of all the festivals. The gurus would be accompanied by many gurus, some of whom would be students of the v"
+    ]
+   ]
+  },
+  {
+   "model": "qwen",
+   "concept": "about food ↔ about sports",
+   "pos": "food",
+   "neg": "sports",
+   "prompt": "i asked my brother",
+   "seed": 0,
+   "layer": 4,
+   "note": "Basketball at one end, breakfast at the other; the middle rows barely change. A topic is more of a switch than a slider.",
+   "rows": [
+    [
+     -8,
+     -0.32,
+     "to go to the gym with the team is my 2 points is the fourth quarter, what is the 4th quarter?\nThe clock starts. You're out of timeouts, what is the time"
+    ],
+    [
+     -4.0,
+     0.05,
+     "to go to the grocery store to buy some items. I had already started shopping at home.  Given the context: \"I wanted to buy some items\", what was the objective?  Choices:"
+    ],
+    [
+     0.0,
+     0.12,
+     "to help me with my homework. He is my brother, Jim. He is 13 years old. He is tall and strong. He has a big nose and big eyes. He is very"
+    ],
+    [
+     4.0,
+     -0.13,
+     "to help me and i am not sure if my brother is ok to ask for help or not . what should i do ?  i want to be sure that my brother is not asking for help ."
+    ],
+    [
+     8,
+     0.8,
+     "to make some dough for breakfast and he gave me some cream cheese to spread it on top of the bread. He also said that his mom had fried potatoes and her grandma had butter and cheese and eggs"
+    ]
+   ]
+  },
+  {
+   "model": "tiny",
+   "concept": "huge ↔ tiny",
+   "pos": "huge",
+   "neg": "tiny",
+   "prompt": "Lily went to the zoo and saw a",
+   "seed": 1,
+   "layer": 4,
+   "note": "The animal itself changes: a little bird, a lion, elephants, an enormous lion. \"Tiny\" also brings in \"gently\".",
+   "rows": [
+    [
+     -8,
+     -1.2,
+     "little bird. She gently gently gently and gently stroked the bird gently. It felt better. Lily smiled and felt better.\n\n\"Hi, little girl,\" said Lily. \"Are you"
+    ],
+    [
+     -4.0,
+     -0.16,
+     "big bird. She was very happy to see the bird. Lily asked her mommy, \"Can we take the bird home?\" Her mommy said, \"Yes, we can take it home.\""
+    ],
+    [
+     0.0,
+     0.27,
+     "big, scary lion. She was so scared that she screamed for help. A man came and took the lion away. Lily was so happy to see him again. She gave him a big hug and"
+    ],
+    [
+     4.0,
+     0.65,
+     "big sign with lots of animals. She was so excited! She saw lions and elephants and elephants and elephants. When they got to the zoo, Lily saw a big lion! It was"
+    ],
+    [
+     8,
+     1.04,
+     "big lion with a huge lion! It was enormous! The zoo people were all so impressed! Everyone was so excited to see the enormous lion! [end of story] Once upon a time there was a very huge building"
+    ]
+   ]
+  },
+  {
+   "model": "tiny",
+   "concept": "sharing ↔ greedy",
+   "pos": "sharing",
+   "neg": "greedy",
+   "prompt": "Lily found a shiny red ball in the park. Her friend asked to play. Lily",
+   "seed": 0,
+   "layer": 4,
+   "note": "The same moment ends four ways: refuses, won't share, plays alone, plays together.",
+   "rows": [
+    [
+     -8,
+     -0.45,
+     "didn't want to because it was not safe. But then she remembered what her mommy said. She didn't want to lose her home forever.\n\nThe next day, Lily went home. She"
+    ],
+    [
+     -4.0,
+     -0.19,
+     "didn't want to share, but she didn't want to share. So, she decided to throw the ball away. \n\nAs she played, she saw a boy playing with a toy. Lily"
+    ],
+    [
+     0.0,
+     -0.01,
+     "was happy to play with the ball. She threw it up and caught it. The ball flew high in the sky. Lily was so happy to have her ball back.\n\nAs the sun went"
+    ],
+    [
+     4.0,
+     0.13,
+     "was so happy and said, \"Yes, let's play!\" They played together and had a lot of fun.\n\nAfter a while, Lily's friend said, \"Let's have a turn"
+    ],
+    [
+     8,
+     0.48,
+     "said, \"Yes, I have a toy car.\" Her friend said, \"Sure, let's play together.\"\n\nLily and her friend played with the ball and the doll. They had a"
+    ]
+   ]
+  },
+  {
+   "model": "tiny",
+   "concept": "magic ↔ everyday",
+   "pos": "magic",
+   "neg": "everyday",
+   "prompt": "Tom went for a walk in the woods. Suddenly, he saw a",
+   "seed": 0,
+   "layer": 4,
+   "note": "An apple on a bench, a bear, a monster, a brave knight, then \"something magical happened!\"",
+   "rows": [
+    [
+     -8,
+     -0.44,
+     "big, angry bear. The bear was eating a lot of apples. Tom thought about what his mom said. He wanted to eat the sandwich, but he was too hungry.\n\nTom's mom"
+    ],
+    [
+     -4.0,
+     -0.33,
+     "big, juicy apple on a bench. He wanted to eat the apple, but he didn't know how. He thought and thought.\n\nThen, he saw a little bird in the grass."
+    ],
+    [
+     0.0,
+     0.23,
+     "big, scary monster. It was scary and had big teeth. Tom was scared, but he didn't want to go home. He started to walk away, but the monster was too fast. The"
+    ],
+    [
+     4.0,
+     0.28,
+     "big, scary looking creature!\n\nTom was so scared, he didn't know what to do. He was so scared that he just wanted to run away.\n\nSuddenly, a brave knight"
+    ],
+    [
+     8,
+     0.94,
+     "giant monster! The monster roared and monster roared! Tom was so scared! \n\nBut then, something magical happened! A giant dragonfly appeared! It was enormous and giant! Tom and dragon"
+    ]
+   ]
+  },
+  {
+   "model": "tiny",
+   "concept": "dogs ↔ cats",
+   "pos": "dogs",
+   "neg": "cats",
+   "prompt": "Lily had a pet. Her pet was a",
+   "seed": 1,
+   "layer": 3,
+   "note": "Works after rewriting the example pairs so they differ only in the animal word (the first version steered towards owls and tea).",
+   "rows": [
+    [
+     -8,
+     -0.93,
+     "small cat. It was very happy.\n\nOne day, she was on a sunny day. She was looking for something special to do. She saw a butterfly fly in the sky. She was"
+    ],
+    [
+     -4.0,
+     -0.96,
+     "small cat. They were both very small. The cat was small and small.\n\nOne day, the cat and the cat went to the garden. They saw a big, red apple. The"
+    ],
+    [
+     0.0,
+     1.27,
+     "small dog with a long tail and a long tail. Lily liked to pet the dog and pet it gently. She liked to feed the dog and play with it.\n\nOne day, Lily and"
+    ],
+    [
+     4.0,
+     0.56,
+     "dog who liked to run and jump. She liked to run and play with Max and Lily. She was very good at running and jumping.\n\nOne day, Lily and Max were playing in the"
+    ],
+    [
+     8,
+     2.09,
+     "dog dog barked, but Lily's mommy dog barked. She loved dogs.\n\n\"Mommy, dog doggy dog licked Spot barked. He barked and wagged his dog barked. Spot barked and"
+    ]
+   ]
+  }
+ ],
+ "mixes": [
+  {
+   "model": "tiny",
+   "a": [
+    "huge",
+    "tiny"
+   ],
+   "b": [
+    "magic",
+    "everyday"
+   ],
+   "prompt": "Tom went for a walk in the woods. Suddenly, he saw a",
+   "seed": 1,
+   "strength": 6,
+   "layer": 4,
+   "note": "huge + magic gives a dragon and tiny + magic a fairy, though no example sentence mentions either.",
+   "cos": -0.03,
+   "cells": [
+    "big, hungry. He ran up the hill and sat down on the grass.\n\nJohn was about to leave when he saw a big, loud yell. He ran to the house. He was",
+    "big scary monster! He was very scared and wanted to run away, but the monster was too strong.\n\nThe monster saw Tom and started to run towards him. Tom was so angry that he",
+    "huge giant giant dragon! The dragon was huge and roared fierce! Tom was so scared and he roared!\n\nThe dragon roared and roared roared fiercely. He roared and roared roared fiercely!",
+    "big, bright tree. He thought, \"I want to go down the big, red apple.\" But, he had no idea where to go.\n\nTom's mom saw him looking sad.",
+    "big bear! The bear was hungry and wanted to eat Tom. Tom was very scared and ran away.\n\nTom ran as fast as he could. He ran and ran until he got to a",
+    "big, shiny stone. It was magical! It was magic wand!\n\nThe wand wand wand magic wand wand wand wand wand! wand wand wand wand wand wand wand wand wand wand wand wand wand",
+    "big, red apple on the side. He picked it up and said, \"This is a nice, I like this. I will take good care of my mommy.\"\n\nTom went to his",
+    "small rabbit. She was lost in the woods. Tom asked her friend, \"What happened to your friend?\"\n\n\"I lost her,\" said the rabbit. \"Maybe she lost her friend.\"",
+    "tiny creature hiding in the bushes.\n\n\"Hello little bug,\" said tiny fairy tiny tiny tiny creature. \"Hello! I'm tiny tiny fairy, tiny fairy fairy wand wand.\"\n\n tiny"
+   ]
+  },
+  {
+   "model": "qwen",
+   "a": [
+    "rich",
+    "poor"
+   ],
+   "b": [
+    "old",
+    "young"
+   ],
+   "prompt": "The house at the end of our street",
+   "seed": 0,
+   "strength": 6,
+   "layer": 4,
+   "note": "Wealth and age show through the house: heirlooms and landscaped gardens, or a dilapidated, cold home.",
+   "cos": -0.06,
+   "cells": [
+    "is owned by a family of 13.  The family has a love of dancing.  The boys are very active, and they are constantly having parties.  They go to",
+    "is owned by a wealthy couple. They live in a large, stone house that is surrounded by a beautiful, landscaped garden that includes a swimming pool. The house is also equipped with a state-of",
+    "is home to many treasures. Some of them are sentimental, others are heirlooms, some are contemporary, others are rare. They are all of historical significance, some of modern value, and some",
+    "costs $1200 a month.  Our other friends are buying chocolate chips to save money. 1) How much will each of them save per week?\n2) If they want to",
+    "is owned by a relative who lives in the town. We had a very nice summer vacation last year, and we were able to use the house quite a lot. We had a party in the evening",
+    "is in need of repair. We must do what we can to restore it. In this house, there are many items that we must preserve. We are grateful for the gift of our homes, of",
+    "has 20 windows. If each window has 3 windows inside, how many windows are inside the house? (A) 3 windows B) 6 windows C) 5 windows D",
+    "is owned by 4 people, but they are really close; 3 women and a child shared a bed; a mother and a son in the rain and a daughter in the sun; 2",
+    "is very dilapidated, and I live there. I am lonely and I must go to the store. I am hungry and I must eat. I am cold and I must keep warm. I"
+   ]
+  },
+  {
+   "model": "qwen",
+   "a": [
+    "rich",
+    "poor"
+   ],
+   "b": [
+    "old",
+    "young"
+   ],
+   "prompt": "My neighbour",
+   "seed": 1,
+   "strength": 6,
+   "layer": 4,
+   "note": "Single concepts are clear (old: can't see; young: wins every game); poor + old combines both. Rich + old reads mostly as old.",
+   "cos": -0.06,
+   "cells": [
+    "is so into his new guitar! He is very creative, and he has been playing it for the past year! He is also very serious about his school, and he is getting all the most expensive",
+    "is so generous that he gives me a birthday present every year. I have been to the UK twice and travelled to many countries, but this year I was given a gift that is as exciting as the",
+    ", Mr. H., was my most loyal friend, but the most of all. He died peacefully on Saturday, surrounded by his family and friends. The special service was attended by his widow, Mrs",
+    "is so smart that he always wins every game. He's a great athlete, and he's also really good at math. He's always got a lot of fun to play with. He's really",
+    "is so generous that he always gives me a big cake on my birthday. Which option should be filled in the blank? \nA. who\nB. whom\nC. which\nD. what",
+    "is so old that he can’t see clearly, but he can still hear well. What does the word “he can still hear well” mean in Chinese?\nA. He is not able to see",
+    "is so shy that he always stands in the corner to sit and he has to sit in the corner.  Please answer the following question: How did the person get to know about the problem?",
+    "is busy working in the garden this morning. But it's a great time of day to go there. But he would be much later. He'd go to the market at about 9 o'clock",
+    "is so poor that he cannot buy anything for me to give him, but I give him a piece of bread and some meat for him to eat. My wife and I need to go to him,"
+   ]
+  }
+ ]
+}
