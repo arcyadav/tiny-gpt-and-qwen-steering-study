@@ -55,9 +55,14 @@ _UNWANTED = re.compile(r"[　-〿㐀-鿿＀-￯]|_{2,}")
 _suppress = {}
 
 
+# TinyGPT ends each story with an end-of-story token, and steering towards happy makes that more
+# likely (happy endings). The demo shows the marker and what follows instead of cutting the text.
+END_MARKER = "\n[end of story — the model starts a new one]\n"
+
+
 def gen_kwargs(name):
     if name != QWEN:
-        return {}
+        return {"end_marker": END_MARKER}
     if name not in _suppress:
         tok = get_model(name).tok
         _suppress[name] = [i for i in range(len(tok)) if _UNWANTED.search(tok.decode([i]))]
@@ -132,10 +137,11 @@ def steer(name, prompt, choice, pos_text, neg_text, layer, alpha, n_tokens, seed
                            max_new_tokens=int(n_tokens), seed=int(seed), **gen_kwargs(name))
     # concept score: where the unsteered model places each text on the concept direction
     concept, (a, b) = get_concept(name, choice, pos_text, neg_text), sides(name, choice)
-    scores = [concept_score(name, concept, t) for t in texts]
+    plain = [t.replace(END_MARKER, "\n") for t in texts]  # scores read the text without the marker
+    scores = [concept_score(name, concept, t) for t in plain]
     if choice == BUILTIN:  # the independent sentiment classifier as well
         out = [f"{t}\n\n— sentiment {s:+.2f} · happy ↔ sad score {c:+.2f}"
-               for t, s, c in zip(texts, scorer()(texts), scores)]
+               for t, s, c in zip(texts, scorer()(plain), scores)]
     else:
         out = [f"{t}\n\n— {a} ↔ {b} score {c:+.2f}  (+ = {a}, − = {b})" for t, c in zip(texts, scores)]
     return out[0], out[1], out[2] if show_random else ""

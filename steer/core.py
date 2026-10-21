@@ -195,8 +195,10 @@ class TinyGPTSteerer(Steerer):
 
     @torch.no_grad()
     def generate(self, prompts, layer=None, vector=None, alpha=0.0, max_new_tokens=40,
-                 temperature=0.7, top_p=0.9, seed=0, **generate_kwargs):
-        """Same interface as QwenSteerer.generate (sampling with temperature + top-p)."""
+                 temperature=0.7, top_p=0.9, seed=0, end_marker=None, **generate_kwargs):
+        """Same interface as QwenSteerer.generate (sampling with temperature + top-p).
+        By default the text stops at the end-of-story token; with `end_marker` it keeps everything
+        and shows each end-of-story token as that marker (the demo uses this)."""
         torch.manual_seed(seed)
         encoded = [self._ids(p) for p in prompts]
         groups = {}
@@ -219,6 +221,16 @@ class TinyGPTSteerer(Steerer):
                     idx = torch.cat([idx, order.gather(-1, choice)], dim=1)
                 for r, i in enumerate(rows):
                     new = idx[r, length:].tolist()
+                    if end_marker is not None:  # decode each story separately, joined by the marker
+                        parts, cur = [], []
+                        for t in new + [self.eos_id]:
+                            if t == self.eos_id:
+                                parts.append(self.tok.decode(cur).strip())
+                                cur = []
+                            else:
+                                cur.append(t)
+                        results[i] = end_marker.join(parts).strip()
+                        continue
                     if self.eos_id in new:  # stop at the end of the story
                         new = new[: new.index(self.eos_id)]
                     results[i] = self.tok.decode(new).strip()
