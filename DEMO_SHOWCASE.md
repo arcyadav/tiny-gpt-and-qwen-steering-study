@@ -213,3 +213,53 @@ whole scene follows (bullies and classroom bells ↔ health problems and a weak 
 she's 13" → "a young woman in her 20s" → "in her thirties" → "the elderly people of this world".
 The same concept did **not** work on TinyGPT: almost every TinyStories story is about "a little girl
 named Lily", so the old side had almost nothing to steer towards.
+
+## 8. rich ↔ poor (own concept, Qwen) — "For dinner tonight, my mother"
+
+| Setting | Value |
+|---|---|
+| Tab | Transition |
+| Model | Qwen2.5-0.5B |
+| Concept | my own concept (boxes below) |
+| Prompt | `For dinner tonight, my mother` |
+| Max strength / layer / seed / tokens | 8 / 4 / **1** / 40 |
+
+Left box (rich):
+```
+We flew to Paris on our private jet for the weekend.
+My father bought me a new sports car for my birthday.
+Dinner was served by the butler in our marble dining hall.
+She spent thousands of dollars on designer bags without a thought.
+Our mansion has a pool, a cinema and twelve bedrooms.
+He gave his kids expensive gifts and a large allowance.
+```
+Right box (poor):
+```
+We could not afford the bus fare, so we walked to town.
+My father could not buy me shoes for my birthday.
+Dinner was a little rice that my mother shared among six of us.
+She counted every coin before buying bread for the family.
+Our one-room hut has a leaking roof and no electricity.
+He worked all day for a few coins and still went to bed hungry.
+```
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | −1.05 | *had to have rice for at least 3 days, but she could not have enough to eat. So she went to the market…* |
+| −4 | −0.56 | *is cooking rice and vegetables. With one of the other dishes, she is going to make soup… enough soup for three people.* |
+| 0 | −0.08 | *is making a special dish using fresh mushrooms. She has 12 mushrooms…* |
+| +4 | −0.03 | *is inviting me to a dinner party. I want to make a great impression, so I want to make sure that my outfit looks great.* |
+| +8 | +0.99 | *invited me to a luxurious dinner at a five-star hotel. We began our evening with a lavish dinner party… a personalized dinner with a chef…* |
+
+**Why it's good:** the same dinner goes from not enough rice, to rice-and-vegetable soup, to a
+mushroom dish, to a dinner party, to a five-star hotel, and the score rises almost steadily
+(−1.05 → +0.99). Seed 0 works too ("go to bed hungry" → "a private dinner… a grand, 19th-century
+French-style carriage"), and so does `My family lives in a small house where`, seed 0: "We can't
+afford to buy milk… My father has to walk to work" → "a 40 yard tennis court, as well as a large
+pool" → "a large collection of art".
+
+Also tried: **city ↔ rural** on the same house prompt (seed 0) half works ("a small stream… I love
+to ride horses… fields of barley" ↔ "a huge grocery store. Our apartment has 24-hour security
+doors"), and **past ↔ future tense** mostly failed: future words appear but the grammar breaks
+("I will have to tell you that you will eat with a little. and you will never…"). Content concepts
+steer cleanly; a grammar concept, carried by a few words like "will", does not.
