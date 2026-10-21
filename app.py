@@ -175,16 +175,16 @@ class SharedNoise:
 
 
 @torch.no_grad()
-def generate_coupled(name, prompt, layer, v, alphas, n_tokens, seed):
-    """One continuation per strength, all sharing their random draws."""
+def generate_coupled(name, prompt, layer, vectors, n_tokens, seed):
+    """One continuation per added vector (already scaled), all sharing their random draws."""
     model = get_model(name)
     if name != QWEN:  # TinyGPT is fast: separate runs with the same seed share the draws too
-        return [model.generate([prompt], layer, v, a, max_new_tokens=n_tokens, seed=seed,
-                               **gen_kwargs(name))[0] for a in alphas]
+        return [model.generate([prompt], layer, v, 1.0, max_new_tokens=n_tokens, seed=seed,
+                               **gen_kwargs(name))[0] for v in vectors]
     from transformers import LogitsProcessorList
 
-    vectors = torch.stack([v * a for a in alphas]).unsqueeze(1)
-    batch = model.encode([prompt] * len(alphas))
+    vectors = torch.stack(vectors).unsqueeze(1)
+    batch = model.encode([prompt] * len(vectors))
     with model.steering(layer, vectors, 1.0):
         out = model.model.generate(**batch, max_new_tokens=n_tokens, do_sample=False,
                                    logits_processor=LogitsProcessorList([SharedNoise(0.7, 0.9, seed)]),
@@ -204,7 +204,7 @@ def transition(name, prompt, choice, pos_text, neg_text, layer, max_alpha, n_tok
     v = steering_vector(name, choice, pos_text, neg_text, layer)
     m = float(max_alpha)
     alphas = [-m, -m / 2, 0.0, m / 2, m]
-    texts = generate_coupled(name, prompt, layer, v, alphas, int(n_tokens), int(seed))
+    texts = generate_coupled(name, prompt, layer, [v * a for a in alphas], int(n_tokens), int(seed))
     concept, (a, b) = get_concept(name, choice, pos_text, neg_text), sides(name, choice)
     scores = [concept_score(name, concept, t.replace(END_MARKER, "\n")) for t in texts]
     rows = "".join(transition_row(al, sc, t, texts[2], prompt) for al, sc, t in zip(alphas, scores, texts))
@@ -243,6 +243,59 @@ def transition_row(alpha, score, text, base, prompt):
             f'margin-top: 4px; font-family: monospace;">{score:+.2f}</div></td>'
             f'<td style="padding: 10px 8px; line-height: 1.6;"><span style="opacity: 0.6;">{html.escape(prompt)} '
             f'</span>{body}</td></tr>')
+
+
+# ------------------------------------------------------------------------------------- Mix tab
+
+MIX_DEFAULTS = {QWEN: ("rich ↔ poor", "old ↔ young"), TINY: ("huge ↔ tiny", "magic ↔ everyday")}
+
+
+def mix_choices(name):
+    return [BUILTIN, *PRESETS[name]]
+
+
+def preset_texts(name, choice):
+    """The two example boxes of a preset as text ('' for the built-in pairs)."""
+    if choice == BUILTIN:
+        return "", ""
+    pairs = PRESETS[name][choice][3]
+    return "\n".join(p for p, _ in pairs), "\n".join(n for _, n in pairs)
+
+
+def mix(name, prompt, choice_a, choice_b, strength, n_tokens, seed):
+    """Two concepts at once: a 3×3 grid of (concept A: +, 0, −) × (concept B: −, 0, +). Each cell
+    adds s_a·A + s_b·B, so the centre is the unsteered text and the corners combine both sides."""
+    if not prompt.strip():
+        raise gr.Error("Type a prompt first.")
+    if choice_a == choice_b:
+        raise gr.Error("Pick two different concepts.")
+    layer = best_layer(name)[0]
+    s = float(strength)
+    va = steering_vector(name, choice_a, *preset_texts(name, choice_a), layer)
+    vb = steering_vector(name, choice_b, *preset_texts(name, choice_b), layer)
+    grid = [(sa, sb) for sa in (1, 0, -1) for sb in (-1, 0, 1)]
+    texts = generate_coupled(name, prompt, layer, [s * (sa * va + sb * vb) for sa, sb in grid],
+                             int(n_tokens), int(seed))
+    (a1, a2), (b1, b2) = sides(name, choice_a), sides(name, choice_b)
+    cos = float(va @ vb / (va.norm() * vb.norm()))
+    e = html.escape
+    cell = "padding: 10px; vertical-align: top; line-height: 1.5; border: 1px solid rgba(128,128,128,0.25);"
+    head = f'<th style="{cell} text-align: center;">'
+    rows = [f'<tr><th style="{cell}"></th>{head}{e(b2)}</th>{head}— {e(b1)} / {e(b2)} 0 —</th>{head}{e(b1)}</th></tr>']
+    for i, (row_name, sa) in enumerate([(a1, 1), (f"— {a1} / {a2} 0 —", 0), (a2, -1)]):
+        tds = []
+        for j in range(3):
+            sb = grid[3 * i + j][1]
+            t = e(texts[3 * i + j].replace(END_MARKER, " [end of story] ")).replace("\n", "<br>")
+            bg = "rgba(128,128,128,0.12)" if sa == 0 and sb == 0 else ("rgba(232,163,61,0.10)" if sa and sb else "transparent")
+            label = "unsteered" if sa == 0 and sb == 0 else " + ".join(x for x, k in [(a1 if sa > 0 else a2, sa), (b1 if sb > 0 else b2, sb)] if k)
+            tds.append(f'<td style="{cell} background: {bg};"><div style="font-size: 0.8em; opacity: 0.6; '
+                       f'margin-bottom: 4px;">{e(label)}</div>{t}</td>')
+        rows.append(f'<tr><th style="{cell} text-align: right; white-space: nowrap;">{e(row_name)}</th>{"".join(tds)}</tr>')
+    info = (f'<div style="font-size: 0.9em; opacity: 0.75; margin-bottom: 6px;">prompt: <b>{e(prompt)}</b> · layer '
+            f'{layer} · strength {s:g} per concept · seed {int(seed)} · cosine between the two directions '
+            f'{cos:+.2f} (0 = independent) · shaded corners = both concepts at once</div>')
+    return info + f'<div style="overflow-x: auto;"><table style="border-collapse: collapse; width: 100%;">{"".join(rows)}</table></div>'
 
 
 def on_model_change(name):
@@ -430,6 +483,27 @@ def build():
             t_go.click(transition, [model, t_prompt, concept, pos_text, neg_text, t_layer, t_max, t_tokens, t_seed],
                        t_out)
 
+        with gr.Tab("Mix"):
+            gr.Markdown("Two concepts at once: add **A + B** together and see whether the model combines them "
+                        "(\"rich + old\" → a wealthy old man?), like the *king − man + woman* arithmetic of word "
+                        "vectors. All nine cells share the same random draws; the centre is the unsteered text. "
+                        "Uses the model's best layer; the concept picker above is not used here.")
+            m_prompt = gr.Textbox("My neighbour", label="prompt")
+            with gr.Row():
+                m_a = gr.Dropdown(mix_choices(QWEN), value=MIX_DEFAULTS[QWEN][0], label="concept A (rows)")
+                m_b = gr.Dropdown(mix_choices(QWEN), value=MIX_DEFAULTS[QWEN][1], label="concept B (columns)")
+            with gr.Row():
+                m_strength = gr.Slider(2, 12, value=6, step=1, label="strength per concept (6 works best; "
+                                                                      "8+ starts to break when two are added)")
+                m_tokens = gr.Slider(10, 80, value=40, step=5, label="new tokens")
+                m_seed = gr.Number(0, precision=0, label="seed")
+            m_go = gr.Button("Mix", variant="primary")
+            m_out = gr.HTML()
+            gr.Examples([[QWEN, "My neighbour"], [QWEN, "The man who lives next door"],
+                         [TINY, "Tom went for a walk in the woods. Suddenly, he saw a"]],
+                        [model, m_prompt], label="example prompts")
+            m_go.click(mix, [model, m_prompt, m_a, m_b, m_strength, m_tokens, m_seed], m_out)
+
         with gr.Tab("Concept meter"):
             gr.Markdown("How happy or sad does the model *think* each word is? Every token is coloured by the "
                         "projection of its hidden state on the concept direction at the chosen layer.")
@@ -457,6 +531,9 @@ def build():
                                             label=f"layer to steer (best = {best_layer(name)[0]})"), model, t_layer)
         model.change(lambda name: gr.update(maximum=23 if name == QWEN else 5,
                                             value=12 if name == QWEN else 3), model, meter_layer)
+        model.change(lambda name: (gr.update(choices=mix_choices(name), value=MIX_DEFAULTS[name][0]),
+                                   gr.update(choices=mix_choices(name), value=MIX_DEFAULTS[name][1])),
+                     model, [m_a, m_b])
     return demo
 
 

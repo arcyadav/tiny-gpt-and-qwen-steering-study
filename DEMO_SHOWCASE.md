@@ -263,3 +263,65 @@ to ride horses… fields of barley" ↔ "a huge grocery store. Our apartment has
 doors"), and **past ↔ future tense** mostly failed: future words appear but the grammar breaks
 ("I will have to tell you that you will eat with a little. and you will never…"). Content concepts
 steer cleanly; a grammar concept, carried by a few words like "will", does not.
+
+## 9. Indian ↔ American (preset, Qwen) — "On Sunday morning, my family"
+
+Transition tab · Qwen · preset **Indian ↔ American** · layer 4 · max 8 · **seed 1**
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | −0.66 | *decided to have a picnic in our backyard. Our picnic basket has a capacity to hold 240 pounds of meat…* |
+| −4 | −0.59 | *decided to have a picnic in our backyard… a big table with chairs…* |
+| 0 | −0.72 | *decided to have a picnic at the park. Our picnic basket was full of sandwiches, fruit, and drinks.* |
+| +4 | +1.27 | *visited the Khajuraho temple. The temple was built between 1043 and 1050 by the great Raja…* |
+| +8 | +1.45 | *invited my guru to the Darshan Shashti party, the most important of all the festivals…* |
+
+**Why it's good:** a backyard picnic becomes a temple visit. The American side hardly changes because
+the unsteered text (α 0) is *already* American: the model's default world is American. Seed 0 also
+works: "went to the market. There were mangoes selling…" → "went to the temple for the puja".
+
+## 10. magic ↔ everyday (preset, TinyGPT) — "Tom went for a walk in the woods. Suddenly, he saw a"
+
+Transition tab · TinyGPT · preset **magic ↔ everyday** · layer 4 · max 8 · seed 0
+
+−8 / −4: *a big, juicy apple on a bench* · 0: *a big, scary monster* · +4: *a big, scary looking creature!…
+Suddenly, a brave knight* · +8: *a giant monster!… But then, something magical happened! A giant
+dragonfly appeared!* (seed 1: apple on a bench → bear → "big giant dragon!"). Above about +6 the story
+starts to loop on "wand wand wand", so the preset tip says to keep |α| ≤ 6.
+
+## 11. Mix: huge/tiny × magic/everyday (TinyGPT) — two concepts at once
+
+| Setting | Value |
+|---|---|
+| Tab | **Mix** |
+| Model | TinyGPT 12M |
+| Concept A / B | huge ↔ tiny / magic ↔ everyday (the defaults) |
+| Prompt | `Tom went for a walk in the woods. Suddenly, he saw a` |
+| Strength / tokens / seed | 6 / 40 / **1** |
+
+| | everyday | (B = 0) | magic |
+|---|---|---|---|
+| **huge** | *big, hungry…* | *big scary monster!* | ***huge giant giant dragon!** The dragon was huge and roared fierce!* |
+| **(A = 0)** | *big, bright tree… a big, red apple* | *big bear!* (unsteered) | *big, shiny stone. It was magical! It was magic wand!…* |
+| **tiny** | *big, red apple on the side* | *small rabbit… lost in the woods* | ***tiny creature** hiding in the bushes. "Hello! I'm **tiny fairy**…"* |
+
+**Why it's good:** the model *combines* the two directions: huge + magic gives a dragon, tiny + magic
+gives a fairy, neither of which is in either set of examples on its own. The two directions are
+almost independent (cosine −0.03), so adding them works like the "king − man + woman" arithmetic of
+word vectors. Seed 0 is similar (huge + magic → "big, scary monster… shake giant!", tiny + magic →
+"little bug… tiny bug").
+
+## 12. Mix: rich/poor × old/young (Qwen) — "My neighbour"
+
+Mix tab · Qwen · rich ↔ poor / old ↔ young (the defaults) · strength 6 · tokens 40 · **seed 1**
+
+| | young | (B = 0) | old |
+|---|---|---|---|
+| **rich** | *is so into his new guitar!… very serious about his school* | *is so generous that he gives me a birthday present every year. I have been to the UK twice…* | *Mr. H., was my most loyal friend… He died peacefully on Saturday, surrounded by his family* |
+| **(A = 0)** | *is so smart that he always wins every game… really good at math* | *is so generous… a big cake on my birthday* (unsteered) | *is so old that he can't see clearly, but he can still hear well* |
+| **poor** | *is so shy that he always stands in the corner* | *is busy working in the garden… go to the market at about 9 o'clock* | *is so poor that he cannot buy anything… I give him a piece of bread and some meat* |
+
+**Why it's good:** the single-concept cells work clearly (old: can't see; young: wins games, maths),
+and poor + old gives one character who is both ("so poor… I give him a piece of bread"). Rich + old
+is weaker: it reads mostly as old. Rich and old are almost independent directions (cosine −0.06).
+Above strength 6 the combined push (√2 × larger) starts to break the text.
