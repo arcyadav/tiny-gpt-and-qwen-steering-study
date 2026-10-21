@@ -4,7 +4,7 @@ Activation steering on **Qwen2.5-0.5B** and on **TinyGPT**, a 12M-parameter GPT 
 and trained on TinyStories. A "happy − sad" direction is computed from contrastive sentence pairs and
 added to the residual stream during generation — no prompt change, no fine-tuning.
 
-UMC301 Project 4 · Archana Yadav · report in [`REPORT.md`](REPORT.md) · original plan in [`spec.md`](spec.md)
+UMC301 Project 4 · Archana Yadav · report in [`REPORT.md`](REPORT.md) · demo examples in [`DEMO_SHOWCASE.md`](DEMO_SHOWCASE.md) · explaining odd results in [`EXPLAINING_RESULTS.md`](EXPLAINING_RESULTS.md) · original plan in [`spec.md`](spec.md)
 
 **Project page:** https://arcyadav-steering-transformers.static.hf.space (results, plots, replay of real
 generations, and a link to the live demo while it is running)
