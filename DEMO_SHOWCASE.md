@@ -343,3 +343,21 @@ afford"). Another prompt that works: `Last weekend, my uncle` (seed 0: rich + ol
 surrounded by the most elaborate furnishings, for his 100th birthday"; poor + old → "suffering from a
 serious illness"). On TinyGPT, `At the bottom of the garden lived a` (seed 0) gives huge + magic →
 "huge giant dragon monster!" and tiny + magic → "small fairy… flutter and twinkle".
+
+## 14. food ↔ sports (preset, Qwen) — "i asked my brother"
+
+Transition tab · Qwen · preset **about food ↔ about sports** · layer 4 · max 8 · tokens 40 · seed 0
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | −0.32 | *to go to the gym with the team is my 2 points is the fourth quarter, what is the 4th quarter? The clock starts. You're out of timeouts…* |
+| −4 | +0.05 | *to go to the grocery store to buy some items… Given the context: "I wanted to buy some items", what was the objective? Choices:* |
+| 0 | +0.12 | *to help me with my homework. He is my brother, Jim. He is 13 years old. He is tall and strong…* |
+| +4 | −0.13 | *to help me and i am not sure if my brother is ok to ask for help or not…* |
+| +8 | +0.80 | *to make some dough for breakfast and he gave me some cream cheese to spread it on top of the bread… fried potatoes… butter and cheese and eggs* |
+
+**Why it's good:** the same request to a brother becomes basketball (gym, team, fourth quarter,
+timeouts) at −8 and breakfast (dough, cream cheese, fried potatoes, butter, eggs) at +8. The middle
+rows barely move: a topic change needs the full strength, unlike tone concepts such as formal ↔
+casual, which shift gradually. The −8 row's grammar is starting to break ("with the team is my 2
+points"), the usual sign of the edge of the usable range.
