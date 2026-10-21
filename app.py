@@ -426,12 +426,76 @@ UMC301 Project 4 · Archana Yadav · code: [GitHub](https://github.com/arcyadav/
 """
 
 
+# Looks: a cool "lab" style for Qwen, and a pastel storybook style while TinyGPT (trained on children's
+# stories) is selected. The model radio toggles a `tiny` class on <body>; the CSS swaps Gradio's
+# theme variables under it.
+HEAD = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
+        '<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700'
+        '&display=swap" rel="stylesheet">')
+TOGGLE_JS = "(name) => { document.body.classList.toggle('tiny', name.startsWith('TinyGPT')); }"
+THEME_CSS = """
+body, .gradio-container { transition: background-color 0.5s ease; }
+.gradio-container {
+  --button-primary-background-fill: linear-gradient(120deg, #4f46e5, #7c3aed);
+  --button-primary-background-fill-hover: linear-gradient(120deg, #4338ca, #6d28d9);
+  --button-primary-text-color: #fff;
+  --color-accent: #6366f1; --slider-color: #6366f1; --color-accent-soft: #e0e7ff;
+  --block-radius: 12px;
+  background: linear-gradient(135deg, #eef2ff 0%, #f0f9ff 50%, #faf5ff 100%) !important;
+}
+.dark .gradio-container, .gradio-container.dark, body.dark .gradio-container {
+  --color-accent-soft: #312e81;
+  background: linear-gradient(135deg, #0b1020 0%, #111836 55%, #1e1b4b 100%) !important;
+}
+#hero h1 { display: inline-block; font-weight: 800; color: transparent; -webkit-background-clip: text;
+           background-clip: text; background-image: linear-gradient(90deg, #4f46e5, #0ea5e9, #7c3aed); }
+
+/* ---- storybook mode (TinyGPT) ---- */
+body.tiny .gradio-container {
+  --font: 'Nunito', ui-rounded, sans-serif;
+  --button-primary-background-fill: linear-gradient(120deg, #f472b6, #fb923c);
+  --button-primary-background-fill-hover: linear-gradient(120deg, #ec4899, #f97316);
+  --color-accent: #ec4899; --slider-color: #ec4899; --color-accent-soft: #fce7f3;
+  --block-radius: 20px; --block-border-color: #f9c4dc; --border-color-primary: #f9c4dc;
+  --block-background-fill: rgba(255, 255, 255, 0.82); --input-background-fill: #fffdf7;
+  --block-label-background-fill: #fef3c7; --block-label-text-color: #9a3412;
+  --block-title-text-color: #9d174d; --body-text-color: #3b2a4a;
+  --block-shadow: 0 6px 18px rgba(236, 72, 153, 0.12);
+  --table-even-background-fill: #fff7ed; --table-odd-background-fill: #fdf2f8; --table-border-color: #f9c4dc;
+  background:
+    radial-gradient(circle at 10% 15%, #fde2e4 0, transparent 35%),
+    radial-gradient(circle at 90% 10%, #fef9c3 0, transparent 30%),
+    radial-gradient(circle at 85% 85%, #d1fae5 0, transparent 35%),
+    radial-gradient(circle at 15% 90%, #e0f2fe 0, transparent 35%),
+    #fff7ed !important;
+}
+body.tiny .dark .gradio-container, body.tiny .gradio-container.dark, body.tiny.dark .gradio-container {
+  --block-background-fill: rgba(40, 30, 80, 0.78); --input-background-fill: #2a2050;
+  --block-border-color: #6d28d9; --border-color-primary: #6d28d9; --color-accent-soft: #4c1d95;
+  --block-label-background-fill: #4c1d95; --block-label-text-color: #fde68a;
+  --block-title-text-color: #f9a8d4; --body-text-color: #f5f3ff;
+  --table-even-background-fill: #2a2050; --table-odd-background-fill: #241b47; --table-border-color: #6d28d9;
+  background:
+    radial-gradient(1.5px 1.5px at 20% 30%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 70% 20%, #fde68a 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 70%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 85% 60%, #f9a8d4 50%, transparent 51%),
+    radial-gradient(circle at 80% 10%, #4c1d95 0, transparent 40%),
+    linear-gradient(160deg, #1e1b4b, #2e1065 60%, #312e81) !important;
+}
+body.tiny #hero h1 { font-family: 'Fredoka', 'Nunito', sans-serif; font-weight: 600;
+  background-image: linear-gradient(90deg, #ec4899, #f97316, #eab308, #22c55e, #3b82f6, #a855f7) !important; }
+body.tiny #hero h1::after { content: " 📖✨"; -webkit-text-fill-color: initial; color: initial; }
+body.tiny .tab-nav button, body.tiny button[role="tab"] { font-family: 'Fredoka', sans-serif; }
+"""
+
+
 def build():
     layer0, alpha0 = best_layer(QWEN)
     with gr.Blocks(title="Steering Transformers") as demo:
         gr.Markdown("# Steering transformers from the inside\n"
                     "Change *what a language model feels* by adding a vector to its hidden states — "
-                    "no prompt change, no fine-tuning.")
+                    "no prompt change, no fine-tuning.", elem_id="hero")
         with gr.Row():
             model = gr.Radio([QWEN, TINY], value=QWEN, label="model")
             concept = gr.Dropdown(concept_choices(QWEN), value=BUILTIN, label="concept",
@@ -525,6 +589,7 @@ def build():
         with gr.Tab("How it works"):
             gr.Markdown(ABOUT)
 
+        model.change(None, model, None, js=TOGGLE_JS)
         model.change(on_model_change, model, [layer, alpha, concept])
         concept.change(on_concept_change, [model, concept], [custom_box, pos_text, neg_text, tip])
         model.change(lambda name: gr.update(maximum=23 if name == QWEN else 5, value=best_layer(name)[0],
@@ -578,7 +643,7 @@ if __name__ == "__main__":
     warm_up()
     demo = build().queue(default_concurrency_limit=1)
     _, _, share_url = demo.launch(server_name="0.0.0.0", server_port=args.port, share=args.share,
-                                  prevent_thread_lock=True)
+                                  prevent_thread_lock=True, css=THEME_CSS, head=HEAD)
     print(f"\nthis computer:      http://127.0.0.1:{args.port}")
     print(f"same network:       http://{lan_ip()}:{args.port}")
     if share_url:
