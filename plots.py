@@ -162,6 +162,10 @@ def training(e6_runs, logs):
         ax.plot([max(p["step"], 1) for p in v], [p["loss"] for p in v], marker="o", ms=3, color=col, label=label)
     ax.set(xscale="log", xlabel="training step", ylabel="validation loss", title="TinyGPT training")
     ax.legend(fontsize=8)
+    if any(0 < s < 500 for s in steps):  # dense early checkpoints: mark where the direction switches on
+        for z in axs:
+            z.axvspan(150, 250, color="#5a9e6f", alpha=0.12, lw=0)
+        axs[0].text(300, 0.45, "direction appears\n(steps 150–250)", fontsize=8, color="#3d7a50")
     save(fig, "e6_training.png")
 
 

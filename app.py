@@ -206,9 +206,11 @@ RESULTS = [
      "The price is fluency."),
     ("e4_pairs.png", "**E4 – How many examples?** Five contrastive pairs already give almost the full effect; "
      "the vector itself stabilises by ~25 pairs (cosine 0.97 to the 150-pair vector)."),
-    ("e6_training.png", "**E6 – When does the direction appear in training?** In TinyGPT the happy/sad direction "
-     "is readable and steerable early in training, long before the loss has converged; the sad side "
-     "keeps getting stronger until about step 2,000."),
+    ("e6_training.png", "**E6 – When does the direction appear in training?** Re-running the first 600 steps with "
+     "a checkpoint every 50 steps shows a sudden switch: until step 150 TinyGPT has no happy/sad direction (probe AUC "
+     "below 0.5, steering does nothing); between steps 150 and 250 (about 3M tokens, 4% of training, once validation "
+     "loss drops below ~3.1) it appears and steering starts to work. Steering towards sad keeps strengthening until "
+     "about step 2,000."),
 ]
 
 ABOUT = """
