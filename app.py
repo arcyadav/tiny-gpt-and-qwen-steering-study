@@ -19,28 +19,23 @@ import torch
 
 from steer import pairs as P
 from steer.core import QwenSteerer, TinyGPTSteerer, random_like
+from steer.presets import QWEN_PRESETS, TINY_PRESETS
 from steer.score import SentimentScorer
 
 QWEN, TINY = "Qwen2.5-0.5B (pretrained)", "TinyGPT 12M (built from scratch)"
 MODELS = {
-    QWEN: dict(load=lambda: QwenSteerer(), pairs=P.sentiment_pairs("train"), e1="results/qwen/e1.json"),
+    # read_layer: where the concept score and the meter read the text (the happy/sad probe peaks there)
+    QWEN: dict(load=lambda: QwenSteerer(), pairs=P.sentiment_pairs("train"), e1="results/qwen/e1.json",
+               read_layer=12),
     TINY: dict(load=lambda: TinyGPTSteerer("results/tinygpt/ckpt.pt", "data/tokenizer.json"),
-               pairs=P.tiny_sentiment_pairs(), e1="results/tinygpt_steer/e1.json"),
+               pairs=P.tiny_sentiment_pairs(), e1="results/tinygpt_steer/e1.json", read_layer=3),
 }
 BUILTIN = "happy ↔ sad (built-in pairs)"
 CUSTOM = "my own concept (type examples below)"
-CUSTOM_POS = "\n".join([
-    "I would be grateful if you could kindly review the attached document.",
-    "We regret to inform you that the meeting has been postponed.",
-    "Please find enclosed the requested information.",
-    "The committee will convene at your earliest convenience.",
-])
-CUSTOM_NEG = "\n".join([
-    "hey can u check this thing i sent lol",
-    "yo the meeting's off, my bad",
-    "here's the stuff u wanted",
-    "let's hang out whenever, no rush dude",
-])
+PRESETS = {QWEN: QWEN_PRESETS, TINY: TINY_PRESETS}
+WRITING_TIP = ("Write 4–8 short sentences per side, one per line, that differ mainly in the concept. "
+               "Matched pairs work best (line 1 on the left ↔ line 1 on the right). "
+               "α > 0 steers towards the left box, α < 0 towards the right box.")
 HAPPY, SAD = (232, 163, 61), (59, 111, 182)
 
 _lock = threading.Lock()
@@ -91,6 +86,19 @@ class Concept:
         self.vector, self.mid = pos - neg, (pos + neg) / 2
 
 
+def concept_choices(name):
+    return [BUILTIN, *PRESETS[name], CUSTOM]
+
+
+def sides(name, choice):
+    """Names of the positive and negative side of a concept, for labels and scores."""
+    if choice == BUILTIN:
+        return "happy", "sad"
+    if choice in PRESETS[name]:
+        return PRESETS[name][choice][:2]
+    return "left box", "right box"
+
+
 def get_concept(name, choice, pos_text, neg_text):
     if choice == BUILTIN:
         pairs = MODELS[name]["pairs"]
@@ -122,8 +130,14 @@ def steer(name, prompt, choice, pos_text, neg_text, layer, alpha, n_tokens, seed
     vectors = torch.stack(rows).unsqueeze(1)  # (rows, 1, d_model) broadcasts over positions
     texts = model.generate([prompt] * len(rows), layer, vectors, float(alpha),
                            max_new_tokens=int(n_tokens), seed=int(seed), **gen_kwargs(name))
-    scores = scorer()(texts)
-    out = [f"{t}\n\n— sentiment {s:+.2f}" for t, s in zip(texts, scores)]
+    # concept score: where the unsteered model places each text on the concept direction
+    concept, (a, b) = get_concept(name, choice, pos_text, neg_text), sides(name, choice)
+    scores = [concept_score(name, concept, t) for t in texts]
+    if choice == BUILTIN:  # the independent sentiment classifier as well
+        out = [f"{t}\n\n— sentiment {s:+.2f} · happy ↔ sad score {c:+.2f}"
+               for t, s, c in zip(texts, scorer()(texts), scores)]
+    else:
+        out = [f"{t}\n\n— {a} ↔ {b} score {c:+.2f}  (+ = {a}, − = {b})" for t, c in zip(texts, scores)]
     return out[0], out[1], out[2] if show_random else ""
 
 
@@ -131,7 +145,20 @@ def on_model_change(name):
     layer, alpha = best_layer(name)
     n = 24 if name == QWEN else 6
     return gr.update(maximum=n - 1, value=layer, label=f"layer to steer (0–{n - 1}, best = {layer})"), \
-        gr.update(value=alpha)
+        gr.update(value=alpha), gr.update(choices=concept_choices(name), value=BUILTIN)
+
+
+def on_concept_change(name, choice):
+    """A preset fills the two example boxes; 'my own' keeps what is typed; built-in hides them."""
+    if choice == BUILTIN:
+        return gr.update(visible=False), gr.update(), gr.update(), gr.update()
+    if choice in PRESETS[name]:
+        a, b, tip, pairs = PRESETS[name][choice]
+        return (gr.update(visible=True), gr.update(value="\n".join(p for p, _ in pairs), label=f"{a} (α > 0)"),
+                gr.update(value="\n".join(n for _, n in pairs), label=f"{b} (α < 0)"),
+                f"**Tried and tested:** {tip}  \n{WRITING_TIP}")
+    return (gr.update(visible=True), gr.update(label="positive side (α > 0)"),
+            gr.update(label="negative side (α < 0)"), WRITING_TIP)
 
 
 # ------------------------------------------------------------------------------ Concept meter tab
@@ -158,6 +185,16 @@ def token_scores(model, concept, text, layer):
     return tokens, s.tolist()
 
 
+def concept_score(name, concept, text):
+    """How far a text sits along the concept direction, as the unsteered model reads it: the mean
+    token score at the model's read layer (about +1 = like the positive examples, -1 = negative)."""
+    if not text.strip():
+        return 0.0
+    _, scores = token_scores(get_model(name), concept, text, MODELS[name]["read_layer"])
+    valid = [s for s in scores if s == s]
+    return sum(valid) / max(1, len(valid))
+
+
 def meter_html(tokens, scores):
     spans = []
     for tok, s in zip(tokens, scores):
@@ -181,11 +218,11 @@ def meter(name, text, choice, pos_text, neg_text, layer):
     tokens, scores = token_scores(model, concept, text, layer)
     valid = [s for s in scores if s == s]
     mean = sum(valid) / max(1, len(valid))
-    side = "positive side (e.g. happy)" if mean > 0 else "negative side (e.g. sad)"
-    summary = f"**Average: {mean:+.2f}** → the model reads this text on the **{side}** of the direction."
+    a, b = sides(name, choice)
+    summary = f"**Average: {mean:+.2f}** → the model reads this text on the **{a if mean > 0 else b}** side of the direction."
     legend = ('<div style="margin-top: 8px; font-size: 0.9em;">'
-              f'<span style="background: rgba({SAD[0]},{SAD[1]},{SAD[2]},0.8); padding: 2px 8px; border-radius: 3px;">− negative / sad</span> '
-              f'<span style="background: rgba({HAPPY[0]},{HAPPY[1]},{HAPPY[2]},0.8); padding: 2px 8px; border-radius: 3px;">+ positive / happy</span>'
+              f'<span style="background: rgba({SAD[0]},{SAD[1]},{SAD[2]},0.8); padding: 2px 8px; border-radius: 3px;">− {html.escape(b)}</span> '
+              f'<span style="background: rgba({HAPPY[0]},{HAPPY[1]},{HAPPY[2]},0.8); padding: 2px 8px; border-radius: 3px;">+ {html.escape(a)}</span>'
               " &nbsp; hover a token to see its score</div>")
     return meter_html(tokens, scores) + legend, summary
 
@@ -240,20 +277,19 @@ def build():
                     "no prompt change, no fine-tuning.")
         with gr.Row():
             model = gr.Radio([QWEN, TINY], value=QWEN, label="model")
-            concept = gr.Radio([BUILTIN, CUSTOM], value=BUILTIN, label="concept")
-        with gr.Accordion("my own concept: positive vs negative examples (one per line)", open=False):
-            gr.Markdown("Any contrast works: formal ↔ casual, polite ↔ rude, about food ↔ about sport… "
-                        "Steering with α > 0 moves towards the left box, α < 0 towards the right box. "
-                        "(The sentiment score below only measures happy/sad.)")
+            concept = gr.Dropdown(concept_choices(QWEN), value=BUILTIN, label="concept",
+                                  info="the built-in happy ↔ sad, a tested example, or your own")
+        with gr.Group(visible=False) as custom_box:
+            tip = gr.Markdown(WRITING_TIP)
             with gr.Row():
-                pos_text = gr.Textbox(CUSTOM_POS, lines=5, label="positive (+)")
-                neg_text = gr.Textbox(CUSTOM_NEG, lines=5, label="negative (−)")
+                pos_text = gr.Textbox(lines=6, label="positive side (α > 0)")
+                neg_text = gr.Textbox(lines=6, label="negative side (α < 0)")
 
         with gr.Tab("Steer"):
             prompt = gr.Textbox("I went to the market today and", label="prompt")
             with gr.Row():
                 alpha = gr.Slider(-16, 16, value=alpha0, step=1,
-                                  label="strength α  (− = sad / negative, + = happy / positive)")
+                                  label="strength α  (+ = happy / first side, − = sad / second side)")
                 layer = gr.Slider(0, 23, value=layer0, step=1, label=f"layer to steer (0–23, best = {layer0})")
             with gr.Accordion("more settings", open=False):
                 with gr.Row():
@@ -291,7 +327,8 @@ def build():
         with gr.Tab("How it works"):
             gr.Markdown(ABOUT)
 
-        model.change(on_model_change, model, [layer, alpha])
+        model.change(on_model_change, model, [layer, alpha, concept])
+        concept.change(on_concept_change, [model, concept], [custom_box, pos_text, neg_text, tip])
         model.change(lambda name: gr.update(maximum=23 if name == QWEN else 5,
                                             value=12 if name == QWEN else 3), model, meter_layer)
     return demo
