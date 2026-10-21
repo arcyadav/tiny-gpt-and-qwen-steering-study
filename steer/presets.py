@@ -75,13 +75,15 @@ TINY_PRESETS = {
         ("Sue was brave and jumped into the cold water.", "Sue was scared of the cold water and cried."),
         ("The boy smiled and went into the dark room.", "The boy shook and ran away from the dark room."),
     ]),
-    "dogs ↔ cats": ("dogs", "cats", "The dog side works (barking, wagging tails); the cat side drifts to tea parties: the model knows less about cats.", [
-        ("The dog wagged its tail and barked.", "The cat purred and licked its paw."),
-        ("Max the dog liked to fetch the ball.", "Kitty the cat liked to chase the yarn."),
-        ("The puppy ran to the park with his leash.", "The kitten climbed up the tree and said meow."),
-        ("The big dog chewed a bone.", "The big cat drank some milk."),
-        ("Tim walked his dog every day.", "Tim fed his cat every day."),
-        ("The dog dug a hole in the yard.", "The cat slept in the sunny window."),
+    "dogs ↔ cats": ("dogs", "cats", "Works both ways; for the cat side try layer 3 and α = −4 to −8 on 'Lily had a pet. Her pet was a' (seed 1). The pairs differ only in the animal: an earlier set with 'barked' vs 'purred' steered towards owls and tea instead of cats.", [
+        ("Lily had a dog. The dog was her best friend.", "Lily had a cat. The cat was her best friend."),
+        ("The little dog played in the garden all day.", "The little cat played in the garden all day."),
+        ("Tom gave his dog a hug. He loved his dog.", "Tom gave his cat a hug. He loved his cat."),
+        ("The dog sat on the mat and looked at Sue.", "The cat sat on the mat and looked at Sue."),
+        ("Ben saw a dog in the park. The dog was brown.", "Ben saw a cat in the park. The cat was brown."),
+        ("Mia and her dog went for a walk.", "Mia and her cat went for a walk."),
+        ("The dog was sleepy, so it went to bed.", "The cat was sleepy, so it went to bed."),
+        ("Max the dog was happy to see Tim.", "Kitty the cat was happy to see Tim."),
     ]),
     "huge ↔ tiny": ("huge", "tiny", "Works both ways at α = ±8. In the Transition tab try 'Lily went to the zoo and saw a' (seed 1): a little bird → an enormous lion.", [
         ("The dog was huge. It was as big as a house.", "The dog was tiny. It was as small as a shoe."),

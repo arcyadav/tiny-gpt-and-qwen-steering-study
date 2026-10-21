@@ -60,6 +60,18 @@ _suppress = {}
 END_MARKER = "\n[end of story — the model starts a new one]\n"
 
 
+# Some TinyStories texts contain UTF-8 quotes decoded as Windows-1252 ("â€œHiâ€"), and TinyGPT
+# learned to write them. The demo shows the intended characters.
+_MOJIBAKE = [("â€œ", "“"), ("â€", "”"), ("â€™", "’"), ("â€˜", "‘"), ("â€”", "—"), ("â€“", "–"),
+             ("â€¦", "…"), ("â€", "”")]
+
+
+def fix_quotes(text):
+    for bad, good in _MOJIBAKE:
+        text = text.replace(bad, good)
+    return text
+
+
 def gen_kwargs(name):
     if name != QWEN:
         return {"end_marker": END_MARKER}
@@ -138,8 +150,8 @@ def steer(name, prompt, choice, pos_text, neg_text, layer, alpha, n_tokens, seed
     # The hook adds alpha * vectors[row] to each row, so the rows differ only in what is added.
     rows = [torch.zeros_like(v), v] + ([random_like(v, seed=layer)] if show_random else [])
     vectors = torch.stack(rows).unsqueeze(1)  # (rows, 1, d_model) broadcasts over positions
-    texts = model.generate([prompt] * len(rows), layer, vectors, float(alpha),
-                           max_new_tokens=int(n_tokens), seed=int(seed), **gen_kwargs(name))
+    texts = [fix_quotes(t) for t in model.generate([prompt] * len(rows), layer, vectors, float(alpha),
+                                                   max_new_tokens=int(n_tokens), seed=int(seed), **gen_kwargs(name))]
     # concept score: where the unsteered model places each text on the concept direction
     concept, (a, b) = get_concept(name, choice, pos_text, neg_text), sides(name, choice)
     plain = [t.replace(END_MARKER, "\n") for t in texts]  # scores read the text without the marker
@@ -179,8 +191,8 @@ def generate_coupled(name, prompt, layer, vectors, n_tokens, seed):
     """One continuation per added vector (already scaled), all sharing their random draws."""
     model = get_model(name)
     if name != QWEN:  # TinyGPT is fast: separate runs with the same seed share the draws too
-        return [model.generate([prompt], layer, v, 1.0, max_new_tokens=n_tokens, seed=seed,
-                               **gen_kwargs(name))[0] for v in vectors]
+        return [fix_quotes(model.generate([prompt], layer, v, 1.0, max_new_tokens=n_tokens, seed=seed,
+                                          **gen_kwargs(name))[0]) for v in vectors]
     from transformers import LogitsProcessorList
 
     vectors = torch.stack(vectors).unsqueeze(1)

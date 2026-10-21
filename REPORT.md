@@ -188,12 +188,12 @@ Each concept is built from six matched pairs that differ only in the concept ("W
 | magic ↔ everyday | TinyGPT | both ways up to ±6 | "he saw a" → "juicy apple on a bench" (−8) … "something magical happened! A giant dragonfly" (+8), then loops on "wand" |
 | sunny park ↔ rainy day | TinyGPT | weak | the setting changes (parks and blue skies vs ceilings and floors) but the stories stay much the same; dropped from the demo |
 | brave ↔ scared | TinyGPT | scared side only | the brave side barely changes the story |
-| dogs ↔ cats | TinyGPT | dog side only | the cat side drifts to tea parties |
+| dogs ↔ cats | TinyGPT | both ways, after rewriting the pairs | first pairs ("barked" vs "purred and licked its paw") never gave a cat, only owls, "per per per" and "tea tea tea"; pairs that differ only in the animal word give "Her pet was a small cat" (layer 3, α −4) |
 | old ↔ young | TinyGPT | fails | almost every story stays "a little girl named Lily" |
 
 Five patterns explain most of the table:
 
-1. **The vector is whatever differs between the two sets of examples.** In our confident/uncertain pairs, the uncertain sentences were also longer and ended with "?", so the direction became "hedging words ↔ short flat statements". Pushed towards "confident", Qwen produced the flattest text it knows: textbook exercises ("**Question:** In this task, you are given a string…").
+1. **The vector is whatever differs between the two sets of examples.** In our confident/uncertain pairs, the uncertain sentences were also longer and ended with "?", so the direction became "hedging words ↔ short flat statements". Pushed towards "confident", Qwen produced the flattest text it knows: textbook exercises ("**Question:** In this task, you are given a string…"). Our first dog/cat pairs had the same problem: the cat sentences also differed in *actions* (purred, drank milk, climbed the tree, slept in the window), so the cat side produced "per per per", owls perching and "tea tea tea" but never the word "cat". Pairs that differ only in the animal word fixed it.
 2. **A model can only be steered towards what its training data contains.** "Old" works on Qwen but not on TinyGPT, whose stories have almost no old characters; Qwen's motivating side works but harsh put-downs, rare in its data, barely appear. Where one side matches the model's default (Qwen's American setting, TinyGPT's happy endings) only the other side moves.
 3. **Content steers; grammar does not.** Wealth, age, size, topic and culture shift whole scenes. Tense lives in a few small words that must sit in exactly the right place, and a push added at every token scrambles them.
 4. **The prompt must leave room for the concept.** "Sharing ↔ greedy" did nothing on "there was a young girl" but works when the prompt sets up an object and a second child ("Lily found a shiny red ball… Her friend asked to play. Lily").
