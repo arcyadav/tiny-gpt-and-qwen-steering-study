@@ -10,3 +10,4 @@ results/smoke*/
 results/quick*/
 results/quick_refactor.log
 space/site/
+.gradio/
