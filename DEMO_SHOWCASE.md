@@ -72,3 +72,30 @@ mid-sentence (best score, −1.21). At −8 the push is too strong: the text bre
 pattern of French function words ("indique", "et") glued to English nouns, and the score falls back
 to −0.36. The English side barely moves, because the prompt is already English (the score saturates
 around +0.5). Good for explaining "more strength is not always better" (experiment E2).
+
+## 4. motivating ↔ demotivating (own concept) — "My friend read my essay and said" (partial)
+
+| Setting | Value |
+|---|---|
+| Tab | Transition |
+| Model | Qwen2.5-0.5B |
+| Concept | my own concept: 6 matched pairs addressed to "you" (motivating left, demotivating right) |
+| Prompt | `My friend read my essay and said` |
+| Max strength / layer / seed / tokens | 8 / 4 / 0 / 40 (defaults) |
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | (not copied) | *anything to me. My friend is a student, but she reads my essay and says anything to me. She is a student…* |
+| −4 | −0.17 | *it was very good. My friend is my friend, but we have any real problems. Please tell me this is a joke…* |
+| 0 | +0.17 | *it was very good. Given the context: How would you describe the friend? Possible answers: not enough information, very critical, very supportive…* |
+| +4 | +0.13 | *it was very good. Which of the following words best describes this action? A. Appreciated…* |
+| +8 | +1.05 | *it was amazing and it was not. I am really impressed with your essay and I think it is great. You are great at what you do. Your essay is outstanding…* |
+
+**Why it's useful (a partial success):** the motivating side works at +8: real praise addressed to
+"you", in the same style as the example pairs, with the highest score (+1.05). The demotivating side
+is weak: −4 only turns slightly sour, and −8 loops. Two reasons: the prompt itself pulls towards
+praise ("said it was very good" in most rows), and harsh put-downs are rare in the model's training
+text, so there is less to steer towards (the same asymmetry as brave ↔ scared on TinyGPT). The middle
+rows show the base model's habit of turning text into quiz questions. Earlier attempts with narrative
+prompts ("i had a game today", "my brother is learning to play flute") mostly gave loops ("i thank
+you ×4", "it's my fault ×6"): the concept needs a prompt where someone is about to speak to someone.
