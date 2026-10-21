@@ -48,3 +48,27 @@ shows what pushing too hard does (the text breaks into a run of zeros).
 talk on one side and into food (and happiness) on the other. The middle rows stay in forum mode
 (statistics, maths, code), so the topic only switches at the ends. Note the score rises only
 from −0.19 to +0.20: the generated text is short and mixed, and the +8 row is less fluent.
+
+## 3. English ↔ French — "When I looked from my window i"
+
+| Setting | Value |
+|---|---|
+| Tab | Transition |
+| Model | Qwen2.5-0.5B |
+| Concept | English ↔ French |
+| Prompt | `When I looked from my window i` |
+| Max strength / layer / seed / tokens | 8 / 4 / 0 / 40 (defaults) |
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | −0.36 | *entendais la lune / indique the sunlight / et the sole star / indique the light / et l'iron / indique the flame…* |
+| −4 | −1.21 | *entendais que le prince de tirol était inquiet de mon presence et I n'en doute. Toutefois, de même que le prince de tirol ne manquait d'amb…* |
+| 0 | +0.54 | *see this: ![enter image description here](https://i.stack.imgur.com/q8M9c.png) Now I want to use this as a border, but it's not working…* |
+| +4 | +0.49 | *see a lake and it has a water temperature of 26 degrees. I know that if I had a thermometer inside that lake…* |
+| +8 | +0.51 | *can see a 15.13% that is wrong. Can you help me solve it. Please write a program to find the smallest positive integer…* |
+
+**Why it's good:** shows the **sweet spot** of steering. At −4 the model switches to fluent French
+mid-sentence (best score, −1.21). At −8 the push is too strong: the text breaks into a repeating
+pattern of French function words ("indique", "et") glued to English nouns, and the score falls back
+to −0.36. The English side barely moves, because the prompt is already English (the score saturates
+around +0.5). Good for explaining "more strength is not always better" (experiment E2).
