@@ -125,3 +125,91 @@ share, and the vector only added sadness on one side and "the two were both two"
 pairs' "one to Sue and one to Max" / "half" taught it counting words too). Another prompt that works:
 `There was one cake left and two children. The boy`, seed 0, where α −4 gives "couldn't wait to eat
 it… He was very stubborn and wouldn't let go… determined to keep".
+
+## 6. huge ↔ tiny (own concept, TinyGPT) — "Lily went to the zoo and saw a"
+
+| Setting | Value |
+|---|---|
+| Tab | Transition |
+| Model | TinyGPT 12M |
+| Concept | my own concept (boxes below) |
+| Prompt | `Lily went to the zoo and saw a` |
+| Max strength / layer / seed / tokens | 8 / 4 / **1** / 40 |
+
+Left box (huge):
+```
+The dog was huge. It was as big as a house.
+Tom saw a giant tree. It was so tall it touched the sky.
+Lily found a big, big box. It was too heavy to lift.
+The elephant was very large and had giant feet.
+Ben built a huge tower. It was taller than his dad.
+The ship was enormous and could carry many people.
+```
+Right box (tiny):
+```
+The dog was tiny. It was as small as a shoe.
+Tom saw a little tree. It was so short it touched his knee.
+Lily found a small, small box. It was light as a feather.
+The ant was very small and had tiny feet.
+Ben built a tiny tower. It was shorter than his cup.
+The boat was tiny and could carry one bug.
+```
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | −1.20 | *little bird. She gently gently gently and gently stroked the bird gently. It felt better…* |
+| −4 | −0.16 | *big bird. She was very happy to see the bird. Lily asked her mommy, "Can we take the bird home?"* |
+| 0 | +0.27 | *big, scary lion. She was so scared that she screamed for help…* |
+| +4 | +0.65 | *big sign with lots of animals… She saw lions and elephants and elephants and elephants…* |
+| +8 | +0.93 | *big lion with a huge lion! It was enormous! The zoo people were all so impressed!…* |
+
+**Why it's good:** the animal itself changes with α: little bird → bird → lion → elephants →
+enormous lion, and the score climbs steadily (−1.20 → +0.93). The −8 row also shows that "tiny"
+drags in "gentle" (small things are handled gently in TinyStories), repeated until it loops. Seed 0
+also works (little bird → monkey → big elephant → tall elephant → enormous building), as does
+`One day, Tom found a spider in the garden. The spider was` (seed 0: "small, little, and tiny" →
+"huge and scary").
+
+## 7. old ↔ young (own concept, Qwen) — "The person sitting next to me on the bus was"
+
+| Setting | Value |
+|---|---|
+| Tab | Transition |
+| Model | Qwen2.5-0.5B |
+| Concept | my own concept (boxes below) |
+| Prompt | `The person sitting next to me on the bus was` |
+| Max strength / layer / seed / tokens | 8 / 4 / 0 / 40 (defaults) |
+
+Left box (old):
+```
+The old man sat on the porch, remembering the war and his late wife.
+My grandmother is eighty-five and walks slowly with her cane.
+He retired forty years ago and now spends his days with his grandchildren.
+The elderly woman put on her reading glasses and sighed about her bad knees.
+After a long life, the old professor wrote his memoirs.
+Grandpa told us how things were back in his day.
+```
+Right box (young):
+```
+The young boy sat on the porch, thinking about his homework and his best friend.
+My little sister is five and runs everywhere in her sneakers.
+He started school two years ago and now spends his days with his classmates.
+The teenage girl put on her headphones and complained about her math test.
+After his first week of college, the young student called his mom.
+The kid told us about the cartoon he watched today.
+```
+
+| α | Score | Text (after the prompt) |
+|---|---|---|
+| −8 | −0.47 | *bullied by some of the other kids. I was really mad about it… she was so mean…* |
+| −4 | −0.52 | *standing outside of the classroom when the teacher gave the bell. She was very shy…* |
+| 0 | +0.23 | *a very nice young man who had never been to the United States before…* |
+| +4 | +0.42 | *his son, and he was standing. He was 86 years old and had a long history of health problems…* |
+| +8 | +0.19 | *a person of 85 years. He said, "My right leg is getting weak, my body is beginning to bend, my mind is beginning to decay…"* |
+
+**Why it's good:** the stranger ages from a schoolkid to a young man to an 86-year-old, and the
+whole scene follows (bullies and classroom bells ↔ health problems and a weak leg). Another prompt:
+`I knocked on the door and it was opened by`, seed 0, where the ages climb row by row: "I'm 15 and
+she's 13" → "a young woman in her 20s" → "in her thirties" → "the elderly people of this world".
+The same concept did **not** work on TinyGPT: almost every TinyStories story is about "a little girl
+named Lily", so the old side had almost nothing to steer towards.
