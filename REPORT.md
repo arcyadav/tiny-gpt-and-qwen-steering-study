@@ -10,7 +10,9 @@ Adding a single "happy − sad" vector to a transformer's hidden states moves th
 
 We study this on two models: Qwen2.5-0.5B, and TinyGPT, a 12.2M-parameter GPT we wrote and trained from scratch on TinyStories in 18 minutes. Steering works on both, best at layer 4, and beats prompting (+0.85 vs +0.50 towards happy, −0.46 vs −0.14 towards sad) at a cost in fluency. Five pairs are enough to build a working vector. The concept is easiest to *read* in Qwen's middle layers (probe AUC 0.99 at layers 9–14) but easiest to *push* early (layer 4).
 
-Because we own TinyGPT's training history, we can also ask when the concept appears. It does not grow gradually: until step 150 there is no happy/sad direction (probe AUC below 0.5) and steering does nothing; between steps 150 and 250 (about 3M tokens, 4% of training) the direction appears and steering starts to work. Everything is deployed as a project page with a replay of real generations and a live slider demo.
+Because we own TinyGPT's training history, we can also ask when the concept appears. It does not grow gradually: until step 150 there is no happy/sad direction (probe AUC below 0.5) and steering does nothing; between steps 150 and 250 (about 3M tokens, 4% of training) the direction appears and steering starts to work.
+
+Beyond sentiment, we tried 16 other concepts by eye (wealth, age, size, language, formality, culture, magic, …). Concepts about *content* steer well, a grammar concept (tense) does not, and a model can only be steered towards what its training data contains: "old" works on Qwen but not on TinyGPT, whose stories have almost no old characters. Two concept vectors can also be **added**: in TinyGPT, huge + magic gives "a huge giant dragon" and tiny + magic "a tiny fairy", although no example sentence mentions either. Everything is deployed as a project page with a replay of real generations and a live slider demo.
 
 ## 1. Introduction
 
@@ -23,6 +25,7 @@ This project builds that tool, measures honestly when it works and when it break
 3. **How hard?** How does steering strength trade off against fluency? (E2)
 4. **Steering or asking?** Is steering as strong as writing "a happy story" into the prompt? (E3) And how many example pairs does it need? (E4)
 5. **Small model, and when?** Does steering work in a 12M-parameter model built from scratch (E5), and at which point in training does the happy/sad direction appear (E6)?
+6. **Other concepts, and combinations?** Which other concepts can be steered, and what decides it (E7)? Can two concept vectors be added to get both at once (E8)?
 
 Qwen2.5-0.5B is the reliable, pretrained model for questions 1–4. TinyGPT is the original part: because we wrote and trained it, we can open every checkpoint and watch the concept form.
 
@@ -97,6 +100,10 @@ Every setting generates 40 new tokens per prompt with temperature 0.7 and top-p 
 | E4 | How many pairs? | Qwen | vectors from 5, 10, 25, 50 pairs (3 random subsets each) and all 150 |
 | E5 | Small model | TinyGPT | all 6 layers × α ∈ {±2, ±4, ±8, ±16, ±32}, then E2 at its best layer |
 | E6 | When does it appear? | TinyGPT | 22 checkpoints (every 50 steps to 600, then every 500): probe AUC + steering at α = ±8 |
+| E7 | Other concepts | both | 16 concepts (17 concept–model combinations) from 6 matched pairs each, layer 4, α ∈ {−8, −4, 0, +4, +8}, 1–3 prompts × seeds 0 and 1, judged by eye |
+| E8 | Adding two concepts | both | 2 concept pairs per model, 3×3 grid (A: +, 0, − × B: −, 0, +), strength 6 per concept, 2 prompts × seeds 0 and 1 |
+
+E7 and E8 are qualitative and ran on a laptop CPU through the demo (section 9). Each concept vector is rescaled to the length of the happy/sad vector at the same layer, so α means the same push for every concept. The five strengths (or nine grid cells) of one prompt share their random draws: TinyGPT reuses the seed, and Qwen samples the whole batch with one shared Gumbel noise vector per token (argmax of logits/T plus Gumbel noise is a sample from the softmax). The texts therefore differ only because of the steering, and often agree for a few words before they branch.
 
 In E3, "asking" means starting the prompt with "The following is a happy, cheerful story full of joy." (or the sad version), since Qwen2.5-0.5B is a base model and does not follow instructions. Fluency in E3 is always measured on the plain prompt. The layer and strength for E2–E4 and E6 were chosen automatically from E1 (section 3).
 
@@ -160,6 +167,54 @@ TinyGPT has a clear happy/sad direction at every layer (probe AUC 0.90–0.97). 
 
 Changes are measured against the unsteered text at the same checkpoint. Until step 150 the direction does not exist: probe AUC is at or below chance and steering changes almost nothing. **Between steps 150 and 250 (about 2.5–4M tokens, 3–5% of training) the direction appears**, the probe jumps to 0.91 and steering starts to work. Steering towards happy is close to its final strength by step 300; steering towards sad keeps strengthening until about step 2,000. Random vectors stay within about ±0.35 of the unsteered text throughout, with no consistent direction.
 
+### E7: Which other concepts can be steered?
+
+Each concept is built from six matched pairs that differ only in the concept ("We flew to Paris on our private jet for the weekend." / "We could not afford the bus fare, so we walked to town."). The pairs are in `steer/presets.py`; examples with exact settings are in `DEMO_SHOWCASE.md`.
+
+| Concept | Model | Result | Example (layer 4) |
+| --- | --- | --- | --- |
+| rich ↔ poor | Qwen | both ways | "For dinner tonight, my mother" → "could not have enough to eat" (−8) … "a luxurious dinner at a five-star hotel" (+8) |
+| old ↔ young | Qwen | both ways | "The person sitting next to me on the bus was" → "bullied by some of the other kids" (−8) … "86 years old and had a long history of health problems" (+4) |
+| formal ↔ casual | Qwen | both ways | "i asked the retailer" → "but i got a discount coupon on it" (−4) … "to amend the terms of the terms of Trade Agreement" (+8) |
+| food ↔ sports | Qwen | both ways, weak | a forum question turns into match talk (−8) or butter and chocolate (+8) |
+| English ↔ French | Qwen | best at −4 | fluent French at −4; at −8 it breaks into "indique the light / et l'iron / indique the flame" |
+| Indian ↔ American | Qwen | Indian side only | a backyard picnic (α 0) → "visited the Khajuraho temple" (+4); the unsteered text is already American |
+| city ↔ rural | Qwen | partly | "a small stream… fields of barley" (−8) vs "a huge grocery store… 24-hour security doors" (+8) |
+| confident ↔ uncertain | Qwen | uncertain side only | +8 gives flat repetition and textbook exercises, not confidence |
+| motivating ↔ demotivating | Qwen | motivating side only | "You are great at what you do. Your essay is outstanding." (+8) |
+| past ↔ future tense | Qwen | fails | "will" appears but grammar breaks: "I will have to tell you that you will eat with a little" |
+| huge ↔ tiny | TinyGPT | both ways | "Lily went to the zoo and saw a" → "little bird" (−8) … "a big lion… It was enormous!" (+8) |
+| sharing ↔ greedy | TinyGPT | both ways, needs the right prompt | "Her friend asked to play. Lily" → "didn't want to share" (−4) … "Yes, let's play! They played together" (+4) |
+| magic ↔ everyday | TinyGPT | both ways up to ±6 | "he saw a" → "juicy apple on a bench" (−8) … "something magical happened! A giant dragonfly" (+8), then loops on "wand" |
+| sunny park ↔ rainy day | TinyGPT | both ways | parks and blue skies vs ceilings and floors |
+| brave ↔ scared | TinyGPT | scared side only | the brave side barely changes the story |
+| dogs ↔ cats | TinyGPT | dog side only | the cat side drifts to tea parties |
+| old ↔ young | TinyGPT | fails | almost every story stays "a little girl named Lily" |
+
+Five patterns explain most of the table:
+
+1. **The vector is whatever differs between the two sets of examples.** In our confident/uncertain pairs, the uncertain sentences were also longer and ended with "?", so the direction became "hedging words ↔ short flat statements". Pushed towards "confident", Qwen produced the flattest text it knows: textbook exercises ("**Question:** In this task, you are given a string…").
+2. **A model can only be steered towards what its training data contains.** "Old" works on Qwen but not on TinyGPT, whose stories have almost no old characters; Qwen's motivating side works but harsh put-downs, rare in its data, barely appear. Where one side matches the model's default (Qwen's American setting, TinyGPT's happy endings) only the other side moves.
+3. **Content steers; grammar does not.** Wealth, age, size, topic and culture shift whole scenes. Tense lives in a few small words that must sit in exactly the right place, and a push added at every token scrambles them.
+4. **The prompt must leave room for the concept.** "Sharing ↔ greedy" did nothing on "there was a young girl" but works when the prompt sets up an object and a second child ("Lily found a shiny red ball… Her friend asked to play. Lily").
+5. **There is a sweet spot.** English ↔ French gives the most French at α = −4 (concept score −1.21) and less at −8 (−0.36), where the text breaks into repeated function words. This matches E2: past a point, more strength gives less concept and less fluency.
+
+### E8: Can two concepts be added?
+
+We add two concept vectors at once, s·(a·A + b·B) with a, b ∈ {−1, 0, +1} and s = 6 per concept, and generate all nine combinations with shared random draws. The concept directions we combined are almost orthogonal (cosine −0.03 for huge/tiny vs magic/everyday in TinyGPT, −0.06 for rich/poor vs old/young in Qwen), so each should move its own concept without disturbing the other.
+
+TinyGPT, "Tom went for a walk in the woods. Suddenly, he saw a", seed 1:
+
+| | everyday | (B = 0) | magic |
+| --- | --- | --- | --- |
+| **huge** | big, hungry… | big scary monster! | **huge giant giant dragon!** The dragon was huge and roared fierce! |
+| **(A = 0)** | big, bright tree… a big, red apple | big bear! (unsteered) | big, shiny stone. It was magical! |
+| **tiny** | big, red apple on the side | small rabbit… lost in the woods | **tiny creature** hiding in the bushes. "Hello! I'm **tiny fairy**…" |
+
+The combinations are new: no example sentence mentions a dragon or a fairy, yet huge + magic gives a dragon and tiny + magic a fairy. The model's own knowledge connects the two directions to a creature that is both. This is the steering version of the word-vector arithmetic king − man + woman ≈ queen.
+
+On Qwen ("My neighbour", seed 1) the single concepts work ("is so old that he can't see clearly"; "is so smart that he always wins every game") and poor + old gives one character with both ("is so poor that he cannot buy anything… I give him a piece of bread"), but rich + old reads mostly as old ("died peacefully, surrounded by his family"). Strength 8 per concept already breaks the text more often: two orthogonal vectors of length 8 add up to a push √2 times as long.
+
 ## 7. Discussion
 
 **Reading a concept is not the same as pushing it.** In Qwen the probe peaks in the middle layers (AUC 0.99 at 9–14), yet the best two-way steering is at layer 4. A plausible reason: a vector added early passes through 20 more blocks, which can turn "slightly happier hidden state" into happier word choices; a vector added late has little room left to act and must already be in the exact form the final layers expect. Middle and late layers still steer happy well (layer 14 reaches +0.93 at α = 8), but they push sad less (−0.28).
@@ -172,10 +227,14 @@ Changes are measured against the unsteered text at the same checkpoint. Until st
 
 **A concept appears suddenly in training.** In TinyGPT the happy/sad direction does not slowly sharpen: for 150 steps there is none, then within about 100 steps it becomes readable (AUC 0.46 → 0.91) and steerable. It appears when validation loss falls below about 3.1, after the model has learned which words are frequent but early in learning how sentences fit together. Our reading is that the model first learns word statistics and only then the higher-level features that sentiment depends on. One run, one seed, so this needs repeating before it is called general (section 8).
 
+**The training data decides what can be steered.** E7 shows the same lesson from another side: a direction exists for a concept only if the data taught the model to tell its two sides apart, and steering can only move the text towards things the model has seen. The model's defaults show through the same way: unsteered Qwen tells an American story, and unsteered TinyGPT already writes happily. Steering is therefore also a cheap way to probe what a model learned, and what it is biased towards.
+
+**Concept directions compose.** E8 suggests the concepts sit in nearly independent directions that can be mixed like ingredients, and the model fills in a sensible combination (a tiny + magic creature is a fairy). It works best when both concepts are about content the model knows well (TinyStories is full of dragons and fairies) and at moderate strength.
+
 ## 8. Limitations
 
 - **One training run, one seed.** The sudden appearance of the direction in TinyGPT is seen in one run (re-run once with the same seed). Other seeds, model sizes and datasets could move or smooth the transition.
-- **One concept.** Experiments use sentiment only. The demo also steers user-defined concepts (e.g. formal ↔ casual), but these were checked by eye, not measured.
+- **Other concepts are judged by eye.** Only sentiment is measured with an independent classifier. E7 and E8 use 1–3 prompts and two seeds per concept, read by hand; the demo's concept score uses the same direction as the steering, so it shows movement along the direction, not whether the text really has the concept (confident ↔ uncertain scored well while producing textbook exercises).
 - **Automatic sentiment scoring.** The classifier was trained on tweets and can misjudge odd or broken text; for that reason we also report fluency and read samples by hand. Steered text that loops can still score strongly positive or negative.
 - **Small samples.** 100 texts per Qwen setting and 60 per TinyGPT setting give differences of about ±0.1 that are noise; we only draw conclusions from larger effects and from consistent patterns across layers.
 - **Fluency cost.** Every effective setting raises perplexity (about 3× at the best setting); steering here is a research tool, not a polished generation method.
@@ -189,7 +248,7 @@ The project is deployed in two parts, at no cost:
 | Part | Where | What it offers |
 | --- | --- | --- |
 | Project page (always online) | [arcyadav-steering-transformers.static.hf.space](https://arcyadav-steering-transformers.static.hf.space) | headline findings, method, all figures, and an interactive replay of real generations from E1–E3 and E6 (choose model, prompt, layer, strength or training step) |
-| Live demo (Gradio) | runs with `python app.py --share`; reachable on the local network and through a public gradio.live link that the project page picks up automatically | steer Qwen or TinyGPT with sliders, define your own concept from example sentences, and a concept meter that colours each token by its projection on the direction |
+| Live demo (Gradio) | runs with `python app.py --share`; reachable on the local network and through a public gradio.live link that the project page picks up automatically | steer Qwen or TinyGPT with sliders; 13 tested preset concepts or your own from example sentences; a Transition tab (one prompt at five strengths); a Mix tab (two concepts at once, 3×3 grid); and a concept meter that colours each token by its projection on the direction |
 | Code and results | [github.com/arcyadav/tiny-gpt-and-qwen-steering-study](https://github.com/arcyadav/tiny-gpt-and-qwen-steering-study) | all code, Kaggle notebooks, result JSON files, every generated text, figures |
 
 Hugging Face no longer hosts Gradio apps on free hardware, so the live demo runs on the author's laptop (Qwen about 6 s per generation on CPU) while the static page stays online permanently.
@@ -198,7 +257,7 @@ To reproduce: `kaggle/steer_experiments.ipynb` runs E1–E4 on Qwen; `kaggle/tin
 
 ## 10. Conclusion
 
-A single vector, built from a handful of sentence pairs and added to the residual stream, reliably steers the sentiment of both a pretrained 0.5B model and a 12M model we built ourselves, and a random vector of the same size does not. Steering is stronger than prompting but costs fluency, works best early in the network (layer 4) even though the concept is most readable in the middle, and is easier towards happy than towards sad. In our own model, the happy/sad direction appears abruptly, between training steps 150 and 250, about 4% of the way through training. The next steps would be more seeds and model sizes for the training result, more concepts, and a trained probe.
+A single vector, built from a handful of sentence pairs and added to the residual stream, reliably steers the sentiment of both a pretrained 0.5B model and a 12M model we built ourselves, and a random vector of the same size does not. Steering is stronger than prompting but costs fluency, works best early in the network (layer 4) even though the concept is most readable in the middle, and is easier towards happy than towards sad. In our own model, the happy/sad direction appears abruptly, between training steps 150 and 250, about 4% of the way through training. The same method steers many other concepts (wealth, age, size, language, culture) as long as the training data contains them, and two concept vectors can be added to get both at once. The next steps would be more seeds and model sizes for the training result, an independent measure for the other concepts (for example a classifier per concept), E6 for other concepts to see whether they appear at different points in training, and a trained probe.
 
 ## References
 
