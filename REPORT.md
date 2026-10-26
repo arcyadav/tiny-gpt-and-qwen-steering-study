@@ -1,6 +1,6 @@
 # Steering Transformers from the Inside
 
-UMC301 Project 4 report (draft) · Archana Yadav · 21 Oct 2026
+UMC301 Project 4 report · Archana Yadav · 26 Oct 2026
 
 Project page: https://arcyadav-steering-transformers.static.hf.space
 
@@ -33,7 +33,7 @@ Qwen2.5-0.5B is the reliable, pretrained model for questions 1–4. TinyGPT is t
 
 **The residual stream.** A decoder-only transformer keeps one vector per token (896 numbers in Qwen2.5-0.5B, 384 in TinyGPT). Each block reads this vector, computes attention and a feed-forward update, and *adds* the result back: x ← x + attn(norm(x)), then x ← x + ffn(norm(x)). Elhage et al. (2021) call this running sum the residual stream. Because every block writes into the same space by addition, a vector added at one layer is carried forward to all later layers.
 
-**Concepts as directions.** The linear representation hypothesis (Park et al., 2023) says many high-level concepts correspond to directions in this space. If so, the mean difference between hidden states of "happy" and "sad" text should point along the sentiment direction.
+**Concepts as directions.** The linear representation hypothesis (Park et al., 2024) says many high-level concepts correspond to directions in this space. If so, the mean difference between hidden states of "happy" and "sad" text should point along the sentiment direction.
 
 **Activation steering.** Turner et al. (2023, ActAdd) steered GPT-2 by adding the difference of two prompts' activations. Rimsky et al. (2024, Contrastive Activation Addition) averaged over many contrastive pairs and steered Llama 2 on behaviours such as sycophancy. Zou et al. (2023, Representation Engineering) read and controlled concepts with similar directions. This project uses the mean-difference (CAA-style) method, adds the random-vector control to every setting, and adds a question those papers could not ask: when, during training, the direction appears.
 
@@ -261,17 +261,15 @@ A single vector, built from a handful of sentence pairs and added to the residua
 
 ## References
 
-1. Vaswani et al. *Attention Is All You Need.* NeurIPS 2017.
-2. Elhage et al. *A Mathematical Framework for Transformer Circuits.* Anthropic, 2021.
-3. Turner et al. *Activation Addition: Steering Language Models Without Optimization.* 2023.
-4. Rimsky et al. *Steering Llama 2 via Contrastive Activation Addition.* ACL 2024.
-5. Zou et al. *Representation Engineering: A Top-Down Approach to AI Transparency.* 2023.
-6. Park, Choe and Veitch. *The Linear Representation Hypothesis and the Geometry of Large Language Models.* 2023.
-7. Eldan and Li. *TinyStories: How Small Can Language Models Be and Still Speak Coherent English?* 2023.
-8. Qwen Team. *Qwen2.5 Technical Report.* 2024.
-9. Su et al. *RoFormer: Enhanced Transformer with Rotary Position Embedding.* 2021.
-10. Zhang and Sennrich. *Root Mean Square Layer Normalization.* NeurIPS 2019.
-11. Shazeer. *GLU Variants Improve Transformer.* 2020.
-12. Loureiro et al. *TimeLMs: Diachronic Language Models from Twitter* (the cardiffnlp sentiment model). ACL 2022.
-
-References are listed from memory and should be checked against the papers before submission.
+1. Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser and Polosukhin. *Attention Is All You Need.* NeurIPS 2017. arXiv:1706.03762.
+2. Elhage, Nanda, Olsson, et al. *A Mathematical Framework for Transformer Circuits.* Transformer Circuits Thread (Anthropic), 2021. https://transformer-circuits.pub/2021/framework/
+3. Turner, Thiergart, Udell, Leech, Vazquez, Mini and MacDiarmid. *Activation Addition: Steering Language Models Without Optimization.* 2023. arXiv:2308.10248 (later versions titled *Steering Language Models With Activation Engineering*).
+4. Rimsky (Panickssery), Gabrieli, Schulz, Tong, Hubinger and Turner. *Steering Llama 2 via Contrastive Activation Addition.* ACL 2024 (long papers), pp. 15504–15522. arXiv:2312.06681.
+5. Zou et al. *Representation Engineering: A Top-Down Approach to AI Transparency.* 2023. arXiv:2310.01405.
+6. Park, Choe and Veitch. *The Linear Representation Hypothesis and the Geometry of Large Language Models.* ICML 2024 (PMLR 235). arXiv:2311.03658.
+7. Eldan and Li. *TinyStories: How Small Can Language Models Be and Still Speak Coherent English?* 2023. arXiv:2305.07759.
+8. Qwen Team (Alibaba). *Qwen2.5 Technical Report.* 2024. arXiv:2412.15115.
+9. Su, Lu, Pan, Murtadha, Wen and Liu. *RoFormer: Enhanced Transformer with Rotary Position Embedding.* 2021. arXiv:2104.09864.
+10. Zhang and Sennrich. *Root Mean Square Layer Normalization.* NeurIPS 2019. arXiv:1910.07467.
+11. Shazeer. *GLU Variants Improve Transformer.* 2020. arXiv:2002.05202.
+12. Loureiro, Barbieri, Neves, Espinosa Anke and Camacho-Collados. *TimeLMs: Diachronic Language Models from Twitter.* ACL 2022 System Demonstrations, pp. 251–260. arXiv:2202.03829. (The paper behind the `cardiffnlp/twitter-roberta-base-sentiment-latest` classifier used here.)
