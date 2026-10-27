@@ -9,7 +9,7 @@
 :root {
   --bg: #f7f7f5; --card: #ffffff; --ink: #17181b; --muted: #5f646c; --rule: #dfe1e5;
   --accent: #c63b2c; --soft: #fbeeec; --blue: #2f62c4; --ok: #1f7a4a; --okbg: #e7f4ec; --code: #f0f1f4;
-  --happy: #c47a12; --happybg: #fdf0db; --sad: #2f64b0; --sadbg: #e3ecf9;
+  --happy: #c47a12; --sad: #2f64b0;
   --display: "Segoe UI Semibold", "Segoe UI", system-ui, sans-serif;
   --body: "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
@@ -17,10 +17,10 @@
 @media (prefers-color-scheme: dark) {
   :root { --bg: #121315; --card: #1a1c1f; --ink: #ebebe8; --muted: #a0a5ad; --rule: #2d3035;
     --accent: #ef6b5b; --soft: #2a1d1b; --blue: #7ea6f2; --ok: #6fcf97; --okbg: #17281e; --code: #23262b;
-    --happy: #f0a73a; --happybg: #3a2c14; --sad: #6b9be6; --sadbg: #1a2a44; color-scheme: dark; }
+    --happy: #f0a73a; --sad: #6b9be6; color-scheme: dark; }
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 15.5px/1.65 var(--body); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15.5px/1.7 var(--body); }
 .layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); max-width: 1180px; margin: 0 auto; gap: 28px;
   padding: 28px max(16px, env(safe-area-inset-right, 0px)) 80px max(16px, env(safe-area-inset-left, 0px)); }
 nav { position: sticky; top: 16px; align-self: start; font-size: .9rem; max-height: calc(100vh - 32px); overflow-y: auto; }
@@ -37,12 +37,10 @@ p { margin: 8px 0; max-width: 72ch; }
 section { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 22px 24px; margin: 18px 0; }
 .num { font: 600 .75rem var(--mono); color: var(--accent); letter-spacing: .08em; text-transform: uppercase; }
 a { color: var(--blue); }
-code, .mono { font-family: var(--mono); font-size: .88em; background: var(--code); padding: 1px 5px; border-radius: 4px; }
-pre { background: var(--code); padding: 12px 14px; border-radius: 8px; overflow-x: auto; font: .82rem/1.5 var(--mono); }
-pre code { background: none; padding: 0; }
-ul, ol { padding-left: 22px; margin: 6px 0; } li { margin: 3px 0; max-width: 72ch; }
+code { font-family: var(--mono); font-size: .88em; background: var(--code); padding: 1px 5px; border-radius: 4px; }
+ul, ol { padding-left: 22px; margin: 6px 0; } li { margin: 4px 0; max-width: 72ch; }
 .tbl { overflow-x: auto; margin: 10px 0; }
-table { border-collapse: collapse; width: 100%; font-size: .92rem; font-variant-numeric: tabular-nums; }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; font-variant-numeric: tabular-nums; }
 th, td { border-bottom: 1px solid var(--rule); padding: 7px 10px; text-align: left; vertical-align: top; }
 th { font: 600 .75rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .links { display: grid; gap: 6px; margin: 14px 0 0; }
@@ -55,7 +53,7 @@ th { font: 600 .75rem var(--mono); text-transform: uppercase; letter-spacing: .0
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px; }
 .comp { border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; }
 .comp h3 { margin-top: 0; }
-.comp .where { font: .78rem var(--mono); color: var(--muted); }
+.comp .where { font-size: .82rem; color: var(--muted); }
 details { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; margin: 8px 0; }
 details summary { cursor: pointer; font-weight: 600; }
 details[open] summary { margin-bottom: 6px; }
@@ -77,7 +75,7 @@ details[open] summary { margin-bottom: 6px; }
 .kpi b { display: block; font: 700 1.4rem var(--display); }
 .kpi span { color: var(--muted); font-size: .85rem; }
 .hap { color: var(--happy); font-weight: 600; } .sad { color: var(--sad); font-weight: 600; }
-.quote { font-style: italic; color: var(--muted); }
+.quote { font-style: italic; }
 .bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 0; }
 .bar button { font: inherit; font-size: .9rem; padding: 6px 12px; border: 1px solid var(--rule); border-radius: 6px;
   background: var(--card); color: var(--ink); cursor: pointer; }
@@ -92,15 +90,15 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
   <a href="#links">Links</a>
   <a href="#pitch">The 2-minute pitch</a>
   <a href="#steering">What is steering?</a>
-  <a href="#method">The method, step by step</a>
-  <a href="#tinygpt">TinyGPT and its components</a>
-  <a href="#qwen">Qwen2.5-0.5B</a>
-  <a href="#metrics">How we measure</a>
-  <a href="#studies">Studies: questions answered</a>
-  <a href="#results">Results</a>
-  <a href="#concepts">Other concepts (E7)</a>
-  <a href="#mix">Adding concepts (E8)</a>
-  <a href="#observations">Interesting observations</a>
+  <a href="#method">How it works, step by step</a>
+  <a href="#tinygpt">TinyGPT: the model I built</a>
+  <a href="#qwen">Qwen: the ready-made model</a>
+  <a href="#metrics">How we judged the results</a>
+  <a href="#studies">The questions we asked</a>
+  <a href="#results">What we found</a>
+  <a href="#concepts">Other concepts</a>
+  <a href="#mix">Mixing two concepts</a>
+  <a href="#observations">Surprises</a>
   <a href="#demo">Demo plan</a>
   <a href="#well">What went well</a>
   <a href="#limits">Limitations and assumptions</a>
@@ -115,9 +113,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 <header>
   <span class="num">UMC301 · Project 4 · Archana Yadav · October 2026</span>
   <h1>Viva Prep: Steering Transformers from the Inside</h1>
-  <p class="lede">Everything needed to explain the project: what activation steering is, how the vector is built and
-    added, TinyGPT's components, the eight studies and their results, what surprised us, the limitations, and the
-    questions likely to come up.</p>
+  <p class="lede">Everything needed to explain the project in plain words: the idea, how it works, the small model I
+    built, what we tested, what we found, what surprised us, and the questions likely to come up.</p>
   <div class="bar"><button id="openAll">Open all answers</button><button id="closeAll">Close all answers</button></div>
 </header>
 
@@ -127,58 +124,60 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
   <div class="links">
     <div><span>Project page (always on)</span><a href="https://arcyadav-steering-transformers.static.hf.space">https://arcyadav-steering-transformers.static.hf.space</a></div>
     <div><span>Code</span><a href="https://github.com/arcyadav/tiny-gpt-and-qwen-steering-study">https://github.com/arcyadav/tiny-gpt-and-qwen-steering-study</a></div>
-    <div><span>Live demo</span><span><code>.venv\Scripts\python app.py --share</code>: prints a public gradio.live link and puts it on the project page's "Live demo" button. The laptop must stay on.</span></div>
-    <div><span>Report</span><span><code>REPORT.md</code> in the repo</span></div>
-    <div><span>Demo examples</span><span><code>DEMO_SHOWCASE.md</code>: 14 tested prompts with exact settings</span></div>
-    <div><span>Explaining odd results</span><span><code>EXPLAINING_RESULTS.md</code>: 17 symptoms, why they happen, what to try</span></div>
+    <div><span>Live demo</span><span>Run <code>.venv\Scripts\python app.py --share</code> on the laptop. It gives a public link and turns on the "Live demo" button on the project page. The laptop must stay on.</span></div>
+    <div><span>Report</span><span><code>REPORT.md</code> in the code</span></div>
+    <div><span>Good demo examples</span><span><code>DEMO_SHOWCASE.md</code>: 14 prompts that work, with exact settings</span></div>
+    <div><span>When a result looks odd</span><span><code>EXPLAINING_RESULTS.md</code>: what you might see and why</span></div>
   </div>
 </section>
 
 <section id="pitch">
   <span class="num">Say this first</span>
   <h2>The 2-minute pitch</h2>
-  <p>We usually control a language model from the <b>outside</b>: change the prompt, or fine-tune the weights.
-    <b>Activation steering</b> controls it from the <b>inside</b>. If a concept like "happy" is stored as a
-    <b>direction</b> in the model's hidden states, then adding that direction while the model writes should make the
-    text happier, with no training and no prompt change.</p>
-  <p>I build the direction from <b>contrastive pairs</b> ("I loved the trip" / "I hated the trip"): the average hidden
-    state of the happy sentences minus the average of the sad ones, at one layer. A <b>PyTorch forward hook</b> adds
-    <b>α × vector</b> to the residual stream at every token. A <b>random vector of the same length</b> is the control.</p>
-  <p>Two models: <b>Qwen2.5-0.5B</b> (pretrained) and <b>TinyGPT</b>, a <b>12.2M-parameter GPT I wrote and trained
-    from scratch</b> on TinyStories in 18 minutes. On Qwen, steering at layer 4 moves sentiment from
-    <b>+0.05 to <span class="hap">+0.85</span></b> and to <b class="sad">−0.46</b>; the random vector does nothing.
-    Steering beats asking for a happy story, and <b>five pairs</b> are enough.</p>
-  <p>Novelty: because I trained TinyGPT myself, I could ask <b>when</b> the concept appears. It's <b>sudden</b>:
-    between training steps <b>150 and 250</b>, about 4% of training. It also works on other concepts (wealth, age,
-    size, language), and <b>two vectors can be added</b>: huge + magic gives a <b>dragon</b>.</p>
-  <div class="callout"><b>Five beats, in order:</b> what (steer from inside) → how (contrastive vector + hook) →
-    two models → results (+0.85, random does nothing, beats prompting) → novelty (sudden emergence, other concepts,
-    vectors add).</div>
+  <p>Normally, if you want a language model to write differently, you either <b>change what you ask it</b> (the
+    prompt) or you <b>retrain it</b>. My project does neither. It changes the model's <b>"thoughts" while it is
+    writing</b>.</p>
+  <p>Inside the model, every word is held as a long list of numbers. Ideas like "happy" turn out to be a
+    <b>direction</b> in those numbers. I find that direction by showing the model pairs of sentences that differ only
+    in mood ("I <i>loved</i> the trip" / "I <i>hated</i> the trip") and taking the difference. Then, while the model
+    writes, I <b>add a bit of that direction</b> at every word. The text becomes happier, or sadder if I subtract it.
+    As a fair test, I also add a <b>random direction of the same size</b>, which should do nothing.</p>
+  <p>I tried this on two models: <b>Qwen</b>, a ready-made model with half a billion parameters, and <b>TinyGPT</b>, a
+    small 12-million-parameter model that <b>I wrote and trained myself</b> in 18 minutes on children's stories. On
+    Qwen the mood goes from neutral (<b>+0.05</b>) to clearly happy (<b class="hap">+0.85</b>) or sad
+    (<b class="sad">−0.46</b>), while the random direction does nothing. It works better than simply asking for a happy
+    story, and <b>five example pairs</b> are enough.</p>
+  <p>Because I trained TinyGPT myself, I could also ask <b>when</b> during training the model learns the idea of
+    happy vs sad. It happens <b>suddenly</b>, at about 4% of the way through training. And it works for other ideas too:
+    rich or poor, old or young, huge or tiny. You can even <b>add two ideas together</b>: "huge" plus "magic" gives a
+    <b>dragon</b>.</p>
+  <div class="callout"><b>Five things to say, in order:</b> the idea (change its thoughts, not the prompt) → how
+    (difference of example sentences, added while writing) → the two models → the results → what's new (when it's
+    learned, other ideas, adding ideas).</div>
 </section>
 
 <section id="steering">
-  <span class="num">Concept</span>
-  <h2>What is activation steering?</h2>
-  <p>A decoder-only transformer keeps <b>one vector per token</b>: 896 numbers in Qwen, 384 in TinyGPT. This is the
-    <b>residual stream</b>. Every block <b>reads</b> it, computes attention and a feed-forward update, and <b>adds</b>
-    the result back:</p>
-  <pre><code>x ← x + attention(norm(x))
-x ← x + feedforward(norm(x))</code></pre>
-  <p>Because every block writes into the same space <b>by addition</b>, a vector added at one layer is carried
-    forward to every later layer. That makes the residual stream the natural place to edit.</p>
-  <p>The <b>linear representation hypothesis</b> (Park et al., 2024) says many high-level concepts are
-    <b>directions</b> in this space. If "happy vs sad" is a direction, then the difference between the average hidden
-    state of happy text and of sad text points along it, and adding it pushes the model towards happy.</p>
+  <span class="num">The idea</span>
+  <h2>What is steering?</h2>
+  <p>A language model reads text one piece at a time and keeps, for each piece, a long list of numbers that holds
+    "what it has in mind" at that point: 896 numbers in Qwen, 384 in TinyGPT. This list is called the
+    <b>residual stream</b>.</p>
+  <p>The model is built as a stack of layers. Each layer looks at that list, works something out, and <b>adds</b> its
+    result back onto it. So the list is like a shared notebook that every layer reads and writes into. If I write
+    something into the notebook at one layer, every later layer sees it.</p>
+  <p>Researchers have found that many ideas, like happy vs sad, correspond to a <b>direction</b> in this list of
+    numbers. So if I know the direction for "happy", I can <b>nudge</b> the model's notebook that way while it writes,
+    and it writes more happily. Nothing in the model is changed permanently, and the prompt stays exactly the same.</p>
   <div class="diagram">
-    <svg viewBox="0 0 860 220" role="img" aria-label="Residual stream from tokens to prediction; blocks read from and add to it; at layer l a hook adds alpha times v">
+    <svg viewBox="0 0 860 220" role="img" aria-label="The text flows left to right through the model's layers; each layer reads and adds to a shared stream; at one layer the steering adds the happy direction">
       <line class="line" x1="30" y1="130" x2="820" y2="130"/>
       <path class="line" d="M812 124 L824 130 L812 136"/>
-      <text x="30" y="160" class="small">tokens in</text>
-      <text x="830" y="160" class="small" text-anchor="end">next-token prediction</text>
-      <text x="430" y="208" class="small" text-anchor="middle">residual stream: one vector per token (896 numbers in Qwen, 384 in TinyGPT)</text>
-      <rect class="box" x="100" y="40" width="120" height="46" rx="8"/><text x="160" y="68" text-anchor="middle">block 0</text>
-      <rect class="box" x="250" y="40" width="120" height="46" rx="8"/><text x="310" y="68" text-anchor="middle">block 1 … ℓ</text>
-      <rect class="box" x="570" y="40" width="130" height="46" rx="8"/><text x="635" y="68" text-anchor="middle">… last block</text>
+      <text x="30" y="160" class="small">the words go in</text>
+      <text x="830" y="160" class="small" text-anchor="end">the next word comes out</text>
+      <text x="430" y="208" class="small" text-anchor="middle">the "notebook": a list of numbers for each word, that every layer reads and adds to</text>
+      <rect class="box" x="100" y="40" width="120" height="46" rx="8"/><text x="160" y="68" text-anchor="middle">layer 1</text>
+      <rect class="box" x="250" y="40" width="120" height="46" rx="8"/><text x="310" y="68" text-anchor="middle">layers 2 … 4</text>
+      <rect class="box" x="570" y="40" width="130" height="46" rx="8"/><text x="635" y="68" text-anchor="middle">… last layer</text>
       <path class="line" d="M130 130 V86"/><path class="line" d="M190 86 V126"/>
       <path class="line" d="M280 130 V86"/><path class="line" d="M340 86 V126"/>
       <path class="line" d="M600 130 V86"/><path class="line" d="M670 86 V126"/>
@@ -186,302 +185,290 @@ x ← x + feedforward(norm(x))</code></pre>
       <text x="455" y="135" text-anchor="middle" class="atext">+</text>
       <line class="acc" x1="455" y1="40" x2="455" y2="114"/>
       <path class="acc" d="M449 106 L455 116 L461 106"/>
-      <text x="455" y="28" text-anchor="middle" class="atext">α · v (forward hook)</text>
+      <text x="455" y="28" text-anchor="middle" class="atext">add a bit of the "happy" direction here</text>
     </svg>
   </div>
-  <div class="callout"><b>One-line answer:</b> "Steering adds a concept direction to the model's hidden state while it
-    generates. The direction is the average difference between hidden states of examples with and without the
-    concept. Nothing is trained: the weights and the prompt stay the same, and the hook is removed afterwards."</div>
-  <h3>Steering vs the alternatives</h3>
-  <div class="tbl"><table>
-    <tr><th></th><th>Prompting</th><th>Fine-tuning</th><th>Steering</th></tr>
-    <tr><td>Changes</td><td>the input text</td><td>the weights</td><td>hidden states, during generation</td></tr>
-    <tr><td>Cost</td><td>none</td><td>training + data</td><td>a few forward passes to build the vector</td></tr>
-    <tr><td>Needs instruction-following</td><td>yes (a base model often ignores it)</td><td>no</td><td>no</td></tr>
-    <tr><td>Strength control</td><td>coarse (wording)</td><td>fixed after training</td><td>a number, α, continuous and signed</td></tr>
-    <tr><td>Price</td><td>weaker effect</td><td>compute, may forget skills</td><td>fluency drops if α is too large</td></tr>
-  </table></div>
+  <div class="callout"><b>One-line answer:</b> "Steering means nudging the model's internal state towards an idea
+    while it writes. The idea's direction comes from the difference between example sentences with and without it.
+    Nothing is retrained and the prompt isn't changed."</div>
+  <h3>Compared with the usual ways</h3>
+  <ul>
+    <li><b>Prompting</b> (asking nicely): free, but a basic model like Qwen often ignores instructions, and the effect
+      is weaker.</li>
+    <li><b>Fine-tuning</b> (retraining): strong, but needs data and computing time, and changes the model for good.</li>
+    <li><b>Steering:</b> cheap (a few seconds to find the direction), adjustable with one number (how hard to push, and
+      which way), and the model goes back to normal afterwards. The price: push too hard and the text stops making
+      sense.</li>
+  </ul>
 </section>
 
 <section id="method">
   <span class="num">How</span>
-  <h2>The method, step by step</h2>
+  <h2>How it works, step by step</h2>
   <ol class="steps">
-    <li><b>Contrastive pairs.</b> Sentences that differ only in the concept. Qwen: 10 word pairs (loved/hated,
-      wonderful/awful, …) in 15 templates = <b>150 pairs</b>. TinyGPT: 6 word pairs in 12 TinyStories-style templates =
-      <b>72 pairs</b> (TinyGPT only knows simple children's English).</li>
-    <li><b>Read hidden states.</b> Run every sentence through the model; record the residual stream after every block
-      at every token. Skip each text's <b>first token</b>, which has unusually large activations, and padding.</li>
-    <li><b>Steering vector per layer:</b> <code>v_ℓ = mean(happy tokens) − mean(sad tokens)</code>. For Qwen layer 4,
-      |v| ≈ 1.1, used at its natural size, so α is a multiple of the real happy–sad gap.</li>
-    <li><b>Steer.</b> A forward hook on block ℓ replaces its output h with <code>h + α·v</code> at every position and
-      every new token. α &gt; 0 → happy, α &lt; 0 → sad. The hook is removed afterwards.</li>
-    <li><b>Control.</b> Repeat with a random Gaussian vector rescaled to |v|, same layer and α. Separates "the concept
-      moves the text" from "any push of this size moves the text".</li>
-    <li><b>Measure</b> sentiment, fluency and repetition on 40 new tokens (temperature 0.7, top-p 0.9), 2 samples per
-      prompt: 50 neutral prompts for Qwen, 30 story openings for TinyGPT.</li>
+    <li><b>Write example pairs</b> that differ only in the idea: "I loved the trip, it was wonderful" / "I hated the
+      trip, it was awful". For Qwen: 150 pairs (10 word pairs in 15 sentence patterns). For TinyGPT: 72 simpler pairs
+      in children's-story style, because it only knows simple English.</li>
+    <li><b>Look inside:</b> feed every sentence to the model and record its notebook (the list of numbers) after each
+      layer, for every word. The very first word is skipped, because models always give it unusually large numbers.</li>
+    <li><b>Find the direction:</b> average the happy sentences' numbers, average the sad ones, and subtract. That
+      difference is the "happy direction". There is one for each layer.</li>
+    <li><b>Nudge while writing:</b> a small piece of code attached to one layer (a <b>hook</b>) adds the direction to
+      the notebook at every word, as the model writes. A number called <b>α (alpha)</b> sets how hard: +8 means eight
+      times the happy direction, −8 means eight times towards sad. Afterwards the hook is removed.</li>
+    <li><b>Fair test:</b> do the same with a <b>random direction of exactly the same size</b>. If that also changed the
+      mood, the effect would just be "any push changes the text". It doesn't.</li>
+    <li><b>Judge the result</b> on lots of short continuations: 50 everyday prompts for Qwen ("I went to the market
+      today and"), 30 story openings for TinyGPT ("Tom had a red ball. He"), two samples each.</li>
   </ol>
-  <h3>The hook, in code (<code>steer/core.py</code>)</h3>
-  <pre><code>@contextmanager
-def steering(self, layer, vector, alpha):
-    add = (alpha * vector).to(self.device, self.dtype)
-    hook = self.layers[layer].register_forward_hook(
-        lambda m, inp, out: _replace_hidden(out, _hidden(out) + add))
-    try:
-        yield
-    finally:
-        hook.remove()</code></pre>
-  <p>The same code steers both models: Qwen's blocks are <code>model.model.layers</code>, TinyGPT's are
-    <code>model.blocks</code>. For a batch, <code>vector</code> can hold one vector per row, so steered, unsteered and
-    random rows are generated together and differ only in what is added.</p>
 </section>
 
 <section id="tinygpt">
   <span class="num">Built from scratch</span>
-  <h2>TinyGPT and its components</h2>
-  <p>A 12,194,688-parameter decoder-only GPT written in PyTorch (<code>tinygpt/model.py</code>), with its own tokenizer
-    and training loop. Each component is a deliberate, modern choice, the same family as Llama and Qwen.</p>
+  <h2>TinyGPT: the model I built</h2>
+  <p>TinyGPT is a small version of the kind of model behind ChatGPT, written from scratch in Python (PyTorch), with
+    its own word-splitter and training. It has <b>12.2 million parameters</b> (the adjustable numbers it learns), about
+    40 times smaller than Qwen. Its parts are the same modern choices used in real models like Llama and Qwen.</p>
   <div class="diagram">
-    <svg viewBox="0 0 860 250" role="img" aria-label="TinyGPT: token ids to embedding, six pre-norm blocks with RMSNorm, attention with RoPE, RMSNorm and SwiGLU feed-forward, then final RMSNorm and tied output layer">
-      <rect class="box" x="10" y="95" width="100" height="50" rx="8"/><text x="60" y="117" text-anchor="middle">token ids</text><text x="60" y="134" text-anchor="middle" class="small">BPE, vocab 4,096</text>
-      <rect class="box" x="135" y="95" width="105" height="50" rx="8"/><text x="187" y="117" text-anchor="middle">embedding</text><text x="187" y="134" text-anchor="middle" class="small">4,096 × 384</text>
-      <rect class="hot" x="265" y="20" width="400" height="200" rx="10"/>
-      <text x="465" y="42" text-anchor="middle" font-weight="600">block × 6 (pre-norm)</text>
-      <rect class="box" x="285" y="60" width="110" height="40" rx="6"/><text x="340" y="85" text-anchor="middle">RMSNorm</text>
-      <rect class="box" x="410" y="60" width="160" height="40" rx="6"/><text x="490" y="78" text-anchor="middle">causal attention</text><text x="490" y="93" text-anchor="middle" class="small">6 heads, RoPE on q, k</text>
-      <text x="610" y="85" text-anchor="middle" font-weight="700">+ x</text>
-      <rect class="box" x="285" y="140" width="110" height="40" rx="6"/><text x="340" y="165" text-anchor="middle">RMSNorm</text>
-      <rect class="box" x="410" y="140" width="160" height="40" rx="6"/><text x="490" y="158" text-anchor="middle">SwiGLU MLP</text><text x="490" y="173" text-anchor="middle" class="small">384 → 1,024 → 384</text>
-      <text x="610" y="165" text-anchor="middle" font-weight="700">+ x</text>
-      <text x="465" y="208" text-anchor="middle" class="small">residual stream runs through; steering adds α·v after a block</text>
-      <rect class="box" x="690" y="95" width="80" height="50" rx="8"/><text x="730" y="117" text-anchor="middle">RMSNorm</text><text x="730" y="134" text-anchor="middle" class="small">final</text>
-      <rect class="box" x="785" y="95" width="70" height="50" rx="8"/><text x="820" y="117" text-anchor="middle">logits</text><text x="820" y="134" text-anchor="middle" class="small">tied</text>
-      <path class="line" d="M110 120 H135"/><path class="line" d="M240 120 H265"/><path class="line" d="M665 120 H690"/><path class="line" d="M770 120 H785"/>
+    <svg viewBox="0 0 860 230" role="img" aria-label="Text is split into tokens, turned into numbers, passed through 6 layers each with attention and a feed-forward part, and turned back into a next-word guess">
+      <rect class="box" x="10" y="90" width="110" height="54" rx="8"/><text x="65" y="113" text-anchor="middle">split text</text><text x="65" y="131" text-anchor="middle" class="small">into 4,096 pieces</text>
+      <rect class="box" x="140" y="90" width="110" height="54" rx="8"/><text x="195" y="113" text-anchor="middle">turn into</text><text x="195" y="131" text-anchor="middle" class="small">384 numbers each</text>
+      <rect class="hot" x="270" y="20" width="390" height="190" rx="10"/>
+      <text x="465" y="44" text-anchor="middle" font-weight="600">6 layers, each with two parts</text>
+      <rect class="box" x="295" y="62" width="340" height="50" rx="6"/><text x="465" y="84" text-anchor="middle">attention: look back at earlier words</text><text x="465" y="101" text-anchor="middle" class="small">6 "heads", each looking for different things</text>
+      <rect class="box" x="295" y="125" width="340" height="50" rx="6"/><text x="465" y="147" text-anchor="middle">feed-forward: think about each word</text><text x="465" y="164" text-anchor="middle" class="small">results are added onto the notebook</text>
+      <text x="465" y="197" text-anchor="middle" class="small">steering adds the "happy" direction after one of these layers</text>
+      <rect class="box" x="680" y="90" width="170" height="54" rx="8"/><text x="765" y="113" text-anchor="middle">guess the next word</text><text x="765" y="131" text-anchor="middle" class="small">score for all 4,096 pieces</text>
+      <path class="line" d="M120 117 H140"/><path class="line" d="M250 117 H270"/><path class="line" d="M660 117 H680"/>
     </svg>
   </div>
   <div class="grid2">
-    <div class="comp"><h3>BPE tokenizer, vocab 4,096</h3><p class="where">trained on TinyStories</p>
-      <p>Byte-level BPE merges frequent character pairs into tokens. A small vocabulary fits a children's-story corpus;
-      GPT-2's 50k vocabulary would put ~19M parameters in the embedding alone, more than the whole model.</p></div>
-    <div class="comp"><h3>Token embedding (tied)</h3><p class="where">4,096 × 384 = 1.57M params</p>
-      <p>Maps each token id to a 384-number vector. The output layer reuses the same matrix (<b>weight tying</b>),
-      saving 1.6M parameters.</p></div>
-    <div class="comp"><h3>RoPE (rotary position embedding)</h3><p class="where">Su et al. 2021</p>
-      <p>Rotates query and key vectors by an angle that depends on position, so the attention score depends on the
-      <b>relative distance</b> between tokens. No learned position table.</p></div>
-    <div class="comp"><h3>RMSNorm</h3><p class="where">Zhang &amp; Sennrich 2019</p>
-      <p>Rescales each vector to unit root-mean-square, with a learned gain. Like LayerNorm without subtracting the
-      mean: simpler and as good.</p></div>
-    <div class="comp"><h3>Pre-norm</h3><p class="where">x + f(norm(x))</p>
-      <p>Normalise <b>before</b> each sub-layer and add the result to the untouched x. This keeps a clean residual path,
-      so training is stable without careful warm-up, and it is the "stream" that steering edits.</p></div>
-    <div class="comp"><h3>Causal self-attention, 6 heads</h3><p class="where">4 × 384² = 590k params per block</p>
-      <p>Each token attends only to earlier tokens (causal mask). 6 heads of 64 dimensions. Uses PyTorch's fused
-      scaled-dot-product attention (tested against an explicit implementation).</p></div>
-    <div class="comp"><h3>SwiGLU feed-forward, hidden 1,024</h3><p class="where">Shazeer 2020 · 3 × 384 × 1,024 = 1.18M per block</p>
-      <p>A gated MLP: <code>W2(silu(W1 x) ⊙ W3 x)</code>. Standard in modern LLMs; with hidden 1,024 it has about the
-      same parameters as a 4× GELU MLP.</p></div>
-    <div class="comp"><h3>Residual stream, width 384</h3><p class="where">6 blocks, context 256 tokens</p>
-      <p>Every block adds its output to a running vector per token. Steering adds α·v to it after a chosen block.</p></div>
+    <div class="comp"><h3>Word-splitter (tokenizer)</h3><p class="where">BPE, 4,096 pieces</p>
+      <p>Splits text into common pieces of words. I trained it on the stories themselves. A small set of 4,096 pieces
+      is enough for children's English, and keeps the model small: GPT-2's 50,000 pieces would need more numbers than
+      my whole model.</p></div>
+    <div class="comp"><h3>Turning pieces into numbers</h3><p class="where">embedding, 384 numbers per piece</p>
+      <p>Each piece gets its own list of 384 numbers, learned during training. The same table is reused at the end to
+      turn numbers back into a word guess (<b>weight tying</b>), which saves 1.6 million parameters.</p></div>
+    <div class="comp"><h3>Knowing word order</h3><p class="where">RoPE (rotary positions)</p>
+      <p>The model needs to know which word came where. RoPE "rotates" the numbers by an amount that depends on
+      position, so the model can tell how far apart two words are.</p></div>
+    <div class="comp"><h3>Attention</h3><p class="where">6 heads, only looks backwards</p>
+      <p>Lets each word look back at the earlier words and pick up what matters ("she" → "Lily"). It can't peek at
+      future words, since it has to guess them.</p></div>
+    <div class="comp"><h3>Feed-forward part</h3><p class="where">SwiGLU</p>
+      <p>A small network applied to each word separately, where much of the "knowledge" is stored. SwiGLU is a version
+      with a gate that decides how much of each signal to let through; modern models use it because it learns better.</p></div>
+    <div class="comp"><h3>Keeping numbers stable</h3><p class="where">RMSNorm, applied before each part</p>
+      <p>Rescales the numbers to a steady size before each part, so training doesn't blow up. Doing it <i>before</i>
+      each part (pre-norm) leaves the shared notebook itself untouched, which keeps training stable. That notebook is
+      exactly what steering edits.</p></div>
   </div>
-  <h3>Parameter count (check it in your head)</h3>
-  <div class="tbl"><table>
-    <tr><th>Part</th><th>Calculation</th><th>Parameters</th></tr>
-    <tr><td>Embedding (tied with output)</td><td>4,096 × 384</td><td>1,572,864</td></tr>
-    <tr><td>Attention per block</td><td>4 × 384 × 384 (q, k, v, out)</td><td>589,824</td></tr>
-    <tr><td>SwiGLU per block</td><td>3 × 384 × 1,024</td><td>1,179,648</td></tr>
-    <tr><td>2 RMSNorms per block</td><td>2 × 384</td><td>768</td></tr>
-    <tr><td>6 blocks</td><td>6 × 1,770,240</td><td>10,621,440</td></tr>
-    <tr><td>Final RMSNorm</td><td>384</td><td>384</td></tr>
-    <tr><td><b>Total</b></td><td></td><td><b>12,194,688</b> (a unit test checks this exact number)</td></tr>
-  </table></div>
-  <h3>Training</h3>
+  <h3>Training it</h3>
   <ul>
-    <li><b>Data:</b> 500k TinyStories tokenized (115M tokens); the run used <b>80M</b>: 4,882 steps × 64 × 256 tokens.</li>
-    <li><b>Optimiser:</b> AdamW, lr 1e-3, betas 0.9/0.95, weight decay 0.1; 200 warm-up steps then cosine decay to 10%;
-      gradient clipping 1.0; fp16 mixed precision.</li>
-    <li><b>Hardware:</b> one free Kaggle T4, about 86k tokens/s, <b>18 minutes</b>.</li>
-    <li><b>Result:</b> validation loss <b>1.67</b> (perplexity 5.3); coherent stories ("Lily … went to the park to play
-      with her friends … saw a pretty butterfly").</li>
-    <li><b>Checkpoints</b> every 500 steps; for E6 the first 600 steps were re-run with the same seed and schedule,
-      saving every 50 steps. The re-run reproduced the original validation losses (2.861 at step 250, 2.412 at 500).</li>
-    <li><b>Also supported, not used in the final run:</b> learned / sinusoidal / ALiBi / no position encoding, LayerNorm,
-      post-norm, GELU, grouped-query and multi-query attention. <b>52 unit tests</b> cover parameter count, causality,
-      fused vs explicit attention, longer-than-training contexts, and overfitting a batch.</li>
+    <li><b>Data:</b> TinyStories, short stories written with words a 3–4-year-old knows. I used about
+      <b>80 million</b> word pieces.</li>
+    <li><b>Time and hardware:</b> <b>18 minutes</b> on one free Kaggle graphics card (a T4).</li>
+    <li><b>Result:</b> it writes coherent little stories: <span class="quote">"Lily … went to the park to play with her
+      friends … saw a pretty butterfly"</span>.</li>
+    <li><b>Snapshots:</b> I saved the model regularly during training (every 500 steps, and every 50 steps at the
+      start), so I could look at what it knew at each point. That's what makes the "when is it learned" question
+      possible.</li>
+    <li><b>Checked by 52 automatic tests</b>: for example, the exact parameter count, and that it never peeks at
+      future words.</li>
   </ul>
-  <h3>Why TinyStories?</h3>
-  <p>Eldan &amp; Li (2023) showed that models under 10M parameters can write fluent stories if the data uses only words a
-    3–4-year-old knows. That lets a from-scratch model train in minutes and still produce text worth steering. The
-    price: TinyGPT only knows children's English, so many concepts (economics, old people) don't exist for it.</p>
+  <div class="callout"><b>Where does 12.2 million come from?</b> The table of 4,096 pieces × 384 numbers is about
+    1.6 million. Each of the 6 layers has about 1.8 million (attention about 0.6 million, feed-forward about 1.2
+    million), so 10.6 million for all six. Together: 12,194,688.</div>
+  <h3>Why children's stories?</h3>
+  <p>The TinyStories paper (Eldan &amp; Li, 2023) showed that very small models can write fluent stories if the
+    language is simple. That let me build a model from scratch that trains in minutes and still writes text worth
+    steering. The downside: TinyGPT only knows children's English, so ideas like "economics" or "old people" barely
+    exist for it.</p>
 </section>
 
 <section id="qwen">
-  <span class="num">The pretrained model</span>
-  <h2>Qwen2.5-0.5B (base)</h2>
+  <span class="num">The ready-made model</span>
+  <h2>Qwen: the ready-made model</h2>
+  <p><b>Qwen2.5-0.5B</b> is a free model from Alibaba, with about <b>half a billion</b> parameters and 24 layers,
+    trained on a huge amount of web text. I used the <b>base</b> version, not the chat version: it just continues text
+    and doesn't follow instructions.</p>
+  <ul>
+    <li><b>Why this one?</b> Small enough to run on a laptop, and well known.</li>
+    <li><b>Why the base version?</b> Because it doesn't follow instructions, comparing "steering" with "asking for a
+      happy story" is a real test.</li>
+    <li><b>Its odd habit:</b> it often turns text into exam questions ("A. B. C. D. Answer:"), because it saw a lot of
+      quiz data in training. In the live demo I block Chinese characters and "____" blanks for this reason; the
+      experiments had no such filter.</li>
+  </ul>
   <div class="tbl"><table>
-    <tr><th></th><th>Qwen2.5-0.5B</th><th>TinyGPT (ours)</th></tr>
-    <tr><td>Parameters</td><td>494M</td><td>12.2M</td></tr>
-    <tr><td>Layers / width / heads</td><td>24 / 896 / 14 (grouped-query)</td><td>6 / 384 / 6</td></tr>
-    <tr><td>Context</td><td>32k</td><td>256 tokens</td></tr>
-    <tr><td>Tokenizer</td><td>Qwen BPE, 151k vocab</td><td>our BPE, 4,096 vocab</td></tr>
-    <tr><td>Training</td><td>pretrained by Alibaba (18T tokens)</td><td>80M TinyStories tokens, 18 min on a T4</td></tr>
-    <tr><td>Role</td><td>main experiments E1–E4, E7, E8</td><td>E5, E6 (training history), E7, E8</td></tr>
-    <tr><td>Best steering layer</td><td>4 (α = ±8)</td><td>4 (α = ±8)</td></tr>
+    <tr><th></th><th>Qwen</th><th>TinyGPT (mine)</th></tr>
+    <tr><td>Size</td><td>494 million parameters, 24 layers</td><td>12.2 million parameters, 6 layers</td></tr>
+    <tr><td>Trained on</td><td>trillions of words from the web (by Alibaba)</td><td>80 million pieces of children's stories, 18 minutes</td></tr>
+    <tr><td>Best place to steer</td><td>layer 4, strength 8</td><td>layer 4, strength 8</td></tr>
   </table></div>
-  <p><b>Why a base model, not a chat model?</b> It is small enough for a laptop CPU, and base models don't follow
-    instructions, which makes the steering-vs-prompting comparison interesting. Side effect: Qwen base often drifts into
-    exam questions ("A. B. C. D. Answer:"), because its training mix has a lot of question-answer data. The demo blocks
-    Chinese characters and "____" blanks; the experiments did not.</p>
 </section>
 
 <section id="metrics">
-  <span class="num">Measurement</span>
-  <h2>How we measure</h2>
-  <div class="tbl"><table>
-    <tr><th>Metric</th><th>What it is</th><th>Why</th></tr>
-    <tr><td><b>Sentiment</b></td><td>P(positive) − P(negative) from <code>cardiffnlp/twitter-roberta-base-sentiment-latest</code>, in [−1, +1], averaged over all texts</td><td>An independent judge, not the model being steered. A 2-class SST-2 classifier was rejected: it called neutral text negative ("The train leaves at 5 pm" → 63% negative), which hid steering towards sad.</td></tr>
-    <tr><td><b>Perplexity</b></td><td>How surprised the <b>unsteered</b> model is by the continuation (exp of mean token loss)</td><td>Fluency: normal Qwen text ≈ 3.6, TinyGPT ≈ 2.5. Above 3× normal counts as broken.</td></tr>
-    <tr><td><b>Distinct-2</b></td><td>Share of unique word pairs</td><td>Loops ("I looked at the world, I looked at the world…") can have deceptively <i>low</i> perplexity.</td></tr>
-    <tr><td><b>Probe AUC</b></td><td>Project 20 + 20 natural sentences ("My dog died yesterday") onto v<sub>ℓ</sub>; ROC AUC of separating positive from negative</td><td>Can the concept be <i>read</i> at this layer? 0.5 = chance, 1.0 = perfect. A first probe on template pairs was rejected: they differ by one word, so even layer 0 scored 1.0.</td></tr>
-    <tr><td><b>Best setting</b></td><td>The (layer, α) with the largest sentiment(+α) − sentiment(−α) whose perplexity stays below 3× unsteered</td><td>Rewards steering both ways while staying fluent; chosen automatically, not by eye.</td></tr>
-    <tr><td><b>Concept score</b> (demo, E7)</td><td>Mean projection of the text's hidden states on the concept direction, read by the unsteered model (Qwen layer 12, TinyGPT layer 3); ≈ +1 like the positive examples, −1 like the negative</td><td>Works for any concept, but it uses the same direction as the steering, so it shows movement along the direction, not whether a human would agree.</td></tr>
-  </table></div>
+  <span class="num">Measuring</span>
+  <h2>How we judged the results</h2>
+  <ul>
+    <li><b>How happy is the text?</b> A separate, ready-made <b>mood classifier</b> (a model trained to rate the
+      sentiment of tweets) gives each text a score from <b>−1 (sad) to +1 (happy)</b>. It's independent of the models
+      being steered, so they can't "mark their own homework". I first tried a two-option classifier, but it called
+      neutral sentences sad ("The train leaves at 5 pm" → 63% negative), so I switched to one with a neutral option.</li>
+    <li><b>Does it still read well?</b> I let the normal, unsteered model read the steered text and measure how
+      surprised it is (<b>perplexity</b>: lower means more natural). Normal Qwen text scores about 3.6. If it gets
+      above three times that, I count the text as broken.</li>
+    <li><b>Is it repeating itself?</b> I count how many word pairs are different (<b>distinct-2</b>). Repetitive
+      loops can look "unsurprising" to the model, so this catches them.</li>
+    <li><b>Can the idea be read at this layer?</b> I take 40 natural sentences ("My dog died yesterday") and check
+      whether the happy direction tells the happy ones from the sad ones (<b>probe score</b>: 0.5 = guessing,
+      1.0 = perfect).</li>
+    <li><b>Picking the best setting:</b> the layer and strength that move the mood furthest in <b>both</b> directions
+      while the text still reads well. This was chosen automatically, not by me.</li>
+    <li><b>For other ideas</b> (rich/poor, etc.), there is no ready-made classifier, so I read the texts myself. The
+      demo also shows a <b>concept score</b>: how far along the idea's direction the model places the text. It's
+      useful, but it uses the same direction as the steering, so it can be fooled.</li>
+  </ul>
 </section>
 
 <section id="studies">
   <span class="num">Experiments</span>
-  <h2>Studies: the questions we answered</h2>
+  <h2>The questions we asked</h2>
   <div class="tbl"><table>
-    <tr><th>#</th><th>Question</th><th>Model</th><th>Setup</th><th>Answer</th></tr>
-    <tr><td>E1</td><td>Does it work, and at which layer?</td><td>Qwen</td><td>every 2nd layer × α ∈ {±4, ±8} × {concept, random} + probe AUC at all 24 layers</td><td>Works at every layer; random does nothing; best two-way at <b>layer 4</b>, but the concept is most readable at layers 9–14</td></tr>
-    <tr><td>E2</td><td>How hard to push?</td><td>both</td><td>best layer × α ∈ {±4, ±8, ±12, ±16}</td><td>S-curve; fluency breaks between |α| 8 and 12; past the peak, more push gives <i>less</i> effect</td></tr>
-    <tr><td>E3</td><td>Steering or simply asking?</td><td>Qwen</td><td>none / prompt / steer / prompt + steer, both directions</td><td>Steering moves sentiment about <b>twice</b> as far; the two add up; asking stays more fluent</td></tr>
-    <tr><td>E4</td><td>How many pairs?</td><td>Qwen</td><td>vectors from 5, 10, 25, 50 pairs (3 subsets each) and 150</td><td><b>5 pairs</b> already give almost the full effect</td></tr>
-    <tr><td>E5</td><td>Does a tiny from-scratch model steer?</td><td>TinyGPT</td><td>all 6 layers × α ∈ {±2 … ±32}</td><td>Yes, like Qwen, also best at layer 4</td></tr>
-    <tr><td>E6</td><td>When does the direction appear in training?</td><td>TinyGPT</td><td>22 checkpoints (every 50 steps to 600, then every 500): probe + steering at ±8</td><td><b>Suddenly</b>, between steps 150 and 250 (~4% of training)</td></tr>
-    <tr><td>E7</td><td>Which other concepts steer?</td><td>both</td><td>16 concepts, 6 matched pairs each, 5 strengths, 1–3 prompts × 2 seeds, by eye</td><td>Content concepts yes, grammar no; only what the training data contains</td></tr>
-    <tr><td>E8</td><td>Can two concepts be added?</td><td>both</td><td>3×3 grid (A: +, 0, − × B: −, 0, +), strength 6 each</td><td>Yes: huge + magic → dragon, tiny + magic → fairy</td></tr>
+    <tr><th>#</th><th>Question</th><th>Short answer</th></tr>
+    <tr><td>E1</td><td>Does it work, and at which layer?</td><td>Yes, at every layer; best early, at layer 4. The random direction does nothing.</td></tr>
+    <tr><td>E2</td><td>How hard can you push?</td><td>Up to a point. Past strength 8–12 the text breaks, and the effect even gets weaker.</td></tr>
+    <tr><td>E3</td><td>Is it better than just asking?</td><td>Yes, about twice as strong as asking for a happy story; both together are strongest.</td></tr>
+    <tr><td>E4</td><td>How many examples do you need?</td><td>Five pairs are enough.</td></tr>
+    <tr><td>E5</td><td>Does it work on my tiny model?</td><td>Yes, just like on Qwen, and also best at layer 4.</td></tr>
+    <tr><td>E6</td><td>When does the model learn happy vs sad?</td><td>Suddenly, about 4% of the way through training.</td></tr>
+    <tr><td>E7</td><td>Does it work for other ideas?</td><td>For ideas about <i>content</i> (wealth, age, size, topic), yes; for grammar (tense), no. Only for things the model has seen.</td></tr>
+    <tr><td>E8</td><td>Can two ideas be added together?</td><td>Yes: huge + magic gives a dragon, tiny + magic a fairy.</td></tr>
   </table></div>
-  <p><b>Scale:</b> each Qwen number averages 100 texts (50 prompts × 2 seeds), each TinyGPT number 60. Everything ran on
-    free Kaggle T4s, about <b>2 GPU-hours</b> in total; E7, E8 and the demo ran on a laptop CPU. The layer and strength
-    for E2–E4 and E6 were chosen automatically from E1.</p>
+  <p>All the main runs were on free Kaggle graphics cards, about <b>2 hours</b> in total. Each Qwen number is an
+    average over 100 texts, each TinyGPT number over 60. The other-ideas and mixing experiments ran on my laptop.</p>
 </section>
 
 <section id="results">
   <span class="num">Numbers</span>
-  <h2>Results</h2>
+  <h2>What we found</h2>
   <div class="kpi">
-    <div><b>+0.05 → <span class="hap">+0.85</span></b><span>Qwen sentiment, steered towards happy (layer 4, α +8)</span></div>
-    <div><b class="sad">−0.46</b><span>Qwen steered towards sad (α −8)</span></div>
-    <div><b>±0.1–0.3</b><span>random vector of the same size: no consistent effect</span></div>
-    <div><b>2×</b><span>steering vs asking (+0.85 vs +0.50)</span></div>
-    <div><b>5 pairs</b><span>enough to build a working vector</span></div>
-    <div><b>steps 150–250</b><span>TinyGPT's happy/sad direction appears (~4% of training)</span></div>
+    <div><b>+0.05 → <span class="hap">+0.85</span></b><span>Qwen's mood when pushed towards happy</span></div>
+    <div><b class="sad">−0.46</b><span>when pushed towards sad</span></div>
+    <div><b>no effect</b><span>from a random push of the same size</span></div>
+    <div><b>2×</b><span>stronger than asking for a happy story</span></div>
+    <div><b>5 pairs</b><span>of examples are enough</span></div>
+    <div><b>~4%</b><span>of training, when TinyGPT suddenly learns the idea</span></div>
   </div>
-  <h3>E1 · Which layer? (Qwen)</h3>
-  <p>Unsteered +0.05. Layer 4: <span class="hap">+0.85</span> at α +8, <span class="sad">−0.46</span> at α −8
-    (perplexity 10.3 vs 3.6). Layer 14 gives the strongest push to happy (+0.93) but a weak push to sad (−0.28). Random
-    vectors stay between −0.10 and +0.29 across layers. Probe AUC: 0.76 at layer 0 → <b>0.99 at layers 9–14</b> → 0.91.
-    <b>Most readable in the middle, most steerable early.</b></p>
-  <h3>E2 · How hard to push?</h3>
-  <p>S-curve. Towards happy Qwen saturates at +0.96–0.97 for α 12–16, but perplexity rises to 21 and 38. Towards sad the
-    effect peaks at α −12 (−0.62) and <b>weakens</b> at −16 (−0.51) as text breaks into loops. Both models cross 3×
-    perplexity between |α| 8 and 12: that is the usable range.</p>
-  <h3>E3 · Steering vs prompting (Qwen, layer 4, α ±8)</h3>
+
+  <h3>E1 · Where to steer (Qwen)</h3>
+  <p>Without steering, Qwen's text is neutral (+0.05). Steering at layer 4 makes it clearly happy
+    (<span class="hap">+0.85</span>) or sad (<span class="sad">−0.46</span>). The random push stays between −0.10 and
+    +0.29: no consistent direction.</p>
+  <p>The interesting part: the idea is <b>easiest to read</b> in the <b>middle</b> layers (9–14, probe score 0.99), but
+    <b>easiest to push</b> at an <b>early</b> layer (4). <b>Where you can see an idea is not where you can best change
+    it.</b> A push early on has 20 more layers to turn it into happier word choices.</p>
+
+  <h3>E2 · How hard to push</h3>
+  <p>The effect grows with strength, then levels off. The text gets harder to read as you push: past about 8–12 it
+    starts looping ("I looked at the world, I looked at the world…"). Pushing towards sad even gets <b>weaker</b> at
+    the extreme (−0.62 at strength 12, only −0.51 at 16), because broken text isn't really sad, just broken.</p>
+
+  <h3>E3 · Steering vs simply asking (Qwen)</h3>
   <div class="tbl"><table>
-    <tr><th>Towards</th><th>Nothing</th><th>Prompt</th><th>Steer</th><th>Prompt + steer</th></tr>
+    <tr><th>Towards</th><th>Nothing</th><th>Asking</th><th>Steering</th><th>Both</th></tr>
     <tr><td>happy</td><td>+0.05</td><td>+0.50</td><td>+0.85</td><td>+0.96</td></tr>
     <tr><td>sad</td><td>+0.05</td><td>−0.14</td><td>−0.46</td><td>−0.64</td></tr>
-    <tr><td>perplexity (happy / sad)</td><td>3.6</td><td>5.4 / 5.6</td><td>10.3 / 7.8</td><td>13.5 / 9.6</td></tr>
   </table></div>
-  <p>"Asking" = starting with "The following is a happy, cheerful story full of joy." (Qwen base can't follow
-    instructions). Fluency is always measured on the plain prompt.</p>
-  <h3>E4 · How many pairs?</h3>
-  <p>Five pairs give +0.80 / −0.56 (three random subsets), as strong as 150 pairs (+0.85 / −0.46). The vector itself
-    settles more slowly: cosine to the 150-pair vector is 0.84 with 5 pairs, 0.91 with 10, 0.97 with 25. <b>A rough
-    direction is enough to steer.</b></p>
-  <h3>E5 · TinyGPT</h3>
-  <p>Probe AUC 0.90–0.97 at every layer. Unsteered already <b>+0.48</b> (TinyStories end happily). Layer 4:
-    <span class="hap">+0.93</span> / <span class="sad">−0.56</span>, perplexity 5.9 / 4.9 vs 2.5. From |α| 16 it breaks
-    (perplexity above 90). A 12M model trained for 18 minutes steers like a 494M one, at the same relative depth.</p>
-  <h3>E6 · When does the direction appear?</h3>
-  <div class="tbl"><table>
-    <tr><th>Step</th><th>Val loss</th><th>Probe AUC (layer 4)</th><th>Steer +8 (change)</th><th>Steer −8 (change)</th></tr>
-    <tr><td>0</td><td>8.35</td><td>0.52</td><td>−0.02</td><td>−0.07</td></tr>
-    <tr><td>100</td><td>3.90</td><td>0.37</td><td>+0.08</td><td>−0.03</td></tr>
-    <tr><td>150</td><td>3.35</td><td>0.46</td><td>+0.11</td><td>−0.17</td></tr>
-    <tr><td>200</td><td>3.07</td><td><b>0.82</b></td><td>+0.29</td><td>−0.35</td></tr>
-    <tr><td>250</td><td>2.86</td><td><b>0.91</b></td><td>+0.25</td><td>−0.67</td></tr>
-    <tr><td>500</td><td>2.41</td><td>0.92</td><td>+0.41</td><td>−0.88</td></tr>
-    <tr><td>4,881 (end)</td><td>1.67</td><td>0.96</td><td>+0.45</td><td>−1.04</td></tr>
-  </table></div>
-  <p>Until step 150 there is no direction (AUC at or below chance, steering does nothing). Between 150 and 250 (about
-    2.5–4M tokens, once validation loss falls below ~3.1) it appears. Happy steering is near full strength by step 300;
-    sad keeps strengthening until about step 2,000. Changes are measured against the unsteered text at the same
-    checkpoint.</p>
-  <div class="good"><b>Interpretation:</b> the model first learns word statistics (which words are frequent), and only
-    then the higher-level features sentiment depends on. One run, one seed, so this needs repeating before calling it
-    general.</div>
+  <p>"Asking" means starting the text with "The following is a happy, cheerful story full of joy." Steering moves the
+    mood about twice as far; asking keeps the text more natural. Use both for the strongest effect.</p>
+
+  <h3>E4 · How many examples</h3>
+  <p>With only <b>5</b> example pairs, steering is already almost as strong as with all 150 (+0.80 / −0.56 vs
+    +0.85 / −0.46). A rough direction is good enough to steer.</p>
+
+  <h3>E5 · My tiny model</h3>
+  <p>TinyGPT also has a clear happy/sad direction at every layer. It's already cheerful on its own (<b>+0.48</b>,
+    because children's stories end happily). Steering at layer 4 gives <span class="hap">+0.93</span> or
+    <span class="sad">−0.56</span>. A model I trained in 18 minutes behaves like one 40 times bigger.</p>
+
+  <h3>E6 · When the idea is learned</h3>
+  <p>I went back through TinyGPT's training snapshots and, at each one, rebuilt the happy direction and tried steering
+    with it.</p>
+  <ul>
+    <li><b>Up to step 150:</b> no happy/sad direction at all (probe score at guessing level), and steering does nothing.</li>
+    <li><b>Between steps 150 and 250</b> (about 4% of training): the direction <b>suddenly appears</b> (probe score
+      jumps from 0.46 to 0.91) and steering starts working.</li>
+    <li><b>After that:</b> steering towards happy is almost at full strength by step 300; towards sad keeps getting
+      stronger until about step 2,000.</li>
+  </ul>
+  <div class="good"><b>How to explain it:</b> "The model first learns which words are common, and only once it starts
+    learning how sentences fit together does it pick up an idea like mood. That switch happens quickly." I'd add
+    that it's one training run, so it should be repeated before calling it a general rule.</div>
 </section>
 
 <section id="concepts">
-  <span class="num">E7</span>
+  <span class="num">Beyond happy and sad</span>
   <h2>Other concepts</h2>
+  <p>The same method works for many ideas. Each one needs just six matched example pairs, such as "We flew to Paris
+    on our private jet" / "We could not afford the bus fare".</p>
   <div class="tbl"><table>
-    <tr><th>Concept</th><th>Model</th><th>Result</th><th>Example</th></tr>
-    <tr><td>rich ↔ poor</td><td>Qwen</td><td>both ways</td><td class="quote">"For dinner tonight, my mother" → "could not have enough to eat" … "a luxurious dinner at a five-star hotel"</td></tr>
-    <tr><td>old ↔ young</td><td>Qwen</td><td>both ways</td><td class="quote">bus passenger: "bullied by some of the other kids" … "86 years old … health problems"</td></tr>
-    <tr><td>formal ↔ casual</td><td>Qwen</td><td>both ways, gradual</td><td class="quote">"i got a discount coupon on it" … "to amend the terms of the terms of Trade Agreement"</td></tr>
-    <tr><td>food ↔ sports</td><td>Qwen</td><td>both, only at ±8</td><td class="quote">"the fourth quarter … out of timeouts" … "dough … cream cheese … fried potatoes"</td></tr>
-    <tr><td>English ↔ French</td><td>Qwen</td><td>best at −4</td><td class="quote">fluent French at −4; at −8 "indique the light / et l'iron"</td></tr>
-    <tr><td>Indian ↔ American</td><td>Qwen</td><td>Indian side only</td><td class="quote">backyard picnic → "visited the Khajuraho temple"; the default is already American</td></tr>
-    <tr><td>city ↔ rural</td><td>Qwen</td><td>partly</td><td class="quote">"fields of barley" vs "a huge grocery store"</td></tr>
-    <tr><td>confident ↔ uncertain</td><td>Qwen</td><td>uncertain only</td><td>"confident" gave textbook exercises</td></tr>
-    <tr><td>motivating ↔ demotivating</td><td>Qwen</td><td>motivating only</td><td class="quote">"You are great at what you do. Your essay is outstanding."</td></tr>
-    <tr><td>past ↔ future tense</td><td>Qwen</td><td>fails</td><td class="quote">"I will have to tell you that you will eat with a little"</td></tr>
-    <tr><td>huge ↔ tiny</td><td>TinyGPT</td><td>both ways</td><td class="quote">zoo: "little bird" … "a big lion … It was enormous!"</td></tr>
-    <tr><td>sharing ↔ greedy</td><td>TinyGPT</td><td>both, needs the right prompt</td><td class="quote">"didn't want to share" … "Yes, let's play! They played together"</td></tr>
-    <tr><td>magic ↔ everyday</td><td>TinyGPT</td><td>both up to ±6</td><td class="quote">"juicy apple on a bench" … "something magical happened!"</td></tr>
-    <tr><td>dogs ↔ cats</td><td>TinyGPT</td><td>both, after rewriting pairs</td><td class="quote">first pairs gave owls and "tea tea tea"; fixed: "Her pet was a small cat"</td></tr>
-    <tr><td>brave ↔ scared</td><td>TinyGPT</td><td>scared only</td><td>brave barely changes the story</td></tr>
-    <tr><td>old ↔ young</td><td>TinyGPT</td><td>fails</td><td>every story stays "a little girl named Lily"</td></tr>
+    <tr><th>Idea</th><th>Model</th><th>Worked?</th><th>What happened</th></tr>
+    <tr><td>rich ↔ poor</td><td>Qwen</td><td>both ways</td><td>"For dinner tonight, my mother…" goes from <span class="quote">"could not have enough to eat"</span> to <span class="quote">"a luxurious dinner at a five-star hotel"</span></td></tr>
+    <tr><td>old ↔ young</td><td>Qwen</td><td>both ways</td><td>a bus passenger goes from a <span class="quote">"bullied"</span> schoolkid to <span class="quote">"86 years old … health problems"</span></td></tr>
+    <tr><td>formal ↔ casual</td><td>Qwen</td><td>both ways, gradually</td><td>from <span class="quote">"i got a discount coupon on it"</span> to contract language</td></tr>
+    <tr><td>food ↔ sports</td><td>Qwen</td><td>only at full strength</td><td>basketball <span class="quote">"timeouts"</span> or <span class="quote">"cream cheese … fried potatoes"</span></td></tr>
+    <tr><td>English ↔ French</td><td>Qwen</td><td>best at medium strength</td><td>fluent French at −4; at −8 it falls apart</td></tr>
+    <tr><td>Indian ↔ American</td><td>Qwen</td><td>Indian side only</td><td>a backyard picnic becomes <span class="quote">"the Khajuraho temple"</span>; the model's default is already American</td></tr>
+    <tr><td>confident ↔ uncertain</td><td>Qwen</td><td>uncertain only</td><td>"confident" turned into textbook exercises</td></tr>
+    <tr><td>past ↔ future tense</td><td>Qwen</td><td>no</td><td>"will" appears but the grammar breaks</td></tr>
+    <tr><td>huge ↔ tiny</td><td>TinyGPT</td><td>both ways</td><td>at the zoo, a <span class="quote">"little bird"</span> becomes <span class="quote">"an enormous lion"</span></td></tr>
+    <tr><td>sharing ↔ greedy</td><td>TinyGPT</td><td>yes, with the right prompt</td><td><span class="quote">"didn't want to share"</span> vs <span class="quote">"let's play together"</span></td></tr>
+    <tr><td>magic ↔ everyday</td><td>TinyGPT</td><td>both ways</td><td>an apple on a bench becomes <span class="quote">"something magical happened!"</span></td></tr>
+    <tr><td>dogs ↔ cats</td><td>TinyGPT</td><td>after fixing the examples</td><td>first try gave owls and tea, never a cat</td></tr>
+    <tr><td>old ↔ young</td><td>TinyGPT</td><td>no</td><td>every story stays "a little girl named Lily"</td></tr>
   </table></div>
-  <h3>Five patterns that explain the table</h3>
+  <h3>Five lessons from these</h3>
   <ol>
-    <li><b>The vector is whatever differs between the examples.</b> Uncertain sentences were also longer and ended in
-      "?", so "confident" became "flat statements". Cat sentences also purred, drank milk and climbed trees, so "cat"
-      became owls and tea. Pairs that differ <i>only</i> in the concept fix it.</li>
-    <li><b>You can only steer towards what the model has seen.</b> No old people in TinyStories; few put-downs in Qwen's
-      data. Where one side is the model's default (American setting, happy endings), only the other side moves.</li>
-    <li><b>Content steers; grammar doesn't.</b> Wealth, age, size, topic shift whole scenes. Tense lives in a few small
-      words that must be in exactly the right place, and a push at every token scrambles them.</li>
-    <li><b>The prompt must leave room.</b> "there was a young girl" gives sharing ↔ greedy nothing to share; "Lily found
-      a shiny red ball… Her friend asked to play. Lily" works.</li>
-    <li><b>There is a sweet spot.</b> French: concept score −1.21 at α −4, only −0.36 at −8. Same as E2.</li>
+    <li><b>The direction picks up everything that differs between your examples.</b> My "uncertain" sentences were
+      also longer and ended with "?", so "confident" just meant "short, flat statements". My first cat sentences also
+      had cats purring, drinking milk and climbing trees, so steering gave owls in trees and "tea tea tea", but never
+      a cat. Making the pairs differ <i>only</i> in the animal fixed it.</li>
+    <li><b>You can only steer towards things the model has seen.</b> There are almost no old people in children's
+      stories, so "old" doesn't work on TinyGPT. If one side is already the model's default (American, happy endings),
+      only the other side moves.</li>
+    <li><b>Ideas about content work; grammar doesn't.</b> Wealth or age can change a whole scene. Tense depends on a
+      few small words ("will", "-ed") in exactly the right place, and a push at every word scrambles them.</li>
+    <li><b>The prompt has to leave room for the idea.</b> "There was a young girl" gives greedy-vs-sharing nothing to
+      share. "Lily found a ball… her friend asked to play. Lily…" works.</li>
+    <li><b>There's a sweet spot.</b> French comes out best at medium strength. Push harder and it breaks, the same as
+      in E2.</li>
   </ol>
 </section>
 
 <section id="mix">
-  <span class="num">E8</span>
-  <h2>Adding two concepts</h2>
-  <p>Add <code>s · (a·A + b·B)</code> with a, b ∈ {−1, 0, +1}, s = 6, all nine cells with shared random draws.
-    TinyGPT, "Tom went for a walk in the woods. Suddenly, he saw a", seed 1:</p>
+  <span class="num">Combining</span>
+  <h2>Mixing two concepts</h2>
+  <p>I added two directions at the same time and made a 3×3 grid: one idea down the side, the other across the top,
+    with plain text in the middle. TinyGPT, starting with "Tom went for a walk in the woods. Suddenly, he saw a":</p>
   <div class="tbl"><table>
-    <tr><th></th><th>everyday</th><th>—</th><th>magic</th></tr>
+    <tr><th></th><th>everyday</th><th>(neither)</th><th>magic</th></tr>
     <tr><td><b>huge</b></td><td>big, hungry…</td><td>big scary monster!</td><td><b>huge giant giant dragon!</b></td></tr>
-    <tr><td><b>—</b></td><td>big, bright tree… a big, red apple</td><td>big bear! (unsteered)</td><td>big, shiny stone. It was magical!</td></tr>
-    <tr><td><b>tiny</b></td><td>big, red apple on the side</td><td>small rabbit</td><td><b>tiny creature… "I'm tiny fairy"</b></td></tr>
+    <tr><td><b>(neither)</b></td><td>a big, red apple</td><td>big bear! (no steering)</td><td>a shiny stone. It was magical!</td></tr>
+    <tr><td><b>tiny</b></td><td>a big, red apple</td><td>a small rabbit</td><td><b>a tiny creature… "I'm tiny fairy"</b></td></tr>
   </table></div>
   <ul>
-    <li>No example sentence mentions a dragon or a fairy: the model's own knowledge connects the two directions to a
-      creature that is both. The steering version of <b>king − man + woman ≈ queen</b>.</li>
-    <li>The two directions are almost <b>orthogonal</b>: cosine −0.03 (huge/magic), −0.06 (rich/old on Qwen), so each moves
-      its own concept without disturbing the other.</li>
-    <li>On Qwen ("My neighbour"): poor + old → "so poor that he cannot buy anything… I give him a piece of bread"; rich +
-      old reads mostly as old. "The house at the end of our street": rich + old → "treasures… heirlooms", poor + old →
-      "very dilapidated… I am lonely… I am hungry… I am cold".</li>
-    <li>Strength 8 per concept breaks more often: two orthogonal pushes of 8 add up to √2 × 8 ≈ 11, past the usable
-      range.</li>
+    <li>None of my example sentences mention a dragon or a fairy. The model combined the two ideas itself: something
+      both huge and magic is a dragon, something tiny and magic is a fairy. It's like the famous word-vector trick
+      "king − man + woman ≈ queen".</li>
+    <li>It works because the two directions are almost <b>independent</b> (they point in unrelated directions), so
+      each changes only its own idea.</li>
+    <li>On Qwen, "poor + old" gave <span class="quote">"so poor that he cannot buy anything… I give him a piece of
+      bread"</span>, and a house became <span class="quote">"very dilapidated… I am lonely… I am cold"</span>.
+      "Rich + old" was weaker: it read mostly as old.</li>
+    <li>I use a medium strength (6) for each idea, because two pushes together add up to a bigger push.</li>
   </ul>
 </section>
 
@@ -489,66 +476,64 @@ def steering(self, layer, vector, alpha):
   <span class="num">Surprises</span>
   <h2>Interesting observations</h2>
   <ul>
-    <li><b>Reading ≠ pushing.</b> The probe peaks at layers 9–14, but steering works best at layer 4. An early push
-      passes through 20 more blocks that turn it into word choices; a late push has little room left.</li>
-    <li><b>Happy is easier than sad</b> in both models (Qwen layers 8–10 are the exception). Training data leans positive;
-      pushed hard towards sad, models fall into loops before reaching strongly negative text.</li>
-    <li><b>"Sad" means scary to TinyGPT:</b> "He thought loud loud so loud mean loud noises or scary…". In children's
-      stories the negative side is a loud dog or a broken toy, not grief. The direction is real, but its meaning comes
-      from the data.</li>
-    <li><b>Happy steering ends TinyGPT's stories sooner.</b> The end-of-story probability goes from 0.05 (α 0) to 0.26
-      (α 8) and 0.36 (α 12): happy endings are where stories stop.</li>
-    <li><b>The concept appears suddenly</b> (E6), not gradually.</li>
-    <li><b>Qwen loves quizzes:</b> short third-person prompts turn into "Given the context… Possible answers:" or
-      "A. B. C. D. Answer:", with or without steering.</li>
-    <li><b>Cats became owls and tea:</b> the first cat examples differed in actions, and the vector learned those
-      instead of "cat". The fragment "per per per" is the start of <i>pur</i>red.</li>
-    <li><b>The model's default world is American;</b> steering towards Indian works, towards American changes little.</li>
-    <li><b>Concepts compose:</b> huge + magic = dragon.</li>
-    <li><b>Topic is a switch, tone a slider:</b> formal ↔ casual shifts gradually across strengths; food ↔ sports only
-      flips at ±8.</li>
+    <li><b>Seeing an idea isn't the same as changing it.</b> The idea is clearest in the middle layers, but steering
+      works best early on.</li>
+    <li><b>Happy is easier than sad</b> in both models. Most text the models learned from leans positive.</li>
+    <li><b>To TinyGPT, "sad" means scary and loud:</b> <span class="quote">"He thought loud loud so loud mean loud noises
+      or scary…"</span>. In children's stories, bad things are loud dogs and broken toys, not grief. What a direction
+      means depends on what the model read.</li>
+    <li><b>Happy steering makes TinyGPT end its stories sooner:</b> the chance of ending jumps from 5% to 26% at
+      strength 8 and 36% at 12. Happy endings are where stories stop.</li>
+    <li><b>The idea is learned suddenly</b> during training, not slowly.</li>
+    <li><b>Qwen loves quizzes:</b> short prompts often turn into multiple-choice questions, with or without steering.</li>
+    <li><b>Cats turned into owls and tea:</b> the first examples taught the wrong thing. "per per per" was the start
+      of "purred".</li>
+    <li><b>The model's default world is American:</b> steering towards Indian works, towards American hardly changes
+      anything.</li>
+    <li><b>Ideas can be added:</b> huge + magic = dragon.</li>
+    <li><b>Tone slides, topic switches:</b> formal ↔ casual changes step by step; food ↔ sports only flips at full
+      strength.</li>
   </ul>
 </section>
 
 <section id="demo">
   <span class="num">Live</span>
   <h2>Demo plan (about 5 minutes)</h2>
-  <p><b>Before:</b> start <code>.venv\Scripts\python app.py --share</code> 10 minutes early (the first click loads models
-    and computes vectors), check the link on a phone, keep the laptop plugged in. If the live demo fails, the project
-    page's replay always works.</p>
+  <p><b>Before the viva:</b> start the demo 10 minutes early (the first click takes a while to load), check the link
+    on a phone, and keep the laptop plugged in. If the live demo fails, the project page's replay always works.</p>
   <ol class="steps">
-    <li><b>Project page</b>: headline stats, then the training slider (E6): drag from step 100 to 250 and show the
-      probe jump.</li>
-    <li><b>Steer tab</b>, Qwen, happy ↔ sad, layer 4, α +8 on "I went to the market today and": no steering vs steered
-      vs random. Then α −8.</li>
-    <li><b>Transition tab</b>, Qwen, rich ↔ poor, "For dinner tonight, my mother", <b>seed 1</b>: not enough rice → a
-      five-star hotel. Point out the shared start and the branching.</li>
-    <li><b>Mix tab</b>, TinyGPT, huge ↔ tiny × magic ↔ everyday, "Tom went for a walk in the woods. Suddenly, he saw a",
-      strength 6, <b>seed 1</b>: dragon and fairy in the corners. (The page switches to the storybook look for TinyGPT.)</li>
-    <li><b>Concept meter</b>: the mixed sentence ("The party was wonderful, but then my dog got sick…") coloured token by
-      token.</li>
-    <li><b>Let the examiner try</b> a prompt or a concept. If something odd happens, use the quick diagnosis below.</li>
+    <li><b>Project page:</b> the headline numbers, then the training slider. Drag from step 100 to 250 and show the
+      idea appearing.</li>
+    <li><b>Steer tab</b> (Qwen, happy ↔ sad, strength +8, "I went to the market today and"): show plain vs steered vs
+      random side by side, then try −8.</li>
+    <li><b>Transition tab</b> (Qwen, rich ↔ poor, "For dinner tonight, my mother", seed 1): one prompt at five
+      strengths, from not enough rice to a five-star hotel.</li>
+    <li><b>Mix tab</b> (TinyGPT, huge ↔ tiny × magic ↔ everyday, "Tom went for a walk in the woods. Suddenly, he saw
+      a", strength 6, seed 1): the dragon and the fairy. The page also switches to a storybook look for TinyGPT.</li>
+    <li><b>Concept meter:</b> colour each word of a mixed sentence ("The party was wonderful, but then my dog got
+      sick…") by how happy or sad the model thinks it is.</li>
+    <li><b>Let the examiner try</b> their own prompt or idea.</li>
   </ol>
-  <div class="callout"><b>Quick diagnosis when a live result looks odd:</b> (1) look at the α 0 row first; (2) loops or
-    broken text → lower strength to 4–6; (3) nothing changes → make the prompt stop where the concept would appear;
-    (4) wrong thing appears → check the two example boxes differ only in the concept; (5) try layer 3–6; (6) try
-    another seed. Same seed gives different text in the Steer and Transition tabs: they use different samplers.</div>
+  <div class="callout"><b>If a live result looks odd:</b> first look at the "no steering" row, since the model might
+    already lean one way. If the text repeats or breaks, lower the strength to 4–6. If nothing changes, make the
+    prompt stop right where the idea would show up. If the wrong thing appears, check the two example boxes differ only
+    in the idea. Different tabs can give different text for the same seed: they sample differently.</div>
 </section>
 
 <section id="well">
   <span class="num">Strengths</span>
   <h2>What went well</h2>
   <ul>
-    <li><b>Controls everywhere:</b> every steered setting has a random same-size vector; baselines use the same prompts
-      and seeds.</li>
-    <li><b>An independent judge</b> for sentiment, and a fluency cost reported next to every effect.</li>
-    <li><b>Owning the whole model:</b> TinyGPT made E6 possible, a question papers on pretrained models can't ask.</li>
-    <li><b>Reproducible:</b> E6's re-run matched the original losses; the demo's strips are deterministic per seed, and the
-      project page shows the exact texts the demo produces.</li>
-    <li><b>Cheap:</b> about 2 GPU-hours on free Kaggle, everything else on a laptop CPU.</li>
-    <li><b>Honest failures:</b> we kept and explained what didn't work (tense, confident, cats, old on TinyGPT).</li>
-    <li><b>Deployed for free</b> despite Hugging Face needing PRO for Gradio Spaces: a static page that is always on, plus
-      a live laptop demo it links to automatically.</li>
+    <li><b>A fair test every time:</b> each result is compared with a random push of the same size, using the same
+      prompts.</li>
+    <li><b>An independent judge</b> for mood, and the cost to readability reported next to every result.</li>
+    <li><b>Building my own model</b> made the "when is it learned" question possible, which you can't ask of a
+      ready-made model.</li>
+    <li><b>Repeatable:</b> re-running the start of training gave exactly the same numbers, and the demo gives the same
+      text for the same settings.</li>
+    <li><b>Cheap:</b> about 2 hours of free Kaggle time; everything else on a laptop.</li>
+    <li><b>Honest about failures:</b> tense, confident, cats and old-on-TinyGPT are kept and explained.</li>
+    <li><b>Deployed for free:</b> an always-on project page plus a live demo from the laptop.</li>
   </ul>
 </section>
 
@@ -557,30 +542,24 @@ def steering(self, layer, vector, alpha):
   <h2>Limitations and assumptions</h2>
   <h3>Limitations</h3>
   <ul>
-    <li><b>One training run, one seed</b> for E6. Other seeds, sizes or datasets could move or smooth the transition.</li>
-    <li><b>Only sentiment is measured</b> with an independent classifier. E7 and E8 use 1–3 prompts and two seeds per
-      concept, judged by eye.</li>
-    <li><b>The concept score is circular:</b> it uses the same direction as the steering ("confident" scored well while
-      producing textbook exercises).</li>
-    <li><b>The classifier was trained on tweets</b> and can misjudge odd or broken text; looping text can still score
-      strongly.</li>
-    <li><b>Small samples:</b> 100 texts per Qwen setting, 60 per TinyGPT; differences of ±0.1 are noise.</li>
-    <li><b>Fluency cost:</b> the best setting roughly triples perplexity; this is a research tool, not a polished
-      generator.</li>
-    <li><b>Simple probe:</b> the steering direction on 40 sentences; a trained logistic-regression probe could read more.</li>
-    <li><b>Two small models</b>; nothing here shows the same holds for large chat models.</li>
-    <li><b>Demo filter:</b> the demo blocks Chinese and "____" for Qwen; the experiments did not.</li>
+    <li><b>The "learned suddenly" result comes from one training run.</b> It should be repeated with other random
+      starts and model sizes.</li>
+    <li><b>Only mood has an independent judge.</b> The other ideas were checked by reading a few examples.</li>
+    <li><b>The demo's concept score can be fooled</b>, because it uses the same direction as the steering.</li>
+    <li><b>The mood classifier was trained on tweets</b> and can misjudge strange or broken text.</li>
+    <li><b>Small samples:</b> 100 texts per setting for Qwen, 60 for TinyGPT, so small differences are noise.</li>
+    <li><b>Steering costs readability:</b> at the best setting, the text is about three times less natural.</li>
+    <li><b>Two small models only</b>: it may behave differently in big chat models.</li>
   </ul>
   <h3>Assumptions</h3>
   <ul>
-    <li>Concepts are (roughly) <b>linear directions</b> in the residual stream.</li>
-    <li>The <b>mean difference</b> of contrastive pairs points along the concept, and not along something else that
-      differs between the pairs (E7 shows when this fails).</li>
-    <li>Adding the <b>same vector at every token</b> is a reasonable intervention.</li>
-    <li>The <b>unsteered model's perplexity</b> is a fair proxy for fluency, and 3× is a sensible cut-off.</li>
-    <li>"Layer 4" is <b>comparable</b> across models of different depth (it is early in both).</li>
-    <li>Custom concept vectors are <b>rescaled to the happy/sad vector's length</b>, so α means the same push for every
-      concept.</li>
+    <li>Ideas like happy/sad are <b>directions</b> in the model's numbers.</li>
+    <li>The difference between example sentences captures <b>the idea</b>, not something else (the cat story shows
+      when it doesn't).</li>
+    <li>Adding the <b>same push at every word</b> is a reasonable way to steer.</li>
+    <li>The <b>normal model's surprise</b> is a fair way to judge readability, and three times normal is a sensible
+      limit.</li>
+    <li>"Layer 4" means roughly the same thing in both models (early on in both).</li>
   </ul>
 </section>
 
@@ -588,37 +567,35 @@ def steering(self, layer, vector, alpha):
   <span class="num">Takeaways</span>
   <h2>What I learned</h2>
   <ul>
-    <li>Concepts really are directions you can add, and a <b>handful of examples</b> finds them.</li>
-    <li><b>Where a concept is easiest to read is not where it is easiest to push.</b></li>
-    <li>A steering vector learns <b>everything that differs</b> between your examples, so writing good pairs matters more
-      than writing many.</li>
-    <li>The <b>training data decides</b> what can be steered and what a concept means to the model.</li>
-    <li>Concepts can <b>appear abruptly</b> during training.</li>
-    <li>Every intervention needs a <b>control</b>, and every effect needs its <b>cost</b> (fluency) reported beside it.</li>
-    <li>Building a transformer from scratch (RoPE, RMSNorm, SwiGLU, BPE, training loop) made every part concrete.</li>
+    <li>Ideas really are directions inside a model, and a <b>handful of examples</b> is enough to find them.</li>
+    <li>Where you can <b>see</b> an idea is not where you can best <b>change</b> it.</li>
+    <li><b>Good examples beat many examples</b>: the direction learns every difference you put in.</li>
+    <li>What a model can be steered towards, and what an idea means to it, <b>comes from its training data</b>.</li>
+    <li>Models can pick up an idea <b>suddenly</b> during training.</li>
+    <li>Always use a <b>fair comparison</b> (the random push), and report the cost next to the effect.</li>
+    <li>Building a model from scratch made every part of a transformer concrete for me.</li>
   </ul>
 </section>
 
 <section id="more">
-  <span class="num">Future work</span>
+  <span class="num">Next</span>
   <h2>What else could be tried, and what I'd add</h2>
   <h3>Could have tried</h3>
   <ul>
-    <li><b>More seeds and model sizes for E6</b>, to see if the sudden emergence is general.</li>
-    <li><b>E6 for other concepts:</b> do topic, size or wealth appear at different points in training than sentiment?</li>
-    <li><b>An independent classifier per concept</b> (or an LLM judge) instead of reading by eye.</li>
-    <li><b>A trained logistic-regression probe</b> and comparing its direction with the mean-difference direction.</li>
-    <li><b>Steering only some tokens</b> (e.g. only the prompt, or decaying α) to keep more fluency.</li>
-    <li><b>Steering at several layers at once</b> with a smaller α each.</li>
-    <li><b>Larger or chat models</b> (Qwen 1.5B/7B Instruct), and safety-relevant behaviours like refusal or
-      sycophancy (as in Rimsky et al.).</li>
-    <li><b>Sparse autoencoders</b> to find concept directions without hand-written pairs.</li>
+    <li><b>Repeat the training study</b> with more random starts and model sizes.</li>
+    <li><b>Do the training study for other ideas:</b> are size or wealth learned at a different time than mood?</li>
+    <li><b>An independent judge for every idea</b> (a classifier or a big language model) instead of reading by eye.</li>
+    <li><b>Gentler steering:</b> push only on some words, or at several layers a little each, to keep the text more
+      natural.</li>
+    <li><b>Bigger and chat models</b>, and safety-related behaviours like refusing or flattering (as in the paper this
+      method comes from).</li>
+    <li><b>Finding directions automatically</b> (sparse autoencoders) instead of writing example pairs.</li>
   </ul>
   <h3>What I'd add to the demo</h3>
   <ul>
-    <li>A <b>fluency (perplexity) number</b> on each output, so the cost is visible live.</li>
-    <li><b>Vector arithmetic</b> beyond two concepts, and subtracting one (rich − old).</li>
-    <li>A <b>layer heat-map</b>: one prompt steered at every layer side by side.</li>
+    <li>A <b>readability number</b> on every output, so you can see the cost live.</li>
+    <li><b>Subtracting</b> ideas, and mixing more than two.</li>
+    <li>A view of the <b>same prompt steered at every layer</b> side by side.</li>
   </ul>
 </section>
 
@@ -626,80 +603,77 @@ def steering(self, layer, vector, alpha):
   <span class="num">Story</span>
   <h2>How the project evolved</h2>
   <ol>
-    <li>Started from a <b>"TinyGPT from scratch"</b> idea with 11 architecture ablations (position encodings, norms,
-      attention variants). Felt generic, and 33 runs with 3 seeds was a lot.</li>
-    <li>Switched the focus to <b>activation steering</b>: more interactive and a better demo. TinyGPT stayed as the
-      from-scratch model, which also enabled the training-history question (E6). The ablation switches remain in the
-      code and tests.</li>
-    <li>Ran data, training and all experiments on <b>Kaggle T4s</b>; then re-ran the first 600 steps with dense
-      checkpoints when E6 showed the jump happened early.</li>
-    <li>Built the <b>Gradio demo</b>; Hugging Face needed PRO for Gradio Spaces, so deployed a <b>static page + laptop
-      demo</b> instead.</li>
-    <li>Testing the demo myself led to <b>E7 and E8</b>: presets for 12 concepts, the Transition and Mix tabs, and the
-      failure analysis (cats, confident, sunny/rainy dropped).</li>
+    <li>I started with "build a tiny GPT and compare 11 design choices". It felt too common, and 33 training runs was
+      a lot.</li>
+    <li>I switched the focus to <b>steering</b>, which is more interactive and makes a better demo. TinyGPT stayed as
+      my own model, and that made the "when is it learned" study possible.</li>
+    <li>I ran training and all experiments on Kaggle, then re-ran the first 600 steps with frequent snapshots when I
+      saw the jump happened early.</li>
+    <li>Hugging Face now charges for hosting live demos, so I made a free always-on page plus a live demo from my
+      laptop.</li>
+    <li>Trying the demo myself led to the other ideas and the mixing study, and to finding what didn't work (cats,
+      confident, sunny vs rainy, which I dropped).</li>
   </ol>
 </section>
 
 <section id="qa">
   <span class="num">Practice</span>
   <h2>Likely viva questions</h2>
-  <details><summary>What is your project, in one sentence?</summary><p>I change what a language model writes by adding a concept vector to its hidden states during generation, test it on a pretrained 0.5B model and on a 12M GPT I built from scratch, and use my own model's training history to find when the concept appears.</p></details>
-  <details><summary>What is the residual stream, and why add the vector there?</summary><p>The running vector per token that every block reads and adds its output to. Because blocks communicate by addition into this one space, a vector added there is carried into every later layer, so it's the natural place to change what the model "has in mind".</p></details>
-  <details><summary>How exactly is the steering vector computed?</summary><p>Run the positive and negative example sentences through the model, record the residual stream after block ℓ at every token (skipping the first token and padding), average each set, and subtract: v = mean(positive) − mean(negative). One vector per layer.</p></details>
-  <details><summary>Why skip the first token?</summary><p>The first token in transformers gets unusually large activations (it acts as an "attention sink"). Including it would make the average dominated by something unrelated to the concept.</p></details>
-  <details><summary>What does α mean? Why ±8?</summary><p>How many times the vector is added. The vector is used at its natural length (the real gap between happy and sad), so α = 8 means eight times that gap. ±8 was chosen automatically: the largest two-way effect with perplexity under 3× normal.</p></details>
-  <details><summary>How do you know it's the concept and not just any push?</summary><p>The random control: a random vector of exactly the same length at the same layer and strength. It moves sentiment by at most about ±0.3 in no consistent direction, while the concept vector moves it steadily one way (+0.85 / −0.46).</p></details>
-  <details><summary>Why is layer 4 best for steering when the probe is best at 9–14?</summary><p>Reading and pushing are different. A push at layer 4 passes through 20 more blocks that turn a slightly happier hidden state into happier word choices. A late push has little room left to act and must already be in the exact form the final layers expect. Late layers still push happy well (+0.93 at layer 14) but sad poorly.</p></details>
-  <details><summary>Isn't steering just a stronger prompt?</summary><p>No: the prompt never changes. And it works where prompting can't: Qwen base can't follow "write a happy story", so asking gave +0.50 while steering gave +0.85. Both together gave +0.96. The cost is fluency (perplexity 10.3 vs 5.4).</p></details>
-  <details><summary>Why does more strength sometimes give less effect?</summary><p>Past the sweet spot the added vector is as large as the hidden state itself, which pushes it off the region the later layers were trained on. They can't decode it into proper text, so only fragments survive and the text loops. Sad peaks at α −12; French is best at −4.</p></details>
-  <details><summary>Why is happy easier than sad?</summary><p>Training data leans positive (TinyStories almost always end happily; casual web narration leans positive), so the happy side is closer to normal text. Pushed hard towards sad, the models fall into loops before reaching strongly negative text.</p></details>
-  <details><summary>Explain the E6 result. Why would a concept appear suddenly?</summary><p>Up to step 150 the probe is at chance and steering does nothing; by step 250 the probe is 0.91 and steering works. It happens when validation loss falls below about 3.1: the model has learned which words are frequent and starts learning how sentences fit together, which sentiment depends on. One run and one seed, so it needs repeating.</p></details>
-  <details><summary>How do you know the early re-run is the same training run?</summary><p>Same seed, same data order and the same learning-rate schedule (the full 4,882-step cosine schedule, just stopped at 600). Its validation losses matched the original run: 2.861 at step 250 and 2.412 at step 500.</p></details>
-  <details><summary>What is the probe, and why AUC?</summary><p>Project 40 natural sentences (20 positive, 20 negative, none using the pair words) onto the layer's steering direction; ROC AUC measures how well that single number separates them: 0.5 is chance, 1.0 perfect. AUC needs no threshold. Template pairs were rejected because they differ by one word, which even layer 0 separates perfectly.</p></details>
-  <details><summary>Why that sentiment classifier?</summary><p>It's a 3-class model (negative, neutral, positive), so neutral text scores near 0. The 2-class SST-2 classifier we tried first called neutral text negative, which made the baseline look sad and hid steering towards sad.</p></details>
-  <details><summary>Why perplexity under the unsteered model, and why distinct-2 too?</summary><p>The unsteered model is the reference for "normal text"; scoring with the steered model would grade itself. Distinct-2 catches loops, which perplexity misses because repetition is easy to predict.</p></details>
-  <details><summary>Walk me through TinyGPT.</summary><p>BPE tokenizer with 4,096 tokens → 384-dimensional embedding → 6 pre-norm blocks, each RMSNorm → causal attention with 6 heads and RoPE → add, then RMSNorm → SwiGLU MLP (hidden 1,024) → add → final RMSNorm → output layer tied to the embedding. 12,194,688 parameters, trained on 80M TinyStories tokens in 18 minutes, validation loss 1.67.</p></details>
-  <details><summary>Why RoPE / RMSNorm / SwiGLU / pre-norm?</summary><p>RoPE: attention depends on relative distance, no position table. RMSNorm: simpler than LayerNorm, same quality. SwiGLU: gated MLP that works better than GELU at equal parameters. Pre-norm: a clean residual path, stable training. They're the choices modern LLMs (Llama, Qwen) use.</p></details>
-  <details><summary>Why a 4,096 vocabulary?</summary><p>TinyStories uses simple words, so a small vocabulary covers it. A 50k vocabulary would put about 19M parameters in the embedding alone, more than the whole model.</p></details>
-  <details><summary>How many pairs do you need?</summary><p>Five pairs give almost the full effect (+0.80 / −0.56 vs +0.85 / −0.46 with 150). The direction keeps refining (cosine 0.84 → 0.97 by 25 pairs), but a rough direction already steers. Quality matters more than quantity: the cat pairs show that.</p></details>
-  <details><summary>Why did confident ↔ uncertain and the first dog ↔ cat fail?</summary><p>The vector learns every difference between the boxes. The uncertain sentences were longer and ended in "?", so "confident" became "flat statements" (textbook exercises). The cat sentences also described actions (purring, milk, trees), so steering gave owls and tea. Pairs that differ only in the concept word fixed the cats.</p></details>
-  <details><summary>Why does old ↔ young work on Qwen but not TinyGPT?</summary><p>A model can only be steered towards what its training data contains. TinyStories has almost no old characters; Qwen read the web.</p></details>
-  <details><summary>Why does tense fail?</summary><p>Tense lives in a few function words ("will", "-ed") that must appear in exactly the right place; a push added at every token scrambles grammar. Content concepts change whole scenes and survive it.</p></details>
-  <details><summary>How does mixing two concepts work, and why does it work?</summary><p>Add s·(A + B) at the same layer. The two directions are nearly orthogonal (cosine around 0), so each moves its own concept. The model fills in a combination it was never shown: huge + magic → dragon, tiny + magic → fairy. Like king − man + woman ≈ queen.</p></details>
-  <details><summary>How do the Transition and Mix tabs keep rows comparable?</summary><p>All rows share their random draws. TinyGPT reuses the same seed per row. Qwen generates the whole batch with one shared Gumbel noise vector per token (argmax of logits/T plus Gumbel noise is an exact sample from the softmax), so rows differ only because of the steering.</p></details>
-  <details><summary>How is it deployed?</summary><p>A static Hugging Face Space (free, always on) with the findings, figures and a replay of real generations, and a live Gradio app on my laptop with a public gradio.live link. The app writes the link to the Space's live.json so the page's "Live demo" button points at it. Hugging Face now needs PRO for Gradio Spaces.</p></details>
-  <details><summary>What are the main limitations?</summary><p>One training run for E6; only sentiment has an independent metric; the concept score is circular; small samples; fluency cost; two small models.</p></details>
-  <details><summary>Is this related to anything you've studied before?</summary><p>Moving along a direction in a GAN's latent space to morph faces is the same idea; the Transition tab is the text version. And word-vector arithmetic (king − man + woman) is what E8 does with steering vectors.</p></details>
-  <details><summary>What would you do with more time?</summary><p>Repeat E6 with more seeds and sizes and for other concepts; a classifier per concept; a trained probe; steering only some tokens or several layers to save fluency; larger and chat models; sparse autoencoders to find directions without pairs.</p></details>
-  <details><summary>How did you use Claude Code?</summary><p>As a pair programmer for most of the code. I chose the project direction (from TinyGPT ablations to steering), ran everything on Kaggle, decided the experiments and the deployment option, and tested the demo myself; that testing found real issues: the cat side never produced cats, sunny ↔ rainy was weak (dropped), Mix example prompts were too similar, and good showcase prompts.</p></details>
-  <details><summary>What was the hardest part?</summary><p>Choosing honest metrics (the first classifier and the first probe both looked fine and were wrong), and making concepts other than sentiment work, which needed carefully matched pairs and prompts that leave room for the concept.</p></details>
+  <details><summary>What is your project, in one sentence?</summary><p>I change what a language model writes by nudging its internal state towards an idea while it writes, I test it on a ready-made model and on a small model I built myself, and I use my own model's training to see when the idea is learned.</p></details>
+  <details><summary>What is the residual stream, and why do you change it there?</summary><p>It's the list of numbers the model keeps for each word, like a shared notebook. Every layer reads it and adds its own result onto it. So if I add something to it at one layer, all the later layers see it. That makes it the natural place to nudge.</p></details>
+  <details><summary>How do you find the "happy" direction?</summary><p>I feed the model happy sentences and matching sad sentences, record its numbers at a layer, average each group and subtract. What's left is the direction that separates happy from sad.</p></details>
+  <details><summary>Why skip the first word?</summary><p>Models always give the very first word unusually large numbers, whatever it is. Including it would drown out the actual difference between happy and sad.</p></details>
+  <details><summary>What does the strength (α) mean, and why 8?</summary><p>It's how many times I add the direction: +8 is eight times towards happy, −8 eight times towards sad. 8 was picked automatically: the strongest effect in both directions while the text still reads well.</p></details>
+  <details><summary>How do you know it's really the idea, and not just any push?</summary><p>I always also add a random direction of exactly the same size. It changes some words but doesn't move the mood in any consistent direction (it stays around zero), while the happy direction moves it clearly (+0.85 or −0.46).</p></details>
+  <details><summary>Why is layer 4 best for steering, if the idea is clearest at layers 9–14?</summary><p>Seeing and changing are different. A nudge early on passes through 20 more layers, which turn it into happier word choices. A nudge late has little room left to make a difference. Late layers still push towards happy, but not well towards sad.</p></details>
+  <details><summary>Isn't this just a stronger prompt?</summary><p>No, the prompt never changes. And it works where asking doesn't: Qwen's base version doesn't follow instructions, so asking for a happy story only reached +0.50, while steering reached +0.85. Together they reached +0.96. Asking keeps the text more natural, though.</p></details>
+  <details><summary>Why does pushing harder sometimes give less effect?</summary><p>Push too hard and the numbers end up somewhere the model has never been, so the later layers can't turn them into proper sentences. The text starts repeating and becomes nonsense, which isn't really sad or French any more, just broken.</p></details>
+  <details><summary>Why is happy easier than sad?</summary><p>Most of what the models learned from leans positive (children's stories almost always end happily), so happy text is closer to "normal". Pushed hard towards sad, they start looping before they get really sad.</p></details>
+  <details><summary>Explain the "learned suddenly" result.</summary><p>Using TinyGPT's training snapshots, I rebuilt the happy direction at each one. Until step 150 there is none and steering does nothing; by step 250 it's clear and steering works. That's about 4% of training. My reading: the model first learns which words are common, then quickly picks up higher-level ideas like mood once it starts learning how sentences fit together. It's one run, so it should be repeated.</p></details>
+  <details><summary>How do you know the re-run of early training matches the original?</summary><p>Same random seed, same data order and same settings, just stopped at step 600. Its error score on held-out stories (validation loss) matched the original run at steps 250 and 500: 2.861 and 2.412.</p></details>
+  <details><summary>What is the probe score?</summary><p>A check of whether the idea can be read at a layer: I take 40 ordinary sentences, 20 happy and 20 sad, and see if the happy direction sorts them correctly. 0.5 means guessing, 1.0 means perfect.</p></details>
+  <details><summary>Why that mood classifier?</summary><p>It has a neutral option, so neutral text scores near zero. The one I tried first only had happy or sad, and called ordinary sentences sad, which would have hidden the sad results.</p></details>
+  <details><summary>How do you measure whether the text still reads well?</summary><p>I let the normal, unsteered model read the steered text and measure how surprised it is (perplexity). If it's more than three times its usual surprise, the text counts as broken. I also count repeated word pairs, because loops can look unsurprising.</p></details>
+  <details><summary>Walk me through TinyGPT.</summary><p>Text is split into pieces from a list of 4,096. Each piece becomes 384 numbers. Then 6 layers: in each, attention lets every word look back at earlier words, and a small feed-forward network thinks about each word, both adding their results to the shared notebook. At the end it scores every possible next piece. 12.2 million parameters, trained for 18 minutes on children's stories.</p></details>
+  <details><summary>Why those particular parts (RoPE, RMSNorm, SwiGLU)?</summary><p>They're what modern models like Llama and Qwen use. RoPE tells the model how far apart words are; RMSNorm keeps the numbers at a steady size so training is stable; SwiGLU is a feed-forward part that learns better than the older version.</p></details>
+  <details><summary>Why only 4,096 word pieces?</summary><p>Children's stories use simple words, so a small list covers them, and it keeps the model small. A 50,000-piece list would need more numbers than my whole model.</p></details>
+  <details><summary>How many examples do you need?</summary><p>Five pairs already give nearly the full effect. But good examples matter more than many: the cat examples show that.</p></details>
+  <details><summary>Why did "confident" and the first "cats" fail?</summary><p>The direction learns everything that differs between the two sets. The uncertain sentences were longer and ended with "?", so "confident" became flat statements. The cat sentences also had cats purring, drinking milk and climbing trees, so steering gave owls and tea. Making the pairs differ only in the animal fixed it.</p></details>
+  <details><summary>Why does old ↔ young work on Qwen but not TinyGPT?</summary><p>You can only steer towards what the model has seen. Children's stories have almost no old people; Qwen read the whole web.</p></details>
+  <details><summary>Why doesn't tense work?</summary><p>Tense depends on a few small words in exactly the right place. A push at every word scrambles the grammar. Ideas about what the text is about, like wealth or age, can change a whole scene and survive.</p></details>
+  <details><summary>How does mixing two ideas work?</summary><p>I add both directions at once. They point in nearly unrelated directions, so each changes only its own idea. The model fills in something that fits both: huge + magic gives a dragon, tiny + magic a fairy, even though none of my examples mention either. Like "king − man + woman ≈ queen".</p></details>
+  <details><summary>Why do the rows in the Transition tab start the same and then split?</summary><p>All rows use the same random choices, so the only difference between them is the steering. They write the same words until the push changes one word choice, and then each follows its own path.</p></details>
+  <details><summary>How is it deployed?</summary><p>An always-on project page on Hugging Face (free) with the results, graphs and replays of real outputs, plus the live demo running on my laptop with a public link. The demo puts its link on the project page automatically. Hugging Face now charges for hosting live demos, so this keeps it free.</p></details>
+  <details><summary>What are the main limitations?</summary><p>The "learned suddenly" result is from one training run; only mood has an independent judge; small samples; steering costs readability; only two small models.</p></details>
+  <details><summary>Is this like anything you've studied before?</summary><p>Yes: moving along a direction in an image model's hidden space to morph one face into another. The Transition tab is the text version of that. And mixing ideas is like word-vector arithmetic (king − man + woman).</p></details>
+  <details><summary>What would you do with more time?</summary><p>Repeat the training study with more runs and for other ideas, add an independent judge for every idea, try gentler steering to keep text natural, and test bigger chat models.</p></details>
+  <details><summary>How did you use Claude Code?</summary><p>As a coding partner for most of the code. I chose the direction (from comparing designs to steering), ran everything on Kaggle, decided the experiments and how to deploy, and tested the demo myself. That testing found real problems: the cat side never gave cats, sunny vs rainy was weak (dropped), and the mixing examples were too similar.</p></details>
+  <details><summary>What was the hardest part?</summary><p>Choosing honest ways to measure (my first mood classifier and first probe both looked fine but were wrong), and getting ideas other than mood to work, which needed carefully matched examples and prompts that leave room for the idea.</p></details>
 </section>
 
 <section id="glossary">
   <span class="num">Terms</span>
   <h2>Glossary</h2>
   <div class="tbl"><table>
-    <tr><td><b>Residual stream</b></td><td>The running vector per token that every block reads and adds to</td></tr>
-    <tr><td><b>Activation steering</b></td><td>Adding a vector to hidden states during generation to change behaviour</td></tr>
-    <tr><td><b>Contrastive pairs</b></td><td>Example sentences that differ only in the concept</td></tr>
-    <tr><td><b>CAA / ActAdd</b></td><td>Contrastive Activation Addition (many pairs, Rimsky et al.) / Activation Addition (one prompt pair, Turner et al.)</td></tr>
-    <tr><td><b>Forward hook</b></td><td>A PyTorch function called after a module runs, which can replace its output</td></tr>
-    <tr><td><b>α (alpha)</b></td><td>Steering strength: how many times the vector is added; the sign picks the side</td></tr>
-    <tr><td><b>Linear representation hypothesis</b></td><td>High-level concepts correspond to directions in activation space</td></tr>
-    <tr><td><b>Probe</b></td><td>A simple read-out testing whether a concept can be decoded from hidden states</td></tr>
-    <tr><td><b>ROC AUC</b></td><td>Chance that a random positive scores above a random negative; 0.5 = chance</td></tr>
-    <tr><td><b>Perplexity</b></td><td>exp(mean negative log-likelihood per token); lower = more natural text</td></tr>
-    <tr><td><b>Distinct-2</b></td><td>Fraction of unique word bigrams; low = repetitive</td></tr>
-    <tr><td><b>Temperature / top-p</b></td><td>Sampling settings: T scales randomness; top-p keeps the smallest set of tokens covering probability p</td></tr>
-    <tr><td><b>Gumbel-max trick</b></td><td>argmax(logits + Gumbel noise) is a sample from the softmax; sharing the noise couples samples</td></tr>
-    <tr><td><b>BPE</b></td><td>Byte-pair encoding: a tokenizer built by merging frequent symbol pairs</td></tr>
-    <tr><td><b>RoPE</b></td><td>Rotary position embedding: rotates q and k by position-dependent angles</td></tr>
-    <tr><td><b>RMSNorm</b></td><td>Normalise by root-mean-square (no mean subtraction), with a learned gain</td></tr>
-    <tr><td><b>SwiGLU</b></td><td>Gated feed-forward layer: W2(silu(W1x) ⊙ W3x)</td></tr>
-    <tr><td><b>Pre-norm</b></td><td>Normalise the input of each sub-layer, keeping the residual path clean</td></tr>
-    <tr><td><b>Weight tying</b></td><td>Output layer shares the embedding matrix</td></tr>
-    <tr><td><b>GQA</b></td><td>Grouped-query attention: several query heads share key/value heads (Qwen)</td></tr>
-    <tr><td><b>Cosine similarity</b></td><td>Angle between two vectors; 0 = orthogonal (independent), 1 = same direction</td></tr>
+    <tr><td><b>Steering</b></td><td>Nudging a model's internal state towards an idea while it writes</td></tr>
+    <tr><td><b>Residual stream</b></td><td>The list of numbers kept for each word, which every layer reads and adds to (the "shared notebook")</td></tr>
+    <tr><td><b>Direction / vector</b></td><td>A list of numbers that points towards an idea, like "happy"</td></tr>
+    <tr><td><b>Example pairs</b></td><td>Two sentences that differ only in the idea ("loved" / "hated")</td></tr>
+    <tr><td><b>Hook</b></td><td>A small piece of code attached to a layer that changes its output as the model runs</td></tr>
+    <tr><td><b>Strength (α)</b></td><td>How many times the direction is added; the sign picks the side</td></tr>
+    <tr><td><b>Parameters</b></td><td>The numbers a model learns during training (12.2 million in TinyGPT)</td></tr>
+    <tr><td><b>Layer</b></td><td>One step in the model's stack of processing</td></tr>
+    <tr><td><b>Tokenizer / token</b></td><td>What splits text into pieces / one piece</td></tr>
+    <tr><td><b>Attention</b></td><td>The part that lets each word look back at earlier words</td></tr>
+    <tr><td><b>Feed-forward (SwiGLU)</b></td><td>The part that processes each word on its own, with a gate</td></tr>
+    <tr><td><b>RoPE</b></td><td>The way TinyGPT knows where each word is and how far apart words are</td></tr>
+    <tr><td><b>RMSNorm</b></td><td>Keeps the numbers at a steady size so training is stable</td></tr>
+    <tr><td><b>Probe</b></td><td>A test of whether an idea can be read from a layer</td></tr>
+    <tr><td><b>Perplexity</b></td><td>How surprised the model is by a text; lower = more natural</td></tr>
+    <tr><td><b>Classifier</b></td><td>A model that sorts text into categories (here: negative, neutral, positive)</td></tr>
+    <tr><td><b>Seed</b></td><td>The starting point for random choices; same seed = same output</td></tr>
+    <tr><td><b>Base vs chat model</b></td><td>A base model just continues text; a chat model is trained to follow instructions</td></tr>
+    <tr><td><b>Kaggle / T4</b></td><td>A free website with graphics cards / the type of graphics card used</td></tr>
   </table></div>
 </section>
 </main>
